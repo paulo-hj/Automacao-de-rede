@@ -1,28 +1,36 @@
 import telnetlib
 
-HOST = "10.50.50.50"
-tn = telnetlib.Telnet(HOST)
-tn.read_until(b":")
-tn.write(b"digistar\n")
+class Comandos():
+    def conectar(self):
+        HOST = "10.50.50.50"
+        self.tn = telnetlib.Telnet(HOST)
 
-tn.write(b"enable\n")
-
-tn.write(b"digistar\n")
-
-saida = tn.read_until(b'#').decode()
-print(saida)
-
-def comandoOnu():
-    i = 1
-    j = 0
-    while i < 17:
-        comando = "onu status {}/{}\n".format(j,i).encode()
-        tn.write(b""+comando)
-        saida = tn.read_until(b'#').decode()
+    def login(self):
+        self.tn.read_until(b":")
+        self.tn.write(b"digistar\n")
+        self.tn.write(b"enable\n")
+        self.tn.write(b"digistar\n")
+        saida = self.tn.read_until(b'#').decode()
         print(saida)
-        i = i + 1
-        if i == 17 and j < 8:
-            j = j + 1
-            i = 1
 
-comandoOnu()
+    def verificarSinal(self):
+        porta = 0
+        onu = 1
+        while onu < 17:
+            comando = "onu status {}/{}\n".format(porta,onu).encode()
+            self.tn.write(b""+comando)
+            saida = self.tn.read_until(b'#').decode()
+            print(saida)
+            onu = onu + 1
+            if onu == 17 and porta < 8:
+                porta = porta + 1
+                onu = 1
+
+class Main(Comandos):
+    def __init__(self):
+        self.conectar()
+        self.login()
+        self.verificarSinal()
+
+
+Main()
