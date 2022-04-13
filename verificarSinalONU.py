@@ -15,14 +15,10 @@ tn.write(b"digistar\n")
 saida = tn.read_until(b'#').decode()
 print(saida)
 
-tn.write(b"onu status 2/3\n")
-
-saida = tn.read_until(b'#').decode()
-print(saida)
-
-
-
-        #tn.read_until(':'.encode())
-        #tn.write((self.usuario+'\n').encode())
-        #tn.read_until(':'.encode())
+while i <= 10:
+    comando = "onu status 2/{}\n".format(i).encode()
+    tn.write(b""+comando)
+    i = i + 1
+    saida = tn.read_until(b'#').decode()
+    print(saida)
 
