@@ -1,4 +1,6 @@
 import telnetlib
+from tkinter import *
+from turtle import title
 
 class Comandos():
     def conectar(self):
@@ -26,11 +28,21 @@ class Comandos():
                 porta = porta + 1
                 onu = 1
 
-class Main(Comandos):
+class Interface():
+    def telaPrincipal(self):
+        primeiraTela = Tk()
+        primeiraTela.geometry("700x500+350+110")
+        primeiraTela.title("BRCOM - OLT Digistar")
+        #primeiraTela.configure(background="")
+        primeiraTela.resizable(width=False, height=False)
+        primeiraTela.mainloop()
+
+class Main(Comandos, Interface):
     def __init__(self):
-        self.conectar()
-        self.login()
-        self.verificarSinal()
+        self.telaPrincipal()
+        #self.conectar()
+        #self.login()
+        #self.verificarSinal()
 
 
 Main()
