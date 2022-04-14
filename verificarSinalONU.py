@@ -1,6 +1,5 @@
 import telnetlib
 from tkinter import *
-from turtle import title
 
 class Comandos():
     def conectar(self):
@@ -13,18 +12,25 @@ class Comandos():
         self.tn.write(b"enable\n")
         self.tn.write(b"digistar\n")
         saida = self.tn.read_until(b'#').decode()
-
         print(saida)
 
     def verificarSinal(self):
+        #posicao = input("Informe a posição da ONU - Eemplo-> 2/1\n")
+        posicao = self.entradaPosicaoOnu.get()
+        comando = "onu status {}\n".format(posicao).encode()
+        self.tn.write(b""+comando)
+        saida = self.tn.read_until(b'#').decode()
+        self.primeiraOnu["text"] = "{}".format(str(saida))
+
+    def verificarTodosSinais(self):
         porta = 0
         onu = 1
         while onu < 3: #onu < 17:
             comando = "onu status {}/{}\n".format(porta,onu).encode()
             self.tn.write(b""+comando)
             saida = self.tn.read_until(b'#').decode()
-            self.primeiraOnu["text"] = "{}".format(str(saida))
-            #print(saida)
+            #self.primeiraOnu["text"] = "{}".format(str(saida))
+            print(saida)
             onu = onu + 1
             if onu == 3 and porta < 2: #onu == 17 and porta < 8:
                 porta = porta + 1
@@ -39,8 +45,6 @@ class Interface():
         primeiraTela.resizable(width=False, height=False)
         self.primeiraTela = primeiraTela
         self.widgetsTelaPrincipal()
-        self.conectar()
-        self.login()
         primeiraTela.mainloop()
 
     def widgetsTelaPrincipal(self):
@@ -56,21 +60,22 @@ class Interface():
         segundaTela.title("Sinais das ONU's")
         segundaTela.resizable(width=False, height=False)
         self.segundaTela = segundaTela
-        self.widgetsTelaSinal()
-        self.verificarSinal()
+        self.widgetsTelaSinal()      
         segundaTela.mainloop()
 
     def widgetsTelaSinal(self):
-        self.primeiraOnu = Label(self.segundaTela, text="", width=97, height=32)
+        Label(self.segundaTela, text="Informe a posição da ONU\nEemplo-> 2/1")
+        self.entradaPosicaoOnu = Entry(self.segundaTela)
+        self.entradaPosicaoOnu.pack()
+        Button(self.segundaTela, text="Verificar sinal", command=self.verificarSinal).pack()
+        self.primeiraOnu = Label(self.segundaTela, text="", width=50, height=10)
         self.primeiraOnu.pack()
 
-
 class Main(Comandos, Interface):
-    def __init__(self):
+    def _init_(self):      
+        self.conectar()
+        self.login()
         self.telaPrincipal()
-        #self.conectar()
-        #self.login()
         #self.verificarSinal()
-
 
 Main()
