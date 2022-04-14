@@ -6,7 +6,6 @@ class Comandos():
     def conectar(self):
         HOST = "10.50.50.50"
         self.tn = telnetlib.Telnet(HOST)
-
     def login(self):
         self.tn.read_until(b":")
         self.tn.write(b"digistar\n")
@@ -14,7 +13,6 @@ class Comandos():
         self.tn.write(b"digistar\n")
         saida = self.tn.read_until(b'#').decode()
         print(saida)
-
     def verificarSinal(self):
         porta = 0
         onu = 1
@@ -35,7 +33,20 @@ class Interface():
         primeiraTela.title("BRCOM - OLT Digistar")
         #primeiraTela.configure(background="")
         primeiraTela.resizable(width=False, height=False)
+        self.primeiraTela = primeiraTela
+        self.widgetsTelaPrincipal()
+        self.conectar()
+        self.login()
         primeiraTela.mainloop()
+    def widgetsTelaPrincipal(self):
+        #Criação dos texto.
+        Label(self.primeiraTela, text="Verificar sinal das ONU's").pack()
+        #Criação dos botões.
+        botaoVerificarSinais = Button(self.primeiraTela, text="Verificar sinais das ONU", command=self.verificarSinal).pack()
+        #Criação das saídas dos dados.
+    #def telaSinal(self):
+
+
 
 class Main(Comandos, Interface):
     def __init__(self):
