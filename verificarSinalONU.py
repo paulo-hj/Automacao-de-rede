@@ -40,6 +40,7 @@ class Interface():
     def telaPrincipal(self):
         primeiraTela = Tk()
         primeiraTela.geometry("700x500+350+110")
+        primeiraTela.iconbitmap(default="icone\\logo.ico")
         primeiraTela.title("BRCOM - OLT Digistar")
         #primeiraTela.configure(background="")
         primeiraTela.resizable(width=False, height=False)
@@ -56,26 +57,34 @@ class Interface():
 
     def telaSinal(self):
         segundaTela = Tk()
-        segundaTela.geometry("700x500+350+110")
+        segundaTela.geometry("500x450+350+110")
+        segundaTela.iconbitmap(default="icone\\logo.ico")
         segundaTela.title("Sinais das ONU's")
-        segundaTela.resizable(width=False, height=False)
+        #segundaTela.resizable(width=False, height=False)
         self.segundaTela = segundaTela
-        self.widgetsTelaSinal()      
+        self.framesTelaSinal()
+        self.widgetsTelaSinal()
         segundaTela.mainloop()
+    
+    def framesTelaSinal(self):
+        self.primeiroFrame = Frame(self.segundaTela, borderwidth=2, relief="solid", background="#191970")
+        self.primeiroFrame.place(relx=0.005, rely=0.005, relwidth=0.988, relheight=0.5)
 
     def widgetsTelaSinal(self):
-        Label(self.segundaTela, text="Informe a posição da ONU\nEemplo-> 2/1")
-        self.entradaPosicaoOnu = Entry(self.segundaTela)
-        self.entradaPosicaoOnu.pack()
-        Button(self.segundaTela, text="Verificar sinal", command=self.verificarSinal).pack()
-        self.primeiraOnu = Label(self.segundaTela, text="", width=50, height=10)
-        self.primeiraOnu.pack()
+        Label(self.primeiroFrame, text="Informe a porta e posição da ONU", font="arial 14 bold", background="#191970").place(relx=0.18, rely=0.03)
+        Label(self.primeiroFrame, text="Exemplo: 2/1", font="arial 7", background="#191970").place(relx=0.54, rely=0.2)
+        self.entradaPosicaoOnu = Entry(self.primeiroFrame, font="Calibre 12 bold")
+        self.entradaPosicaoOnu.place(relx=0.47, rely=0.19, relwidth=0.07, relheight=0.1)
+        Button(self.primeiroFrame, text="Verificar sinal", command=self.verificarSinal).place(relx=0.42, rely=0.35)
+        self.primeiraOnu = Label(self.primeiroFrame, text="", font="arial 9 bold", anchor=N, background="#191970")
+        self.primeiraOnu.place(relx=0.12, rely=0.47, relwidth=0.76, relheight=0.4)
+        Label(self.primeiroFrame, text="", background="#191970").place(relx=0.82, rely=0.5, relwidth=0.12, relheight=0.12)
 
 class Main(Comandos, Interface):
-    def __init__(self):      
+    def __init__(self):
         self.conectar()
         self.login()
-        self.telaPrincipal()
+        self.telaSinal()
         #self.verificarSinal()
 
 Main()
