@@ -72,7 +72,7 @@ class Interface():
         self.primeiraOnu.pack()
 
 class Main(Comandos, Interface):
-    def _init_(self):      
+    def __init__(self):      
         self.conectar()
         self.login()
         self.telaPrincipal()
