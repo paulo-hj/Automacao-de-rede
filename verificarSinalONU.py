@@ -1,9 +1,6 @@
-from msilib.schema import Font
 import telnetlib
 from tkinter import *
-from tkinter import font
 import awesometkinter as atk
-from tkinter import tix
 
 class Comandos():
     def conectar(self):
@@ -84,11 +81,11 @@ class Interface():
         #Criação das entradas dos dados.
 
     def telaSinal(self):
-        segundaTela = tix.Tk()
+        segundaTela = Tk()
         segundaTela.geometry("500x450+350+110")
         segundaTela.iconbitmap(default="icone\\logo.ico")
         segundaTela.title("Sinais das ONU's")
-        segundaTela.configure(background="#2F4F4F") #"gray20"
+        segundaTela.configure(background="#2F4F4F") #"gray20" and "#2F4F4F"
         #segundaTela.resizable(width=False, height=False)
         self.segundaTela = segundaTela
         self.framesTelaSinal()
@@ -114,13 +111,8 @@ class Interface():
         #Criação das entradas dos dados.
         self.entradaPosicaoOnu = EntPlaceHold(self.primeiroFrame, 'Ex: 2/4')
         self.entradaPosicaoOnu.place(relx=0.45, rely=0.18, relwidth=0.09, relheight=0.08)
-
-
         #Balão de mensagem.
-        self.balaoBotaoVerificar = tix.Balloon(self.primeiroFrame)
-        msg_balao_apagar = "Verificar o sinal da ONU informada acima."
-        self.balaoBotaoVerificar.subwidget('label')['image'] = BitmapImage()  #Tira a seta do balão
-        self.balaoBotaoVerificar.bind_widget(self.botaoVerificar, balloonmsg=msg_balao_apagar)
+        atk.tooltip(self.botaoVerificar, "Verifica o sinal da ONU informada acima.")
 
         #*Segundo Frame
         #Criação dos texto.
@@ -135,8 +127,9 @@ class Main(Comandos, Interface):
     def __init__(self):
         #self.conectar()
         #self.login()
-        self.telaSinal()
         #self.telaPrincipal()
         #self.verificarSinal()
+        self.telaSinal()
+
 
 Main()
