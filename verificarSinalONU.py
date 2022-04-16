@@ -1,5 +1,7 @@
+from msilib.schema import Font
 import telnetlib
 from tkinter import *
+from tkinter import font
 import awesometkinter as atk
 from tkinter import tix
 
@@ -87,8 +89,6 @@ class Interface():
         segundaTela.iconbitmap(default="icone\\logo.ico")
         segundaTela.title("Sinais das ONU's")
         segundaTela.configure(background="#2F4F4F") #"gray20"
-        #s = ttk.Style()
-        #s.theme_use('default')
         #segundaTela.resizable(width=False, height=False)
         self.segundaTela = segundaTela
         self.framesTelaSinal()
@@ -105,7 +105,6 @@ class Interface():
         #*Primeiro Frame
         #Criação dos texto.
         Label(self.primeiroFrame, text="Informe a porta e posição da ONU", font="verdana 13 bold", background="#2F4F4F").place(relx=0.17, rely=0.04)
-        Label(self.primeiroFrame, text="Exemplo: 2/1", font="verdana 7", background="#2F4F4F").place(relx=0.55, rely=0.19)
         #Criação das saídas dos dados.
         self.primeiraOnu = Label(self.primeiroFrame, text="", font="arial 9 bold", anchor=N, background="#2F4F4F")
         self.primeiraOnu.place(relx=0.12, rely=0.55, relwidth=0.76, relheight=0.4)
@@ -113,8 +112,10 @@ class Interface():
         self.botaoVerificar = atk.Button3d(self.primeiroFrame, text="Verificar sinal", command=self.verificarSinal)
         self.botaoVerificar.place(relx=0.4, rely=0.34, relwidth=0.19, relheight=0.13)
         #Criação das entradas dos dados.
-        self.entradaPosicaoOnu = Entry(self.primeiroFrame, font="verdana 11 bold")
+        self.entradaPosicaoOnu = EntPlaceHold(self.primeiroFrame, 'Ex: 2/4')
         self.entradaPosicaoOnu.place(relx=0.45, rely=0.18, relwidth=0.09, relheight=0.08)
+
+
         #Balão de mensagem.
         self.balaoBotaoVerificar = tix.Balloon(self.primeiroFrame)
         msg_balao_apagar = "Verificar o sinal da ONU informada acima."
