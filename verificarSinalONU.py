@@ -1,5 +1,7 @@
 import telnetlib
 from tkinter import *
+import awesometkinter as atk
+from tkinter import tix
 
 class Comandos():
     def conectar(self):
@@ -51,15 +53,19 @@ class Interface():
     def widgetsTelaPrincipal(self):
         #Criação dos texto.
         Label(self.primeiraTela, text="Verificar sinal das ONU's").pack()
+        #Criação das saídas dos dados.
         #Criação dos botões.
         Button(self.primeiraTela, text="Verificar sinais das ONU", command=self.telaSinal).pack()
-        #Criação das saídas dos dados.
+        #Criação das entradas dos dados.
 
     def telaSinal(self):
-        segundaTela = Tk()
+        segundaTela = tix.Tk()
         segundaTela.geometry("500x450+350+110")
         segundaTela.iconbitmap(default="icone\\logo.ico")
         segundaTela.title("Sinais das ONU's")
+        segundaTela.configure(background="#2F4F4F") #"gray20"
+        #s = ttk.Style()
+        #s.theme_use('default')
         #segundaTela.resizable(width=False, height=False)
         self.segundaTela = segundaTela
         self.framesTelaSinal()
@@ -67,24 +73,46 @@ class Interface():
         segundaTela.mainloop()
     
     def framesTelaSinal(self):
-        self.primeiroFrame = Frame(self.segundaTela, borderwidth=2, relief="solid", background="#191970")
-        self.primeiroFrame.place(relx=0.005, rely=0.005, relwidth=0.988, relheight=0.5)
+        self.primeiroFrame = atk.Frame3d(self.segundaTela, bg='#2F4F4F')
+        self.primeiroFrame.place(relx=0.005, rely=0.005, relwidth=0.988, relheight=0.7)
+        self.segundoFrame = atk.Frame3d(self.segundaTela, bg='#2F4F4F')
+        self.segundoFrame.place(relx=0.005, rely=0.7, relwidth=0.988, relheight=0.3)
 
     def widgetsTelaSinal(self):
-        Label(self.primeiroFrame, text="Informe a porta e posição da ONU", font="arial 14 bold", background="#191970").place(relx=0.18, rely=0.03)
-        Label(self.primeiroFrame, text="Exemplo: 2/1", font="arial 7", background="#191970").place(relx=0.54, rely=0.2)
-        self.entradaPosicaoOnu = Entry(self.primeiroFrame, font="Calibre 12 bold")
-        self.entradaPosicaoOnu.place(relx=0.47, rely=0.19, relwidth=0.07, relheight=0.1)
-        Button(self.primeiroFrame, text="Verificar sinal", command=self.verificarSinal).place(relx=0.42, rely=0.35)
-        self.primeiraOnu = Label(self.primeiroFrame, text="", font="arial 9 bold", anchor=N, background="#191970")
-        self.primeiraOnu.place(relx=0.12, rely=0.47, relwidth=0.76, relheight=0.4)
-        Label(self.primeiroFrame, text="", background="#191970").place(relx=0.82, rely=0.5, relwidth=0.12, relheight=0.12)
+        #*Primeiro Frame
+        #Criação dos texto.
+        Label(self.primeiroFrame, text="Informe a porta e posição da ONU", font="verdana 13 bold", background="#2F4F4F").place(relx=0.17, rely=0.04)
+        Label(self.primeiroFrame, text="Exemplo: 2/1", font="verdana 7", background="#2F4F4F").place(relx=0.55, rely=0.19)
+        #Criação das saídas dos dados.
+        self.primeiraOnu = Label(self.primeiroFrame, text="", font="arial 9 bold", anchor=N, background="#2F4F4F")
+        self.primeiraOnu.place(relx=0.12, rely=0.55, relwidth=0.76, relheight=0.4)
+        #Criação dos botões.
+        self.botaoVerificar = atk.Button3d(self.primeiroFrame, text="Verificar sinal", command=self.verificarSinal)
+        self.botaoVerificar.place(relx=0.4, rely=0.34, relwidth=0.19, relheight=0.13)
+        #Criação das entradas dos dados.
+        self.entradaPosicaoOnu = Entry(self.primeiroFrame, font="verdana 11 bold")
+        self.entradaPosicaoOnu.place(relx=0.45, rely=0.18, relwidth=0.09, relheight=0.08)
+        #Balão de mensagem.
+        self.balaoBotaoVerificar = tix.Balloon(self.primeiroFrame)
+        msg_balao_apagar = "Verificar o sinal da ONU informada acima."
+        self.balaoBotaoVerificar.subwidget('label')['image'] = BitmapImage()  #Tira a seta do balão
+        self.balaoBotaoVerificar.bind_widget(self.botaoVerificar, balloonmsg=msg_balao_apagar)
+
+        #*Segundo Frame
+        #Criação dos texto.
+        Label(self.segundoFrame, text="Relatório", font="verdana 13 bold", background="#2F4F4F").place(relx=0.4, rely=0.07)
+        Label(self.segundoFrame, text="Se preferir, gere um PDF com os sinais de todas as ONU's.", 
+        font="calibre 9", background="#2F4F4F").place(relx=0.16, rely=0.32)
+        #Criação das saídas dos dados.
+        #Criação dos botões.
+        atk.Button3d(self.segundoFrame, text="Gerar", command=self.verificarSinal).place(relx=0.42, rely=0.56, relwidth=0.14, relheight=0.3)
 
 class Main(Comandos, Interface):
     def __init__(self):
-        self.conectar()
-        self.login()
+        #self.conectar()
+        #self.login()
         self.telaSinal()
+        #self.telaPrincipal()
         #self.verificarSinal()
 
 Main()
