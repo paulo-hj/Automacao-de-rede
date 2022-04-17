@@ -2,6 +2,15 @@ import telnetlib
 from tkinter import *
 import awesometkinter as atk
 
+#Imports necessários para gerar um arquivo pdf.
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter, A4 #Para as folhas.
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.platypus import SimpleDocTemplate, Image
+import webbrowser
+
+
 class Comandos():
     def conectar(self):
         HOST = "10.50.50.50"
@@ -23,15 +32,15 @@ class Comandos():
         saida = self.tn.read_until(b'#').decode()
         self.primeiraOnu["text"] = "{}".format(str(saida))
 
-    def verificarTodosSinais(self):
+    #def verificarTodosSinais(self):
         porta = 0
         onu = 1
         while onu < 3: #onu < 17:
             comando = "onu status {}/{}\n".format(porta,onu).encode()
             self.tn.write(b""+comando)
-            saida = self.tn.read_until(b'#').decode()
+            self.saida = self.tn.read_until(b'#').decode()
             #self.primeiraOnu["text"] = "{}".format(str(saida))
-            print(saida)
+            self.inserirTexto()
             onu = onu + 1
             if onu == 3 and porta < 2: #onu == 17 and porta < 8:
                 porta = porta + 1
@@ -59,6 +68,38 @@ class EntPlaceHold(Entry):
     def foc_out(self, *args):
         if not self.get():
             self.put_placeholder()
+
+class Relatorios():
+    def printCliente(self):
+        webbrowser.open("ONU Digistar.pdf")
+
+    def geraRelatCliente(self):
+        self.c = canvas.Canvas("ONU Digistar.pdf")
+        self.c.setFont("Helvetica-Bold", 24)
+        self.c.drawString(200, 790, "Sinais das ONU's")
+
+        porta = 0
+        onu = 1
+        teste = 500
+        self.c.setFont("Helvetica", 7)
+        while onu < 3: #onu < 17:
+            comando = "onu status {}/{}\n".format(porta,onu).encode()
+            self.tn.write(b""+comando)
+            self.saida = self.tn.read_until(b'#').decode()
+            self.texto = self.saida+"\n"
+            self.c.drawString(10, teste, self.texto)
+            teste = teste + 50
+            onu = onu + 1
+            if onu == 3 and porta < 2: #onu == 17 and porta < 8:
+                porta = porta + 1
+                onu = 1
+
+        #self.c.rect(20, 720, 550, 200, fill= False, stroke=True)
+
+        self.c.showPage()
+        self.c.showPage()
+        self.c.save()
+        self.printCliente()
 
 class Interface():
     def telaPrincipal(self):
@@ -121,12 +162,12 @@ class Interface():
         font="calibre 9", background="#2F4F4F").place(relx=0.16, rely=0.32)
         #Criação das saídas dos dados.
         #Criação dos botões.
-        atk.Button3d(self.segundoFrame, text="Gerar", command=self.verificarSinal).place(relx=0.42, rely=0.56, relwidth=0.14, relheight=0.3)
+        atk.Button3d(self.segundoFrame, text="Gerar", command=self.geraRelatCliente).place(relx=0.42, rely=0.56, relwidth=0.14, relheight=0.3)
 
-class Main(Comandos, Interface):
+class Main(Comandos, Interface, Relatorios):
     def __init__(self):
-        #self.conectar()
-        #self.login()
+        self.conectar()
+        self.login()
         #self.telaPrincipal()
         #self.verificarSinal()
         self.telaSinal()
