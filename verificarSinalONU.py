@@ -3,7 +3,6 @@ from tkinter import *
 from tkinter import ttk
 import awesometkinter as atk
 import time
-
 #Imports necessários para gerar um arquivo pdf.
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, A4 #Para as folhas.
@@ -11,7 +10,6 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import SimpleDocTemplate, Image
 import webbrowser
-
 
 class Comandos():
     def conectar(self):
@@ -35,8 +33,6 @@ class Comandos():
         self.primeiraOnu["text"] = "{}".format(str(saida))
 
     def carregarBarraProgresso(self):
-    #progress1['value'] +=10
-    #progress1.start(10)
         for x in range(20):
             self.barraProgresso['value'] +=5
             self.segundaTela.update_idletasks()
@@ -44,7 +40,7 @@ class Comandos():
         #self.barraProgresso.stop()
         self.geraRelatCliente()
 
-class EntPlaceHold(Entry):
+class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto sóe está sendo utilizado na tela de sinal.
     def __init__(self, master=None, placeholder= 'PLACEHOLDER', color= 'gray'):
         super().__init__(master)
 
@@ -158,15 +154,15 @@ class Interface():
         font="calibre 9", background="#2F4F4F").place(relx=0.16, rely=0.29)
         #Criação das saídas dos dados.
         #Criação dos botões.
-        atk.Button3d(self.segundoFrame, text="Gerar", command=self.step).place(relx=0.44, rely=0.47, relwidth=0.14, relheight=0.22)
+        atk.Button3d(self.segundoFrame, text="Gerar", command=self.carregarBarraProgresso).place(relx=0.44, rely=0.47, relwidth=0.14, relheight=0.22)
         #Barra de progresso.
         self.barraProgresso = ttk.Progressbar(self.segundoFrame, orient=HORIZONTAL, length=300, mode='determinate')
         self.barraProgresso.place(relx=0.2, rely=0.75)
 
 class Main(Comandos, Interface, Relatorios):
     def __init__(self):
-        self.conectar()
-        self.login()
+        #self.conectar()
+        #self.login()
         #self.telaPrincipal()
         #self.verificarSinal()
         self.telaSinal()
