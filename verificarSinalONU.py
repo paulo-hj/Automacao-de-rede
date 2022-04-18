@@ -1,6 +1,8 @@
 import telnetlib
 from tkinter import *
+from tkinter import ttk
 import awesometkinter as atk
+import time
 
 #Imports necessários para gerar um arquivo pdf.
 from reportlab.pdfgen import canvas
@@ -32,19 +34,15 @@ class Comandos():
         saida = self.tn.read_until(b'#').decode()
         self.primeiraOnu["text"] = "{}".format(str(saida))
 
-    #def verificarTodosSinais(self):
-        porta = 0
-        onu = 1
-        while onu < 3: #onu < 17:
-            comando = "onu status {}/{}\n".format(porta,onu).encode()
-            self.tn.write(b""+comando)
-            self.saida = self.tn.read_until(b'#').decode()
-            #self.primeiraOnu["text"] = "{}".format(str(saida))
-            self.inserirTexto()
-            onu = onu + 1
-            if onu == 3 and porta < 2: #onu == 17 and porta < 8:
-                porta = porta + 1
-                onu = 1
+    def carregarBarraProgresso(self):
+    #progress1['value'] +=10
+    #progress1.start(10)
+        for x in range(20):
+            self.barraProgresso['value'] +=5
+            self.segundaTela.update_idletasks()
+            time.sleep(0.09)
+        #self.barraProgresso.stop()
+        self.geraRelatCliente()
 
 class EntPlaceHold(Entry):
     def __init__(self, master=None, placeholder= 'PLACEHOLDER', color= 'gray'):
@@ -80,22 +78,20 @@ class Relatorios():
 
         porta = 0
         onu = 1
-        teste = 500
+        pularLinha = 500
         self.c.setFont("Helvetica", 7)
         while onu < 3: #onu < 17:
             comando = "onu status {}/{}\n".format(porta,onu).encode()
             self.tn.write(b""+comando)
             self.saida = self.tn.read_until(b'#').decode()
             self.texto = self.saida+"\n"
-            self.c.drawString(10, teste, self.texto)
-            teste = teste + 50
+            self.c.drawString(10, pularLinha, self.texto)
+            pularLinha = pularLinha + 50
             onu = onu + 1
             if onu == 3 and porta < 2: #onu == 17 and porta < 8:
                 porta = porta + 1
                 onu = 1
-
         #self.c.rect(20, 720, 550, 200, fill= False, stroke=True)
-
         self.c.showPage()
         self.c.showPage()
         self.c.save()
@@ -135,9 +131,9 @@ class Interface():
     
     def framesTelaSinal(self):
         self.primeiroFrame = atk.Frame3d(self.segundaTela, bg='#2F4F4F')
-        self.primeiroFrame.place(relx=0.005, rely=0.005, relwidth=0.988, relheight=0.7)
+        self.primeiroFrame.place(relx=0.005, rely=0.005, relwidth=0.988, relheight=0.6)
         self.segundoFrame = atk.Frame3d(self.segundaTela, bg='#2F4F4F')
-        self.segundoFrame.place(relx=0.005, rely=0.7, relwidth=0.988, relheight=0.3)
+        self.segundoFrame.place(relx=0.005, rely=0.6, relwidth=0.988, relheight=0.4)
 
     def widgetsTelaSinal(self):
         #*Primeiro Frame
@@ -148,7 +144,7 @@ class Interface():
         self.primeiraOnu.place(relx=0.12, rely=0.55, relwidth=0.76, relheight=0.4)
         #Criação dos botões.
         self.botaoVerificar = atk.Button3d(self.primeiroFrame, text="Verificar sinal", command=self.verificarSinal)
-        self.botaoVerificar.place(relx=0.4, rely=0.34, relwidth=0.19, relheight=0.13)
+        self.botaoVerificar.place(relx=0.4, rely=0.34, relwidth=0.19, relheight=0.14)
         #Criação das entradas dos dados.
         self.entradaPosicaoOnu = EntPlaceHold(self.primeiroFrame, 'Ex: 2/4')
         self.entradaPosicaoOnu.place(relx=0.45, rely=0.18, relwidth=0.09, relheight=0.08)
@@ -157,12 +153,15 @@ class Interface():
 
         #*Segundo Frame
         #Criação dos texto.
-        Label(self.segundoFrame, text="Relatório", font="verdana 13 bold", background="#2F4F4F").place(relx=0.4, rely=0.07)
+        Label(self.segundoFrame, text="Relatório", font="verdana 13 bold", background="#2F4F4F").place(relx=0.42, rely=0.07)
         Label(self.segundoFrame, text="Se preferir, gere um PDF com os sinais de todas as ONU's.", 
-        font="calibre 9", background="#2F4F4F").place(relx=0.16, rely=0.32)
+        font="calibre 9", background="#2F4F4F").place(relx=0.16, rely=0.29)
         #Criação das saídas dos dados.
         #Criação dos botões.
-        atk.Button3d(self.segundoFrame, text="Gerar", command=self.geraRelatCliente).place(relx=0.42, rely=0.56, relwidth=0.14, relheight=0.3)
+        atk.Button3d(self.segundoFrame, text="Gerar", command=self.step).place(relx=0.44, rely=0.47, relwidth=0.14, relheight=0.22)
+        #Barra de progresso.
+        self.barraProgresso = ttk.Progressbar(self.segundoFrame, orient=HORIZONTAL, length=300, mode='determinate')
+        self.barraProgresso.place(relx=0.2, rely=0.75)
 
 class Main(Comandos, Interface, Relatorios):
     def __init__(self):
