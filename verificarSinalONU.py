@@ -25,7 +25,6 @@ class Comandos():
         print(saida)
 
     def verificarSinal(self):
-        #posicao = input("Informe a posição da ONU - Eemplo-> 2/1\n")
         posicao = self.entradaPosicaoOnu.get()
         comando = "onu status {}\n".format(posicao).encode()
         self.tn.write(b""+comando)
@@ -71,22 +70,38 @@ class Relatorios():
         self.c = canvas.Canvas("ONU Digistar.pdf")
         self.c.setFont("Helvetica-Bold", 24)
         self.c.drawString(200, 790, "Sinais das ONU's")
-
-        porta = 0
+        porta = 1
         onu = 1
-        pularLinha = 500
-        self.c.setFont("Helvetica", 7)
-        while onu < 3: #onu < 17:
+        pularLinhaTexto = 733
+        pularLinhaTraço = 720
+        self.c.setFont("Helvetica", 10)
+        while onu < 17: #onu < 17:
+            lista2= ['d']
             comando = "onu status {}/{}\n".format(porta,onu).encode()
             self.tn.write(b""+comando)
-            self.saida = self.tn.read_until(b'#').decode()
-            self.texto = self.saida+"\n"
-            self.c.drawString(10, pularLinha, self.texto)
-            pularLinha = pularLinha + 50
-            onu = onu + 1
-            if onu == 3 and porta < 2: #onu == 17 and porta < 8:
+            self.saida = str(self.tn.read_until(b'#').decode())
+            #print(len(self.saida))
+            #print(self.saida)
+            if len(self.saida) == 186 or len(self.saida) == 191:
+                lista = self.saida.split("N", 3)
+                texto = str(lista[0] + lista[1] + lista[2])
+                lista2 = texto.split("\r", 1)
+                lista.append(texto.split("d", 2))
+                texto2 = str(lista[2])
+                lista = texto2.split("I", 1)
+                self.c.drawString(25, pularLinhaTexto, lista2[0])
+                self.c.rect(25, pularLinhaTraço, 545, 1, fill= True, stroke=True)
+                self.c.drawString(115, pularLinhaTexto, lista[0])
+                #time.sleep(5)
+                pularLinhaTexto = pularLinhaTexto - 30
+                pularLinhaTraço = pularLinhaTraço - 30
+                onu = onu + 1
+            else:
+                onu = onu + 1
+            if onu == 17 and porta < 8: #onu == 17 and porta < 8:
                 porta = porta + 1
                 onu = 1
+
         #self.c.rect(20, 720, 550, 200, fill= False, stroke=True)
         self.c.showPage()
         self.c.showPage()
@@ -161,8 +176,8 @@ class Interface():
 
 class Main(Comandos, Interface, Relatorios):
     def __init__(self):
-        #self.conectar()
-        #self.login()
+        self.conectar()
+        self.login()
         #self.telaPrincipal()
         #self.verificarSinal()
         self.telaSinal()
