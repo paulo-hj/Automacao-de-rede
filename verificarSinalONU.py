@@ -40,8 +40,8 @@ class Comandos():
         self.geraRelatCliente()
 
 class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto sóe está sendo utilizado na tela de sinal.
-    def __init__(self, master=None, placeholder= 'PLACEHOLDER', color= 'gray'):
-        super().__init__(master)
+    def _init_(self, master=None, placeholder= 'PLACEHOLDER', color= 'gray'):
+        super()._init_(master)
 
         self.placeholder = placeholder
         self.placeholder_color = color
@@ -111,27 +111,36 @@ class Relatorios():
 class Interface():
     def telaPrincipal(self):
         primeiraTela = Tk()
-        primeiraTela.geometry("700x500+350+110")
-        primeiraTela.iconbitmap(default="icone\\logo.ico")
+        primeiraTela.geometry("750x550+350+110")
+        #primeiraTela.iconbitmap(default="icone\\logo.ico")
         primeiraTela.title("BRCOM - OLT Digistar")
         #primeiraTela.configure(background="")
-        primeiraTela.resizable(width=False, height=False)
+        #primeiraTela.resizable(width=False, height=False)
         self.primeiraTela = primeiraTela
-        self.widgetsTelaPrincipal()
+        self.framesTelaPrincipal()
+        #self.widgetsTelaPrincipal()
         primeiraTela.mainloop()
 
-    def widgetsTelaPrincipal(self):
+    def framesTelaPrincipal(self):
+        self.frameVertical = atk.Frame3d(self.primeiraTela, bg='#2F4F4F')
+        self.frameVertical.place(relx=0, rely=0.22, relwidth=0.23, relheight=0.78)
+        self.frameHorizontal = atk.Frame3d(self.primeiraTela, bg='#2F4F4F')
+        self.frameHorizontal.place(relx=0, rely=0, relwidth=0.998, relheight=0.23)
+        #self.frameQuadrado = Frame(self.primeiraTela, borderwidth=1, relief="solid")
+        #self.frameQuadrado.place(relx=0.004, rely=0.004, relwidth=0.223, relheight=0.221)
+
+    #def widgetsTelaPrincipal(self):
         #Criação dos texto.
-        Label(self.primeiraTela, text="Verificar sinal das ONU's").pack()
+        ##Label(self.primeiraTela, text="Verificar sinal das ONU's").pack()
         #Criação das saídas dos dados.
         #Criação dos botões.
-        Button(self.primeiraTela, text="Verificar sinais das ONU", command=self.telaSinal).pack()
+        ##Button(self.primeiraTela, text="Verificar sinais das ONU", command=self.telaSinal).pack()
         #Criação das entradas dos dados.
 
     def telaSinal(self):
         segundaTela = Tk()
         segundaTela.geometry("500x450+350+110")
-        segundaTela.iconbitmap(default="icone\\logo.ico")
+        #segundaTela.iconbitmap(default="icone\\logo.ico")
         segundaTela.title("Sinais das ONU's")
         segundaTela.configure(background="#2F4F4F") #"gray20" and "#2F4F4F"
         #segundaTela.resizable(width=False, height=False)
@@ -176,11 +185,10 @@ class Interface():
 
 class Main(Comandos, Interface, Relatorios):
     def __init__(self):
-        self.conectar()
-        self.login()
-        #self.telaPrincipal()
+        #self.conectar()
+        #self.login()
+        self.telaPrincipal()
         #self.verificarSinal()
-        self.telaSinal()
-
+        #self.telaSinal()
 
 Main()
