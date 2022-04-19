@@ -1,6 +1,8 @@
 import telnetlib
 from tkinter import *
 from tkinter import ttk
+from tkinter import font
+from awesometkinter import *
 import awesometkinter as atk
 import time
 #Imports necessários para gerar um arquivo pdf.
@@ -39,9 +41,12 @@ class Comandos():
         #self.barraProgresso.stop()
         self.geraRelatCliente()
 
-class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto sóe está sendo utilizado na tela de sinal.
-    def _init_(self, master=None, placeholder= 'PLACEHOLDER', color= 'gray'):
-        super()._init_(master)
+
+#Deixa um texto dentro da entry, por enquanto sóe está sendo utilizado na tela de sinal.
+
+class EntPlaceHold(Entry):
+    def __init__(self, master=None, placeholder= 'PLACEHOLDER', color= 'gray'):
+        super().__init__(master)
 
         self.placeholder = placeholder
         self.placeholder_color = color
@@ -112,29 +117,33 @@ class Interface():
     def telaPrincipal(self):
         primeiraTela = Tk()
         primeiraTela.geometry("750x550+350+110")
-        #primeiraTela.iconbitmap(default="icone\\logo.ico")
+        primeiraTela.iconbitmap(default="icone\\logo.ico")
         primeiraTela.title("BRCOM - OLT Digistar")
-        #primeiraTela.configure(background="")
+        primeiraTela.configure(background="#2F4F4F")
         #primeiraTela.resizable(width=False, height=False)
         self.primeiraTela = primeiraTela
         self.framesTelaPrincipal()
-        #self.widgetsTelaPrincipal()
+        self.widgetsTelaPrincipal()
         primeiraTela.mainloop()
 
     def framesTelaPrincipal(self):
         self.frameVertical = atk.Frame3d(self.primeiraTela, bg='#2F4F4F')
-        self.frameVertical.place(relx=0, rely=0.22, relwidth=0.23, relheight=0.78)
+        self.frameVertical.place(relx=0, rely=0.225, relwidth=0.23, relheight=0.78)
         self.frameHorizontal = atk.Frame3d(self.primeiraTela, bg='#2F4F4F')
-        self.frameHorizontal.place(relx=0, rely=0, relwidth=0.998, relheight=0.23)
+        self.frameHorizontal.place(relx=0, rely=0, relwidth=1.002, relheight=0.23)
         #self.frameQuadrado = Frame(self.primeiraTela, borderwidth=1, relief="solid")
         #self.frameQuadrado.place(relx=0.004, rely=0.004, relwidth=0.223, relheight=0.221)
+        self.frameTela = atk.Frame3d(self.primeiraTela, bg='#9099A2')
+        self.frameTela.place(relx=0.23, rely=0.2299, relwidth=0.771, relheight=0.776)
 
-    #def widgetsTelaPrincipal(self):
+    def widgetsTelaPrincipal(self):
         #Criação dos texto.
-        ##Label(self.primeiraTela, text="Verificar sinal das ONU's").pack()
+
         #Criação das saídas dos dados.
         #Criação dos botões.
-        ##Button(self.primeiraTela, text="Verificar sinais das ONU", command=self.telaSinal).pack()
+        atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#233237", command=self.telaSinal).place(relx=0.13, rely=0.04, relwidth=0.73, relheight=0.1)
+        atk.Button3d(self.frameVertical, text="SINAL DA ONU", bg="#233237", command=self.telaSinal).place(relx=0.13, rely=0.15, relwidth=0.73, relheight=0.1)
+        atk.Button3d(self.frameVertical, text="VLAN's UPLINK", bg="#233237", command=self.telaSinal).place(relx=0.13, rely=0.26, relwidth=0.73, relheight=0.1)
         #Criação das entradas dos dados.
 
     def telaSinal(self):
