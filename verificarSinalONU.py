@@ -116,7 +116,7 @@ class Relatorios():
 class Interface():
     def telaPrincipal(self):
         primeiraTela = Tk()
-        primeiraTela.geometry("750x550+350+110")
+        primeiraTela.geometry("750x550+300+80")
         primeiraTela.iconbitmap(default="icone\\logo.ico")
         primeiraTela.title("BRCOM - OLT Digistar")
         primeiraTela.configure(background="#2F4F4F")
@@ -138,25 +138,32 @@ class Interface():
 
     def widgetsTelaPrincipal(self):
         #Criação dos texto.
-
         #Criação das saídas dos dados.
         #Criação dos botões.
-        atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#233237", command=self.telaSinal).place(relx=0.13, rely=0.04, relwidth=0.73, relheight=0.1)
-        atk.Button3d(self.frameVertical, text="SINAL DA ONU", bg="#233237", command=self.telaSinal).place(relx=0.13, rely=0.15, relwidth=0.73, relheight=0.1)
-        atk.Button3d(self.frameVertical, text="VLAN's UPLINK", bg="#233237", command=self.telaSinal).place(relx=0.13, rely=0.26, relwidth=0.73, relheight=0.1)
+        self.botaoProvisionarOnu = atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#233237", command=self.telaSinal)
+        self.botaoProvisionarOnu.place(relx=0.13, rely=0.04, relwidth=0.73, relheight=0.1)
+        self.botaoSinal = atk.Button3d(self.frameVertical, text="SINAL DA ONU", bg="#233237", command=self.telaSinal)
+        self.botaoSinal.place(relx=0.13, rely=0.15, relwidth=0.73, relheight=0.1)
+        self.botaoVlan = atk.Button3d(self.frameVertical, text="VLAN's UPLINK", bg="#233237", command=self.telaSinal)
+        self.botaoVlan.place(relx=0.13, rely=0.26, relwidth=0.73, relheight=0.1)
         #Criação das entradas dos dados.
+        #Balão de mensagem.
+        atk.tooltip(self.botaoProvisionarOnu, "Autoriza ONU em modo bridge")
+        atk.tooltip(self.botaoSinal, "Verifica os sinais das onu")
+        atk.tooltip(self.botaoVlan, "Verifica todas as vlan criadas")
 
     def telaSinal(self):
-        segundaTela = Tk()
-        segundaTela.geometry("500x450+350+110")
-        #segundaTela.iconbitmap(default="icone\\logo.ico")
-        segundaTela.title("Sinais das ONU's")
-        segundaTela.configure(background="#2F4F4F") #"gray20" and "#2F4F4F"
-        #segundaTela.resizable(width=False, height=False)
-        self.segundaTela = segundaTela
-        self.framesTelaSinal()
+        self.segundaTela = Toplevel() #Deixa essa janela como prioridade.
+        self.segundaTela.geometry("575x515+474+114")
+        self.segundaTela.iconbitmap(default="icone\\logo.ico")
+        self.segundaTela.title("Sinais das ONU's")
+        self.segundaTela.configure(background="#2F4F4F") #"gray20" and "#2F4F4F"
+        self.segundaTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
+        self.segundaTela.focus_force() #Força o foco nessa janela.
+        self.segundaTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
+        #self.segundaTela.resizable(width=False, height=False)
+        #self.framesTelaSinal()
         self.widgetsTelaSinal()
-        segundaTela.mainloop()
     
     def framesTelaSinal(self):
         self.primeiroFrame = atk.Frame3d(self.segundaTela, bg='#2F4F4F')
@@ -167,29 +174,29 @@ class Interface():
     def widgetsTelaSinal(self):
         #*Primeiro Frame
         #Criação dos texto.
-        Label(self.primeiroFrame, text="Informe a porta e posição da ONU", font="verdana 13 bold", background="#2F4F4F").place(relx=0.17, rely=0.04)
+        Label(self.segundaTela, text="Informe a porta e posição da ONU", font="verdana 13 bold", background="#2F4F4F").place(relx=0.17, rely=0.04)
         #Criação das saídas dos dados.
-        self.primeiraOnu = Label(self.primeiroFrame, text="", font="arial 9 bold", anchor=N, background="#2F4F4F")
+        self.primeiraOnu = Label(self.segundaTela, text="", font="arial 9 bold", anchor=N, background="#2F4F4F")
         self.primeiraOnu.place(relx=0.12, rely=0.55, relwidth=0.76, relheight=0.4)
         #Criação dos botões.
-        self.botaoVerificar = atk.Button3d(self.primeiroFrame, text="Verificar sinal", command=self.verificarSinal)
+        self.botaoVerificar = Button(self.segundaTela, text="Verificar sinal", command=self.verificarSinal)
         self.botaoVerificar.place(relx=0.4, rely=0.34, relwidth=0.19, relheight=0.14)
         #Criação das entradas dos dados.
-        self.entradaPosicaoOnu = EntPlaceHold(self.primeiroFrame, 'Ex: 2/4')
+        self.entradaPosicaoOnu = EntPlaceHold(self.segundaTela, 'Ex: 2/4')
         self.entradaPosicaoOnu.place(relx=0.45, rely=0.18, relwidth=0.09, relheight=0.08)
         #Balão de mensagem.
         atk.tooltip(self.botaoVerificar, "Verifica o sinal da ONU informada acima.")
 
         #*Segundo Frame
         #Criação dos texto.
-        Label(self.segundoFrame, text="Relatório", font="verdana 13 bold", background="#2F4F4F").place(relx=0.42, rely=0.07)
-        Label(self.segundoFrame, text="Se preferir, gere um PDF com os sinais de todas as ONU's.", 
+        Label(self.segundaTela, text="Relatório", font="verdana 13 bold", background="#2F4F4F").place(relx=0.42, rely=0.07)
+        Label(self.segundaTela, text="Se preferir, gere um PDF com os sinais de todas as ONU's.", 
         font="calibre 9", background="#2F4F4F").place(relx=0.16, rely=0.29)
         #Criação das saídas dos dados.
         #Criação dos botões.
-        atk.Button3d(self.segundoFrame, text="Gerar", command=self.carregarBarraProgresso).place(relx=0.44, rely=0.47, relwidth=0.14, relheight=0.22)
+        #atk.Button3d(self.segundoFrame, text="Gerar", command=self.carregarBarraProgresso).place(relx=0.44, rely=0.47, relwidth=0.14, relheight=0.22)
         #Barra de progresso.
-        self.barraProgresso = ttk.Progressbar(self.segundoFrame, orient=HORIZONTAL, length=300, mode='determinate')
+        self.barraProgresso = ttk.Progressbar(self.segundaTela, orient=HORIZONTAL, length=300, mode='determinate')
         self.barraProgresso.place(relx=0.2, rely=0.75)
 
 class Main(Comandos, Interface, Relatorios):
