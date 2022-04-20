@@ -1,9 +1,10 @@
 import telnetlib
 from tkinter import *
-from tkinter import ttk
-from tkinter import font
-from awesometkinter import *
+from tkinter import ttk, messagebox
+#from awesometkinter import *
 import awesometkinter as atk
+import tkinter.filedialog #Selecionar diretório.
+#import tkinter.scrolledtext as tkst
 import time
 #Imports necessários para gerar um arquivo pdf.
 from reportlab.pdfgen import canvas
@@ -31,20 +32,22 @@ class Comandos():
         comando = "onu status {}\n".format(posicao).encode()
         self.tn.write(b""+comando)
         saida = self.tn.read_until(b'#').decode()
-        self.primeiraOnu["text"] = "{}".format(str(saida))
+        self.saidaSinalOnu["text"] = "{}".format(str(saida))
 
     def carregarBarraProgresso(self):
+        self.barraProgresso.stop()
         for x in range(20):
-            self.barraProgresso['value'] +=5
+            self.barraProgresso['value'] += 5
             self.segundaTela.update_idletasks()
             time.sleep(0.09)
-        #self.barraProgresso.stop()
         self.geraRelatCliente()
 
+    def selecionarDiretorio(self):
+        opcoes = {}
+        self.nomeDiretorio= tkinter.filedialog.askdirectory(**opcoes)
+        self.saidaDiretorio["text"] = self.nomeDiretorio
 
-#Deixa um texto dentro da entry, por enquanto sóe está sendo utilizado na tela de sinal.
-
-class EntPlaceHold(Entry):
+class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto só está sendo utilizado na tela de sinal.
     def __init__(self, master=None, placeholder= 'PLACEHOLDER', color= 'gray'):
         super().__init__(master)
 
@@ -68,55 +71,54 @@ class EntPlaceHold(Entry):
             self.put_placeholder()
 
 class Relatorios():
-    def printCliente(self):
-        webbrowser.open("ONU Digistar.pdf")
+    def printPdf(self):   
+        webbrowser.open(self.nomeDiretorio+"\\ONU Digistar.pdf")
 
     def geraRelatCliente(self):
-        self.c = canvas.Canvas("ONU Digistar.pdf")
-        self.c.setFont("Helvetica-Bold", 24)
-        self.c.drawString(200, 790, "Sinais das ONU's")
-        porta = 1
-        onu = 1
-        pularLinhaTexto = 733
-        pularLinhaTraço = 720
-        self.c.setFont("Helvetica", 10)
-        while onu < 17: #onu < 17:
-            lista2= ['d']
-            comando = "onu status {}/{}\n".format(porta,onu).encode()
-            self.tn.write(b""+comando)
-            self.saida = str(self.tn.read_until(b'#').decode())
-            #print(len(self.saida))
-            #print(self.saida)
-            if len(self.saida) == 186 or len(self.saida) == 191:
-                lista = self.saida.split("N", 3)
-                texto = str(lista[0] + lista[1] + lista[2])
-                lista2 = texto.split("\r", 1)
-                lista.append(texto.split("d", 2))
-                texto2 = str(lista[2])
-                lista = texto2.split("I", 1)
-                self.c.drawString(25, pularLinhaTexto, lista2[0])
-                self.c.rect(25, pularLinhaTraço, 545, 1, fill= True, stroke=True)
-                self.c.drawString(115, pularLinhaTexto, lista[0])
-                #time.sleep(5)
-                pularLinhaTexto = pularLinhaTexto - 30
-                pularLinhaTraço = pularLinhaTraço - 30
-                onu = onu + 1
-            else:
-                onu = onu + 1
-            if onu == 17 and porta < 8: #onu == 17 and porta < 8:
-                porta = porta + 1
-                onu = 1
-
-        #self.c.rect(20, 720, 550, 200, fill= False, stroke=True)
-        self.c.showPage()
-        self.c.showPage()
-        self.c.save()
-        self.printCliente()
+        try:
+            self.c = canvas.Canvas(self.nomeDiretorio+"\\ONU Digistar.pdf")
+            self.c.setFont("Helvetica-Bold", 24)
+            self.c.drawString(200, 790, "Sinais das ONU's")
+            porta = 1
+            onu = 1
+            pularLinhaTexto = 733
+            pularLinhaTraço = 720
+            self.c.setFont("Helvetica", 10)
+            while onu < 17: #onu < 17:
+                lista2= ['d']
+                comando = "onu status {}/{}\n".format(porta,onu).encode()
+                self.tn.write(b""+comando)
+                self.saida = str(self.tn.read_until(b'#').decode())
+                if len(self.saida) == 186 or len(self.saida) == 191:
+                    lista = self.saida.split("N", 3)
+                    texto = str(lista[0] + lista[1] + lista[2])
+                    lista2 = texto.split("\r", 1)
+                    lista.append(texto.split("d", 2))
+                    texto2 = str(lista[2])
+                    lista = texto2.split("I", 1)
+                    self.c.drawString(25, pularLinhaTexto, lista2[0])
+                    self.c.rect(25, pularLinhaTraço, 545, 1, fill= True, stroke=True)
+                    self.c.drawString(115, pularLinhaTexto, lista[0])
+                    pularLinhaTexto = pularLinhaTexto - 30
+                    pularLinhaTraço = pularLinhaTraço - 30
+                    onu = onu + 1
+                else:
+                    onu = onu + 1
+                if onu == 17 and porta < 8: #onu == 17 and porta < 8:
+                    porta = porta + 1
+                    onu = 1
+            #self.c.rect(20, 720, 550, 200, fill= False, stroke=True)
+            self.c.showPage()
+            self.c.showPage()
+            self.c.save()
+            self.printPdf()
+        except:
+            messagebox.showerror(title="Erro", message="Por favor, informe o caminho do arquivo.")
 
 class Interface():
     def telaPrincipal(self):
         primeiraTela = Tk()
-        primeiraTela.geometry("750x550+300+80")
+        primeiraTela.geometry("950x600+210+60")
         primeiraTela.iconbitmap(default="icone\\logo.ico")
         primeiraTela.title("BRCOM - OLT Digistar")
         primeiraTela.configure(background="#2F4F4F")
@@ -140,71 +142,102 @@ class Interface():
         #Criação dos texto.
         #Criação das saídas dos dados.
         #Criação dos botões.
-        self.botaoProvisionarOnu = atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#233237", command=self.telaSinal)
-        self.botaoProvisionarOnu.place(relx=0.13, rely=0.04, relwidth=0.73, relheight=0.1)
-        self.botaoSinal = atk.Button3d(self.frameVertical, text="SINAL DA ONU", bg="#233237", command=self.telaSinal)
-        self.botaoSinal.place(relx=0.13, rely=0.15, relwidth=0.73, relheight=0.1)
-        self.botaoVlan = atk.Button3d(self.frameVertical, text="VLAN's UPLINK", bg="#233237", command=self.telaSinal)
-        self.botaoVlan.place(relx=0.13, rely=0.26, relwidth=0.73, relheight=0.1)
+        botaoProvisionarOnu = atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#233237", command=self.telaSinal)
+        botaoProvisionarOnu.place(relx=0.13, rely=0.04, relwidth=0.73, relheight=0.1)
+        botaoSinal = atk.Button3d(self.frameVertical, text="SINAL DA ONU", bg="#233237", command=self.telaSinal)
+        botaoSinal.place(relx=0.13, rely=0.15, relwidth=0.73, relheight=0.1)
+        botaoVlan = atk.Button3d(self.frameVertical, text="VLAN's UPLINK", bg="#233237", command=self.telaVlan)
+        botaoVlan.place(relx=0.13, rely=0.26, relwidth=0.73, relheight=0.1)
         #Criação das entradas dos dados.
         #Balão de mensagem.
-        atk.tooltip(self.botaoProvisionarOnu, "Autoriza ONU em modo bridge")
-        atk.tooltip(self.botaoSinal, "Verifica os sinais das onu")
-        atk.tooltip(self.botaoVlan, "Verifica todas as vlan criadas")
+        atk.tooltip(botaoProvisionarOnu, "Autoriza ONU em modo bridge")
+        atk.tooltip(botaoSinal, "Verifica os sinais das onu")
+        atk.tooltip(botaoVlan, "Verifica todas as vlan criadas")
 
     def telaSinal(self):
         self.segundaTela = Toplevel() #Deixa essa janela como prioridade.
-        self.segundaTela.geometry("575x515+474+114")
+        self.segundaTela.geometry("730x599+430+60")
         self.segundaTela.iconbitmap(default="icone\\logo.ico")
         self.segundaTela.title("Sinais das ONU's")
-        self.segundaTela.configure(background="#2F4F4F") #"gray20" and "#2F4F4F"
+        self.segundaTela.configure(background="#9099A2") #"gray20" and "#2F4F4F"
+        self.segundaTela.resizable(width=False, height=False)
         self.segundaTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
         self.segundaTela.focus_force() #Força o foco nessa janela.
         self.segundaTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
-        #self.segundaTela.resizable(width=False, height=False)
-        #self.framesTelaSinal()
+        self.framesTelaSinal()
         self.widgetsTelaSinal()
     
     def framesTelaSinal(self):
-        self.primeiroFrame = atk.Frame3d(self.segundaTela, bg='#2F4F4F')
-        self.primeiroFrame.place(relx=0.005, rely=0.005, relwidth=0.988, relheight=0.6)
-        self.segundoFrame = atk.Frame3d(self.segundaTela, bg='#2F4F4F')
-        self.segundoFrame.place(relx=0.005, rely=0.6, relwidth=0.988, relheight=0.4)
+        self.esquerdaFrameSinal = Frame(self.segundaTela, borderwidth=2, relief="solid", bg='#233237')
+        self.esquerdaFrameSinal.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
+        self.direitaFrameSinal = Frame(self.segundaTela, borderwidth=2, relief="solid", bg='#233237')
+        self.direitaFrameSinal.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
+        self.linhaFrameSinal = Frame(self.segundaTela, borderwidth=5, relief="solid", bg='#233237')
+        self.linhaFrameSinal.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.005)
+
 
     def widgetsTelaSinal(self):
         #*Primeiro Frame
         #Criação dos texto.
-        Label(self.segundaTela, text="Informe a porta e posição da ONU", font="verdana 13 bold", background="#2F4F4F").place(relx=0.17, rely=0.04)
-        #Criação das saídas dos dados.
-        self.primeiraOnu = Label(self.segundaTela, text="", font="arial 9 bold", anchor=N, background="#2F4F4F")
-        self.primeiraOnu.place(relx=0.12, rely=0.55, relwidth=0.76, relheight=0.4)
-        #Criação dos botões.
-        self.botaoVerificar = Button(self.segundaTela, text="Verificar sinal", command=self.verificarSinal)
-        self.botaoVerificar.place(relx=0.4, rely=0.34, relwidth=0.19, relheight=0.14)
+        Label(self.segundaTela, text="Informe a porta e posição da ONU", font="verdana 14 bold", background="#9099A2").place(relx=0.243, rely=0.03)
         #Criação das entradas dos dados.
         self.entradaPosicaoOnu = EntPlaceHold(self.segundaTela, 'Ex: 2/4')
-        self.entradaPosicaoOnu.place(relx=0.45, rely=0.18, relwidth=0.09, relheight=0.08)
-        #Balão de mensagem.
-        atk.tooltip(self.botaoVerificar, "Verifica o sinal da ONU informada acima.")
-
-        #*Segundo Frame
-        #Criação dos texto.
-        Label(self.segundaTela, text="Relatório", font="verdana 13 bold", background="#2F4F4F").place(relx=0.42, rely=0.07)
-        Label(self.segundaTela, text="Se preferir, gere um PDF com os sinais de todas as ONU's.", 
-        font="calibre 9", background="#2F4F4F").place(relx=0.16, rely=0.29)
-        #Criação das saídas dos dados.
+        self.entradaPosicaoOnu.place(relx=0.475, rely=0.11, relwidth=0.055, relheight=0.043)
         #Criação dos botões.
-        #atk.Button3d(self.segundoFrame, text="Gerar", command=self.carregarBarraProgresso).place(relx=0.44, rely=0.47, relwidth=0.14, relheight=0.22)
+        botaoVerificar = atk.Button3d(self.segundaTela, text="Verificar sinal", command=self.verificarSinal)
+        botaoVerificar.place(relx=0.439, rely=0.188, relwidth=0.13, relheight=0.075)
+        #Criação das saídas dos dados.
+        self.saidaSinalOnu = Label(self.segundaTela, text="", font="arial 9 bold", anchor=N, background="#9099A2")#2F4F4F
+        self.saidaSinalOnu.place(relx=0.18, rely=0.28, relwidth=0.65, relheight=0.2)
+        #Balão de mensagem.
+        atk.tooltip(botaoVerificar, "Verifica o sinal da ONU informada acima")
+
+        #Criação dos texto.
+        #Label(self.segundaTela, text="Relatório", font="verdana 13 bold", background="#2F4F4F").place(relx=0.42, rely=0.07)
+        Label(self.segundaTela, text="Gerar PDF com os sinais de todas as ONU's", font="verdana 13 bold", background="#9099A2").place(relx=0.21, rely=0.535)
+        Label(self.segundaTela, text="Defina a pasta que deseja salvar o arquivo", font="arial 8", background="#9099A2").place(relx=0.271, rely=0.625)
+        Label(self.segundaTela, text="0%", font="arial 6", background="#9099A2").place(relx=0.235, rely=0.942)
+        Label(self.segundaTela, text="100%", font="arial 6", background="#9099A2", foreground="green").place(relx=0.73, rely=0.942)
+        #Criação das saídas dos dados.
+        self.saidaDiretorio = Label(self.segundaTela, text="", font="arial 8", background="#E9C893")
+        self.saidaDiretorio.place(relx=0.275, rely=0.655, relwidth=0.37)
+        #Criação dos botões.
+        botaoDefinirDiretorio = atk.Button3d(self.segundaTela, text="Definir", command=self.selecionarDiretorio)
+        botaoDefinirDiretorio.place(relx=0.645, rely=0.64, relwidth=0.09, relheight=0.059)
+        botaoGerarPdf = atk.Button3d(self.segundaTela, text="Gerar PDF", command=self.carregarBarraProgresso)
+        botaoGerarPdf.place(relx=0.44, rely=0.78, relwidth=0.12, relheight=0.075)
         #Barra de progresso.
-        self.barraProgresso = ttk.Progressbar(self.segundaTela, orient=HORIZONTAL, length=300, mode='determinate')
-        self.barraProgresso.place(relx=0.2, rely=0.75)
+        self.barraProgresso = ttk.Progressbar(self.segundaTela, orient=HORIZONTAL, length=380, mode='determinate')
+        self.barraProgresso.place(relx=0.24, rely=0.91)
+        #Balão de mensagem.
+        atk.tooltip(botaoDefinirDiretorio, "Selecione o diretório que deseja salvar o arquivo")
+        atk.tooltip(botaoGerarPdf, 'Gera um arquivo com nome padrão de "ONU Digistar.pdf"')
+
+    def telaVlan(self):
+        self.terceiraTela = Toplevel() #Deixa essa janela como prioridade.
+        self.terceiraTela.geometry("730x599+430+60")
+        self.terceiraTela.iconbitmap(default="icone\\logo.ico")
+        self.terceiraTela.title("Vlan's bridge/...")
+        self.terceiraTela.configure(background="#9099A2") #"gray20" and "#2F4F4F"
+        self.terceiraTela.resizable(width=False, height=False)
+        self.terceiraTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
+        self.terceiraTela.focus_force() #Força o foco nessa janela.
+        self.terceiraTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
+        self.framesTelaVlan()
+
+    def framesTelaVlan(self):
+        self.esquerdaFrameVlan = Frame(self.terceiraTela, borderwidth=2, relief="solid", bg='#233237')
+        self.esquerdaFrameVlan.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
+        self.direitaFrameVlan = Frame(self.terceiraTela, borderwidth=2, relief="solid", bg='#233237')
+        self.direitaFrameVlan.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
+        self.linhaFrameVlan = Frame(self.terceiraTela, borderwidth=5, relief="solid", bg='#233237')
+        self.linhaFrameVlan.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.005)
 
 class Main(Comandos, Interface, Relatorios):
     def __init__(self):
         #self.conectar()
         #self.login()
         self.telaPrincipal()
-        #self.verificarSinal()
         #self.telaSinal()
 
 Main()
