@@ -24,8 +24,9 @@ class Comandos():
         self.tn.write(b"digistar\n")
         self.tn.write(b"enable\n")
         self.tn.write(b"digistar\n")
-        saida = self.tn.read_until(b'#').decode()
+        saida = self.tn.read_until(b'#').decode() 
         print(saida)
+        self.tn.write(b"session-timeout 0\n")
 
     def verificarSinal(self):
         posicao = self.entradaPosicaoOnu.get()
@@ -50,12 +51,18 @@ class Comandos():
     def procurarOnu(self):
         self.tn.write(b"onu show discovered\n")
         saida = self.tn.read_until(b'#').decode()
-        lista = saida.split(" ", 11)
-        self.saidaMacOnu["text"] = lista[11]
+        self.lista = saida.split(" ", 11)
+        self.lista = self.lista[11].split("\r", 1)
+        self.saidaMacOnu["text"] = self.lista[0]
+
+    def copiarMac(self):
+        self.quartaTela.clipboard_clear()
+        self.quartaTela.clipboard_append(self.lista[0])
+        self.quartaTela.update() #Salva o Ctrl+C mesmo se o programa fecha
 
 class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto só está sendo utilizado na tela de sinal.
     def __init__(self, master=None, placeholder= 'PLACEHOLDER', color= 'gray'):
-        super()._init_(master)
+        super().__init__(master)
 
         self.placeholder = placeholder
         self.placeholder_color = color
@@ -181,7 +188,6 @@ class Interface():
         self.linhaFrameSinal = Frame(self.segundaTela, borderwidth=5, relief="solid", bg='#233237')
         self.linhaFrameSinal.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.005)
 
-
     def widgetsTelaSinal(self):
         #*Primeiro Frame
         #Criação dos texto.
@@ -269,11 +275,13 @@ class Interface():
         Label(self.quartaTela, text="1º", font="arial 9 bold", background="#9099A2").place(relx=0.17, rely=0.097)
         #Criação das saídas dos dados.
         self.saidaMacOnu = Label(self.primeiroPassoFrame, text="", background="#fff", anchor=N)
-        self.saidaMacOnu.place(relx=0.378, rely=0.53, relwidth=0.241, relheight=0.12)
+        self.saidaMacOnu.place(relx=0.378, rely=0.53, relwidth=0.241)
+        #, relheight=0.12
         #Criação dos botões.
         botaoProcurarOnu = atk.Button3d(self.primeiroPassoFrame, text="Procurar", command=self.procurarOnu)
         botaoProcurarOnu.place(relx=0.426, rely=0.23, relwidth=0.14, relheight=0.22)
-
+        self.botaoCopiarMac = Button(self.primeiroPassoFrame, text="Copiar", font="arial 7 bold", command=self.copiarMac)
+        self.botaoCopiarMac.place(relx=0.625, rely=0.5286, relwidth=0.08, relheight=0.13)
         #Criação das entradas dos dados.
         #Balão de mensagem.
         atk.tooltip(botaoProcurarOnu, "Procura ONU a serem provisionadas")
