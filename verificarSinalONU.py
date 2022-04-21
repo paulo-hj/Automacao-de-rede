@@ -90,10 +90,10 @@ class Comandos():
         self.saidaPortaOlt["text"] = listaPorta[0]
 
     def provisionarOnu(self):
-        listaProvisionarOnu = self.portaAndPosicaoOnu.split(" ", 1)
-        teste1 = listaProvisionarOnu[0]
-        teste2 = self.listaOnu[0]
-        comando = "onu set {0} {1}\n".format(teste1, teste2).encode()
+        self.tn.write(b"onu set ?\n")
+        saidaVerificarPorta = self.tn.read_until(b'#').decode()
+        listaPorta = saidaVerificarPorta.split(" ", 11) #Transforma o retorno do comando em uma lista para que seja pego somente a parte da porta e posição da ONU.
+        comando = "onu set {0} {1} \n".format(listaPorta[10], self.listaMacOnu[0]).encode()
         self.tn.write(b""+comando)
         saidaProvisionarOnu = self.tn.read_until(b'#').decode()
         print(saidaProvisionarOnu)
