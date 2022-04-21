@@ -47,8 +47,8 @@ class Comandos():
 
     def selecionarDiretorio(self):
         opcoes = {}
-        nomeDiretorio= tkinter.filedialog.askdirectory(**opcoes)
-        self.saidaDiretorio["text"] = nomeDiretorio
+        self.nomeDiretorio= tkinter.filedialog.askdirectory(**opcoes)
+        self.saidaDiretorio["text"] = self.nomeDiretorio
 
     def procurarOnu(self):
         try:
@@ -365,8 +365,8 @@ class Interface():
 
 class Main(Conexao, Comandos, Interface, Relatorios):
     def __init__(self):
-        #self.conectar()
-        #self.login()
+        self.conectar()
+        self.login()
         self.telaPrincipal()
         #self.telaSinal()
 
