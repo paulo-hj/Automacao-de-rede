@@ -24,9 +24,10 @@ class Comandos():
         self.tn.write(b"digistar\n")
         self.tn.write(b"enable\n")
         self.tn.write(b"digistar\n")
-        saida = self.tn.read_until(b'#').decode() 
-        print(saida)
         self.tn.write(b"session-timeout 0\n")
+        saida = self.tn.read_until(b'#').decode()
+        saida = self.tn.read_until(b'#').decode()
+        print(saida)
 
     def verificarSinal(self):
         posicao = self.entradaPosicaoOnu.get()
@@ -51,14 +52,17 @@ class Comandos():
     def procurarOnu(self):
         self.tn.write(b"onu show discovered\n")
         saida = self.tn.read_until(b'#').decode()
-        self.lista = saida.split(" ", 11)
-        self.lista = self.lista[11].split("\r", 1)
-        self.saidaMacOnu["text"] = self.lista[0]
+        self.listaOnu = saida.split(" ", 11)
+        self.listaOnu = self.listaOnu[11].split("\r", 1)
+        self.saidaMacOnu["text"] = self.listaOnu[0]
 
     def copiarMac(self):
-        self.quartaTela.clipboard_clear()
-        self.quartaTela.clipboard_append(self.lista[0])
-        self.quartaTela.update() #Salva o Ctrl+C mesmo se o programa fecha
+        try:
+            self.quartaTela.clipboard_clear()
+            self.quartaTela.clipboard_append(self.listaOnu[0])
+            self.quartaTela.update() #Salva o Ctrl+C mesmo se o programa fecha
+        except:
+            messagebox.showerror(title="Erro", message="Nenhum MAC para ser copiado.")
 
 class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto só está sendo utilizado na tela de sinal.
     def __init__(self, master=None, placeholder= 'PLACEHOLDER', color= 'gray'):
