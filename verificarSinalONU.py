@@ -44,12 +44,18 @@ class Comandos():
 
     def selecionarDiretorio(self):
         opcoes = {}
-        self.nomeDiretorio= tkinter.filedialog.askdirectory(**opcoes)
-        self.saidaDiretorio["text"] = self.nomeDiretorio
+        nomeDiretorio= tkinter.filedialog.askdirectory(**opcoes)
+        self.saidaDiretorio["text"] = nomeDiretorio
+
+    def procurarOnu(self):
+        self.tn.write(b"onu show discovered\n")
+        saida = self.tn.read_until(b'#').decode()
+        lista = saida.split(" ", 11)
+        self.saidaMacOnu["text"] = lista[11]
 
 class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto só está sendo utilizado na tela de sinal.
     def __init__(self, master=None, placeholder= 'PLACEHOLDER', color= 'gray'):
-        super().__init__(master)
+        super()._init_(master)
 
         self.placeholder = placeholder
         self.placeholder_color = color
@@ -88,9 +94,9 @@ class Relatorios():
                 lista2= ['d']
                 comando = "onu status {}/{}\n".format(porta,onu).encode()
                 self.tn.write(b""+comando)
-                self.saida = str(self.tn.read_until(b'#').decode())
-                if len(self.saida) == 186 or len(self.saida) == 191:
-                    lista = self.saida.split("N", 3)
+                saida = str(self.tn.read_until(b'#').decode())
+                if len(saida) == 186 or len(saida) == 191:
+                    lista = saida.split("N", 3)
                     texto = str(lista[0] + lista[1] + lista[2])
                     lista2 = texto.split("\r", 1)
                     lista.append(texto.split("d", 2))
@@ -142,17 +148,17 @@ class Interface():
         #Criação dos texto.
         #Criação das saídas dos dados.
         #Criação dos botões.
-        botaoProvisionarOnu = atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#233237", command=self.telaSinal)
-        botaoProvisionarOnu.place(relx=0.13, rely=0.04, relwidth=0.73, relheight=0.1)
-        botaoSinal = atk.Button3d(self.frameVertical, text="SINAL DA ONU", bg="#233237", command=self.telaSinal)
-        botaoSinal.place(relx=0.13, rely=0.15, relwidth=0.73, relheight=0.1)
-        botaoVlan = atk.Button3d(self.frameVertical, text="VLAN's UPLINK", bg="#233237", command=self.telaVlan)
-        botaoVlan.place(relx=0.13, rely=0.26, relwidth=0.73, relheight=0.1)
+        botaoTelaProvisionarOnu = atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#233237", command=self.telaProvisionar)
+        botaoTelaProvisionarOnu.place(relx=0.13, rely=0.04, relwidth=0.73, relheight=0.1)
+        botaoTelaSinal = atk.Button3d(self.frameVertical, text="SINAL DA ONU", bg="#233237", command=self.telaSinal)
+        botaoTelaSinal.place(relx=0.13, rely=0.15, relwidth=0.73, relheight=0.1)
+        botaoTelaVlan = atk.Button3d(self.frameVertical, text="VLAN's UPLINK", bg="#233237", command=self.telaVlan)
+        botaoTelaVlan.place(relx=0.13, rely=0.26, relwidth=0.73, relheight=0.1)
         #Criação das entradas dos dados.
         #Balão de mensagem.
-        atk.tooltip(botaoProvisionarOnu, "Autoriza ONU em modo bridge")
-        atk.tooltip(botaoSinal, "Verifica os sinais das onu")
-        atk.tooltip(botaoVlan, "Verifica todas as vlan criadas")
+        atk.tooltip(botaoTelaProvisionarOnu, "Autoriza ONU em modo bridge")
+        atk.tooltip(botaoTelaSinal, "Verifica os sinais das onu")
+        atk.tooltip(botaoTelaVlan, "Verifica todas as vlan criadas")
 
     def telaSinal(self):
         self.segundaTela = Toplevel() #Deixa essa janela como prioridade.
@@ -233,10 +239,49 @@ class Interface():
         self.linhaFrameVlan = Frame(self.terceiraTela, borderwidth=5, relief="solid", bg='#233237')
         self.linhaFrameVlan.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.005)
 
+    def telaProvisionar(self):
+        self.quartaTela = Toplevel() #Deixa essa janela como prioridade.
+        self.quartaTela.geometry("730x599+430+60")
+        self.quartaTela.iconbitmap(default="icone\\logo.ico")
+        self.quartaTela.title("Provisionar")
+        self.quartaTela.configure(background="#9099A2") #"gray20" and "#2F4F4F"
+        self.quartaTela.resizable(width=False, height=False)
+        self.quartaTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
+        self.quartaTela.focus_force() #Força o foco nessa janela.
+        self.quartaTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
+        self.framesTelaProvisionar()
+        self.widgetsTelaProvisionar()
+
+    def framesTelaProvisionar(self):
+        self.esquerdaFrameProvisionar = Frame(self.quartaTela, borderwidth=2, relief="solid", bg='#233237')
+        self.esquerdaFrameProvisionar.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
+        self.direitaFrameProvisionar = Frame(self.quartaTela, borderwidth=2, relief="solid", bg='#233237')
+        self.direitaFrameProvisionar.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
+        self.primeiroPassoFrame = Frame(self.quartaTela, borderwidth=2, relief="solid", bg='#9099A2')
+        self.primeiroPassoFrame.place(relx=0.149, rely=0.113, relwidth=0.701, relheight=0.3)
+
+        #self.linhaFrameProvisionar = Frame(self.quartaTela, borderwidth=5, relief="solid", bg='#233237')
+        #self.linhaFrameProvisionar.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.005)
+
+    def widgetsTelaProvisionar(self):
+        #Criação dos texto.
+        Label(self.quartaTela, text="Provisionar ONU", font="verdana 14 bold", background="#9099A2").place(relx=0.375, rely=0.03)
+        Label(self.quartaTela, text="1º", font="arial 9 bold", background="#9099A2").place(relx=0.17, rely=0.097)
+        #Criação das saídas dos dados.
+        self.saidaMacOnu = Label(self.primeiroPassoFrame, text="", background="#fff", anchor=N)
+        self.saidaMacOnu.place(relx=0.378, rely=0.53, relwidth=0.241, relheight=0.12)
+        #Criação dos botões.
+        botaoProcurarOnu = atk.Button3d(self.primeiroPassoFrame, text="Procurar", command=self.procurarOnu)
+        botaoProcurarOnu.place(relx=0.426, rely=0.23, relwidth=0.14, relheight=0.22)
+
+        #Criação das entradas dos dados.
+        #Balão de mensagem.
+        atk.tooltip(botaoProcurarOnu, "Procura ONU a serem provisionadas")
+
 class Main(Comandos, Interface, Relatorios):
     def __init__(self):
-        #self.conectar()
-        #self.login()
+        self.conectar()
+        self.login()
         self.telaPrincipal()
         #self.telaSinal()
 
