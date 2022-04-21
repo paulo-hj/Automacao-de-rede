@@ -193,7 +193,7 @@ class Interface():
         #Criação dos texto.
         #Criação das saídas dos dados.
         #Criação dos botões.
-        botaoTelaProvisionarOnu = atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#233237", command=self.telaProvisionar)
+        botaoTelaProvisionarOnu = atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#233237", command=self.telaProcurarOnu)
         botaoTelaProvisionarOnu.place(relx=0.13, rely=0.04, relwidth=0.73, relheight=0.1)
         botaoTelaSinal = atk.Button3d(self.frameVertical, text="SINAL DA ONU", bg="#233237", command=self.telaSinal)
         botaoTelaSinal.place(relx=0.13, rely=0.15, relwidth=0.73, relheight=0.1)
@@ -283,31 +283,26 @@ class Interface():
         self.linhaFrameVlan = Frame(self.terceiraTela, borderwidth=5, relief="solid", bg='#233237')
         self.linhaFrameVlan.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.005)
 
-    def telaProvisionar(self):
+    def telaProcurarOnu(self):
         self.quartaTela = Toplevel() #Deixa essa janela como prioridade.
         self.quartaTela.geometry("730x599+430+60")
         self.quartaTela.iconbitmap(default="icone\\logo.ico")
-        self.quartaTela.title("Provisionar")
+        self.quartaTela.title("Provisionamento em espera")
         self.quartaTela.configure(background="#9099A2") #"gray20" and "#2F4F4F"
         self.quartaTela.resizable(width=False, height=False)
         self.quartaTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
         self.quartaTela.focus_force() #Força o foco nessa janela.
         self.quartaTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
-        self.framesTelaProvisionar()
-        self.widgetsTelaProvisionar()
+        self.framesTelaProcurarOnu()
+        self.widgetsTelaProcurarOnu()
 
-    def framesTelaProvisionar(self):
-        self.esquerdaFrameProvisionar = Frame(self.quartaTela, borderwidth=2, relief="solid", bg='#233237')
-        self.esquerdaFrameProvisionar.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        self.direitaFrameProvisionar = Frame(self.quartaTela, borderwidth=2, relief="solid", bg='#233237')
-        self.direitaFrameProvisionar.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
-        #self.primeiroPassoFrame = Frame(self.quartaTela, borderwidth=2, relief="solid", bg='#9099A2')
-        #self.primeiroPassoFrame.place(relx=0.149, rely=0.113, relwidth=0.701, relheight=0.3)
+    def framesTelaProcurarOnu(self):
+        self.esquerdaFrameProcurarOnu = Frame(self.quartaTela, borderwidth=2, relief="solid", bg='#233237')
+        self.esquerdaFrameProcurarOnu.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
+        self.direitaFrameProcurarOnu = Frame(self.quartaTela, borderwidth=2, relief="solid", bg='#233237')
+        self.direitaFrameProcurarOnu.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
 
-        #self.linhaFrameProvisionar = Frame(self.quartaTela, borderwidth=5, relief="solid", bg='#233237')
-        #self.linhaFrameProvisionar.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.005)
-
-    def widgetsTelaProvisionar(self):
+    def widgetsTelaProcurarOnu(self):
         #Criação dos texto.
         Label(self.quartaTela, text="Provisionamento em espera", font="verdana 14 bold", background="#9099A2").place(relx=0.289, rely=0.03)
         labelQuantOnu = Label(self.quartaTela, text="Quant.", font="arial 9 bold", background="#9099A2")
@@ -331,8 +326,8 @@ class Interface():
         botaoCopiarMac.place(relx=0.655, rely=0.157, relwidth=0.0528, relheight=0.0342)
         botaoLimparMac = Button(self.quartaTela, text="Limpar", font="arial 7 bold", command=self.limparTelaProvisionar)
         botaoLimparMac.place(relx=0.711, rely=0.157, relwidth=0.0528, relheight=0.0342)
-        botaoProvisionar = atk.Button3d(self.quartaTela, text="Provisionar", command=self.provisionarOnu)
-        botaoProvisionar.place(relx=0.293, rely=0.42, relwidth=0.13, relheight=0.071)
+        botaoProvisionar = atk.Button3d(self.quartaTela, text="Provisionar", command=self.telaProvisionar)
+        botaoProvisionar.place(relx=0.45, rely=0.72, relwidth=0.13, relheight=0.071)
         #Criação das entradas dos dados.
         #Balão de mensagem.
         atk.tooltip(labelQuantOnu, "Quantidade de ONU que não foram provisionadas")
@@ -343,11 +338,28 @@ class Interface():
         atk.tooltip(labelPortaOlt, "Porta na OLT que a ONU está conectada")
         atk.tooltip(botaoProvisionar, "Provisiona a ONU achada acima")
 
+    def telaProvisionar(self):
+        self.quintaTela = Toplevel() #Deixa essa janela como prioridade.
+        self.quintaTela.geometry("730x599+430+60")
+        self.quintaTela.iconbitmap(default="icone\\logo.ico")
+        self.quintaTela.title("Provisionar ONU")
+        self.quintaTela.configure(background="#9099A2")
+        self.quintaTela.resizable(width=False, height=False)
+        self.quintaTela.transient(self.quartaTela)
+        self.quintaTela.focus_force()
+        self.quintaTela.grab_set()
+        self.framesTelaProvisionar()
+
+    def framesTelaProvisionar(self):
+        self.esquerdaFrameProvisionar = Frame(self.quintaTela, borderwidth=2, relief="solid", bg='#233237')
+        self.esquerdaFrameProvisionar.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
+        self.direitaFrameProvisionar = Frame(self.quintaTela, borderwidth=2, relief="solid", bg='#233237')
+        self.direitaFrameProvisionar.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
 
 class Main(Conexao, Comandos, Interface, Relatorios):
     def __init__(self):
-        self.conectar()
-        self.login()
+        #self.conectar()
+        #self.login()
         self.telaPrincipal()
         #self.telaSinal()
 
