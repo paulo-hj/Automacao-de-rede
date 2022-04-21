@@ -74,8 +74,8 @@ class Comandos():
         except:
             messagebox.showerror(title="Erro", message="Nenhum MAC para ser copiado.")
 
-    def limparTelaProvisionar(self):
-        self.widgetsTelaProvisionar()
+    def limparTelaProcurarOnu(self):
+        self.widgetsTelaProcurarOnu()
 
     def verificarPorta(self):
         #saida = ""
@@ -305,36 +305,34 @@ class Interface():
     def widgetsTelaProcurarOnu(self):
         #Criação dos texto.
         Label(self.quartaTela, text="Provisionamento em espera", font="verdana 14 bold", background="#9099A2").place(relx=0.289, rely=0.03)
-        labelQuantOnu = Label(self.quartaTela, text="Quant.", font="arial 9 bold", background="#9099A2")
-        labelQuantOnu.place(relx=0.435, rely=0.117)
+        labelQuantOnu = Label(self.quartaTela, text="Quant.", font="arial 10 bold", background="#9099A2")
+        labelQuantOnu.place(relx=0.36, rely=0.265)
         labelPortaOlt = Label(self.quartaTela, text="Porta na OLT", font="arial 9 bold", background="#9099A2")
-        labelPortaOlt.place(relx=0.555, rely=0.117)
+        labelPortaOlt.place(relx=0.486, rely=0.265)
         labelMac = Label(self.quartaTela, text="MAC", font="arial 9 bold", background="#9099A2")
-        labelMac.place(relx=0.442, rely=0.158)
+        labelMac.place(relx=0.379, rely=0.326)
         #Criação das saídas dos dados.
         self.saidaQuantOnu = Label(self.quartaTela, text="", background="#fff", anchor=N)
-        self.saidaQuantOnu.place(relx=0.5, rely=0.117, relwidth=0.035, relheight=0.033)
-        self.saidaMacOnu = Label(self.quartaTela, text="", background="#fff", anchor=N)
-        self.saidaMacOnu.place(relx=0.5, rely=0.158, relwidth=0.15, relheight=0.033)
+        self.saidaQuantOnu.place(relx=0.429, rely=0.261, relwidth=0.035, relheight=0.031)
         self.saidaPortaOlt = Label(self.quartaTela, text="", background="#fff", anchor=N)
-        self.saidaPortaOlt.place(relx=0.67, rely=0.117, relwidth=0.035, relheight=0.033)
-        #, relheight=0.12
+        self.saidaPortaOlt.place(relx=0.6, rely=0.259, relwidth=0.035, relheight=0.031)
+        self.saidaMacOnu = Label(self.quartaTela, text="", background="#fff", anchor=N)
+        self.saidaMacOnu.place(relx=0.429, rely=0.321, relwidth=0.15, relheight=0.031)
         #Criação dos botões.
         botaoProcurarOnu = atk.Button3d(self.quartaTela, text="Procurar", command=self.procurarOnu)
-        botaoProcurarOnu.place(relx=0.293, rely=0.12, relwidth=0.13, relheight=0.071)
+        botaoProcurarOnu.place(relx=0.451, rely=0.147, relwidth=0.1, relheight=0.065)
         botaoCopiarMac = Button(self.quartaTela, text="Copiar", font="arial 7 bold", command=self.copiarMac)
-        botaoCopiarMac.place(relx=0.655, rely=0.157, relwidth=0.0528, relheight=0.0342)
-        botaoLimparMac = Button(self.quartaTela, text="Limpar", font="arial 7 bold", command=self.limparTelaProvisionar)
-        botaoLimparMac.place(relx=0.711, rely=0.157, relwidth=0.0528, relheight=0.0342)
-        botaoProvisionar = atk.Button3d(self.quartaTela, text="Provisionar", command=self.telaProvisionar)
-        botaoProvisionar.place(relx=0.45, rely=0.72, relwidth=0.13, relheight=0.071)
-        #Criação das entradas dos dados.
+        botaoCopiarMac.place(relx=0.586, rely=0.32, relwidth=0.0528, relheight=0.0341)
+        botaoLimparMac = Button(self.quartaTela, text="Limpar", font="arial 7 bold", command=self.limparTelaProcurarOnu)
+        botaoLimparMac.place(relx=0.588, rely=0.439, relwidth=0.0528, relheight=0.0342)
+        botaoProvisionar = atk.Button3d(self.quartaTela, text="Provisionar", bg="#2F4F4F", command=self.telaProvisionar)
+        botaoProvisionar.place(relx=0.437, rely=0.42, relwidth=0.13, relheight=0.071)
         #Balão de mensagem.
         atk.tooltip(labelQuantOnu, "Quantidade de ONU que não foram provisionadas")
         atk.tooltip(labelMac, "MAC da ONU")
         atk.tooltip(botaoProcurarOnu, "Procura ONU que não foram provisionadas")
-        atk.tooltip(botaoCopiarMac, "Cópia o MAC da ONU achada")
-        atk.tooltip(botaoLimparMac, "Limpa campos de quantidade e MAC")
+        atk.tooltip(botaoCopiarMac, "Cópia o MAC da ONU")
+        atk.tooltip(botaoLimparMac, "Limpa todos os campos")
         atk.tooltip(labelPortaOlt, "Porta na OLT que a ONU está conectada")
         atk.tooltip(botaoProvisionar, "Provisiona a ONU achada acima")
 
@@ -349,12 +347,21 @@ class Interface():
         self.quintaTela.focus_force()
         self.quintaTela.grab_set()
         self.framesTelaProvisionar()
+        self.widgetsTelaProvisionarOnu()
 
     def framesTelaProvisionar(self):
         self.esquerdaFrameProvisionar = Frame(self.quintaTela, borderwidth=2, relief="solid", bg='#233237')
         self.esquerdaFrameProvisionar.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
         self.direitaFrameProvisionar = Frame(self.quintaTela, borderwidth=2, relief="solid", bg='#233237')
         self.direitaFrameProvisionar.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
+
+    def widgetsTelaProvisionarOnu(self):
+        #Criação dos texto.
+        Label(self.quintaTela, text="Provisionar ONU", font="verdana 14 bold", background="#9099A2").place(relx=0.375, rely=0.03)
+        #Criação das saídas dos dados.
+        #Criação dos botões.
+        #Criação das entradas dos dados.
+        #Balão de mensagem.
 
 class Main(Conexao, Comandos, Interface, Relatorios):
     def __init__(self):
