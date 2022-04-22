@@ -75,7 +75,7 @@ class Comandos():
             messagebox.showerror(title="Erro", message="Nenhum MAC para ser copiado.")
 
     def limparTelaProcurarOnu(self):
-        self.widgetsTelaProcurarOnu()
+        self.widgetsTelaProvisionarOnu()
 
     def verificarPorta(self):
         #saida = ""
@@ -90,13 +90,18 @@ class Comandos():
         self.saidaPortaOlt["text"] = listaPorta[0]
 
     def provisionarOnu(self):
-        self.tn.write(b"onu set ?\n")
-        saidaVerificarPorta = self.tn.read_until(b'#').decode()
-        listaPorta = saidaVerificarPorta.split(" ", 11) #Transforma o retorno do comando em uma lista para que seja pego somente a parte da porta e posição da ONU.
-        comando = "onu set {0} {1} \n".format(listaPorta[10], self.listaMacOnu[0]).encode()
-        self.tn.write(b""+comando)
-        saidaProvisionarOnu = self.tn.read_until(b'#').decode()
-        print(saidaProvisionarOnu)
+        if self.radioButtonSelecionado.get() == 1:
+            self.tn.write(b"onu set ?\n")
+            saidaVerificarPorta = self.tn.read_until(b'#').decode()
+            listaPorta = saidaVerificarPorta.split(" ", 11) #Transforma o retorno do comando em uma lista para que seja pego somente a parte da porta e posição da ONU.
+            comando = "onu set {0} {1} \n".format(listaPorta[10], self.listaMacOnu[0]).encode()
+            self.tn.write(b""+comando)
+            saidaProvisionarOnu = self.tn.read_until(b'#').decode()
+            print(saidaProvisionarOnu)
+        elif self.radioButtonSelecionado.get() == 2:
+            print("teste")
+        else:
+            messagebox.showerror(title="Erro", message="Selecione o modo da ONU.")
 
 class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto só está sendo utilizado na tela de sinal.
     def __init__(self, master=None, placeholder= 'PLACEHOLDER', color= 'gray'):
@@ -193,7 +198,7 @@ class Interface():
         #Criação dos texto.
         #Criação das saídas dos dados.
         #Criação dos botões.
-        botaoTelaProvisionarOnu = atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#233237", command=self.telaProcurarOnu)
+        botaoTelaProvisionarOnu = atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#233237", command=self.telaProvisionar)
         botaoTelaProvisionarOnu.place(relx=0.13, rely=0.04, relwidth=0.73, relheight=0.1)
         botaoTelaSinal = atk.Button3d(self.frameVertical, text="SINAL DA ONU", bg="#233237", command=self.telaSinal)
         botaoTelaSinal.place(relx=0.13, rely=0.15, relwidth=0.73, relheight=0.1)
@@ -219,12 +224,12 @@ class Interface():
         self.widgetsTelaSinal()
     
     def framesTelaSinal(self):
-        self.esquerdaFrameSinal = Frame(self.segundaTela, borderwidth=2, relief="solid", bg='#233237')
-        self.esquerdaFrameSinal.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        self.direitaFrameSinal = Frame(self.segundaTela, borderwidth=2, relief="solid", bg='#233237')
-        self.direitaFrameSinal.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
-        self.linhaFrameSinal = Frame(self.segundaTela, borderwidth=5, relief="solid", bg='#233237')
-        self.linhaFrameSinal.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.005)
+        esquerdaFrameSinal = Frame(self.segundaTela, borderwidth=2, relief="solid", bg='#233237')
+        esquerdaFrameSinal.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
+        direitaFrameSinal = Frame(self.segundaTela, borderwidth=2, relief="solid", bg='#233237')
+        direitaFrameSinal.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
+        linhaFrameSinal = Frame(self.segundaTela, borderwidth=5, relief="solid", bg='#233237')
+        linhaFrameSinal.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.005)
 
     def widgetsTelaSinal(self):
         #*Primeiro Frame
@@ -276,57 +281,63 @@ class Interface():
         self.framesTelaVlan()
 
     def framesTelaVlan(self):
-        self.esquerdaFrameVlan = Frame(self.terceiraTela, borderwidth=2, relief="solid", bg='#233237')
-        self.esquerdaFrameVlan.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        self.direitaFrameVlan = Frame(self.terceiraTela, borderwidth=2, relief="solid", bg='#233237')
-        self.direitaFrameVlan.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
-        self.linhaFrameVlan = Frame(self.terceiraTela, borderwidth=5, relief="solid", bg='#233237')
-        self.linhaFrameVlan.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.005)
+        esquerdaFrameVlan = Frame(self.terceiraTela, borderwidth=2, relief="solid", bg='#233237')
+        esquerdaFrameVlan.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
+        direitaFrameVlan = Frame(self.terceiraTela, borderwidth=2, relief="solid", bg='#233237')
+        direitaFrameVlan.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
+        linhaFrameVlan = Frame(self.terceiraTela, borderwidth=5, relief="solid", bg='#233237')
+        linhaFrameVlan.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.005)
 
-    def telaProcurarOnu(self):
+    def telaProvisionar(self):
         self.quartaTela = Toplevel() #Deixa essa janela como prioridade.
         self.quartaTela.geometry("730x599+430+60")
         self.quartaTela.iconbitmap(default="icone\\logo.ico")
-        self.quartaTela.title("Provisionamento em espera")
+        self.quartaTela.title("Provisionar ONU")
         self.quartaTela.configure(background="#9099A2") #"gray20" and "#2F4F4F"
         self.quartaTela.resizable(width=False, height=False)
         self.quartaTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
         self.quartaTela.focus_force() #Força o foco nessa janela.
         self.quartaTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
-        self.framesTelaProcurarOnu()
-        self.widgetsTelaProcurarOnu()
+        self.radioButtonSelecionado = IntVar() #Variavel para receber a opção do modo da onu, bridge ou pppoe.
+        self.framesTelaProvisionar()
+        self.widgetsTelaProvisionarOnu()
+        self.widgetsTelaProvisionarFramaDentro() #Função criada para poder limpar campos específicos.
 
-    def framesTelaProcurarOnu(self):
-        self.esquerdaFrameProcurarOnu = Frame(self.quartaTela, borderwidth=2, relief="solid", bg='#233237')
-        self.esquerdaFrameProcurarOnu.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        self.direitaFrameProcurarOnu = Frame(self.quartaTela, borderwidth=2, relief="solid", bg='#233237')
-        self.direitaFrameProcurarOnu.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
+    def framesTelaProvisionar(self):
+        esquerdaFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=2, relief="solid", bg='#233237')
+        esquerdaFrameProvisionarOnu.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
+        direitaFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=2, relief="solid", bg='#233237')
+        direitaFrameProvisionarOnu.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
+        linhaFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=1, relief="solid", background="#9099A2")
+        linhaFrameProvisionarOnu.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
+        self.dentroFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=1, relief="solid", background="#9099A2")
+        self.dentroFrameProvisionarOnu.place(relx=0.149, rely=0.35, relwidth=0.701, relheight=2)
 
-    def widgetsTelaProcurarOnu(self):
+    def widgetsTelaProvisionarOnu(self):
         #Criação dos texto.
         Label(self.quartaTela, text="Provisionamento em espera", font="verdana 14 bold", background="#9099A2").place(relx=0.289, rely=0.03)
         labelQuantOnu = Label(self.quartaTela, text="Quant.", font="arial 10 bold", background="#9099A2")
-        labelQuantOnu.place(relx=0.36, rely=0.265)
+        labelQuantOnu.place(relx=0.415, rely=0.132)
         labelPortaOlt = Label(self.quartaTela, text="Porta na OLT", font="arial 9 bold", background="#9099A2")
-        labelPortaOlt.place(relx=0.486, rely=0.265)
+        labelPortaOlt.place(relx=0.529, rely=0.134)
         labelMac = Label(self.quartaTela, text="MAC", font="arial 9 bold", background="#9099A2")
-        labelMac.place(relx=0.379, rely=0.326)
+        labelMac.place(relx=0.429, rely=0.173)
         #Criação das saídas dos dados.
         self.saidaQuantOnu = Label(self.quartaTela, text="", background="#fff", anchor=N)
-        self.saidaQuantOnu.place(relx=0.429, rely=0.261, relwidth=0.035, relheight=0.031)
+        self.saidaQuantOnu.place(relx=0.479, rely=0.13, relwidth=0.035, relheight=0.031)
         self.saidaPortaOlt = Label(self.quartaTela, text="", background="#fff", anchor=N)
-        self.saidaPortaOlt.place(relx=0.6, rely=0.259, relwidth=0.035, relheight=0.031)
+        self.saidaPortaOlt.place(relx=0.637, rely=0.13, relwidth=0.035, relheight=0.031)
         self.saidaMacOnu = Label(self.quartaTela, text="", background="#fff", anchor=N)
-        self.saidaMacOnu.place(relx=0.429, rely=0.321, relwidth=0.15, relheight=0.031)
+        self.saidaMacOnu.place(relx=0.4801, rely=0.17, relwidth=0.136, relheight=0.031)
         #Criação dos botões.
         botaoProcurarOnu = atk.Button3d(self.quartaTela, text="Procurar", command=self.procurarOnu)
-        botaoProcurarOnu.place(relx=0.451, rely=0.147, relwidth=0.1, relheight=0.065)
+        botaoProcurarOnu.place(relx=0.315, rely=0.135, relwidth=0.1, relheight=0.065)
         botaoCopiarMac = Button(self.quartaTela, text="Copiar", font="arial 7 bold", command=self.copiarMac)
-        botaoCopiarMac.place(relx=0.586, rely=0.32, relwidth=0.0528, relheight=0.0341)
+        botaoCopiarMac.place(relx=0.621, rely=0.168, relwidth=0.0528, relheight=0.0341)
         botaoLimparMac = Button(self.quartaTela, text="Limpar", font="arial 7 bold", command=self.limparTelaProcurarOnu)
-        botaoLimparMac.place(relx=0.588, rely=0.439, relwidth=0.0528, relheight=0.0342)
-        botaoProvisionar = atk.Button3d(self.quartaTela, text="Provisionar", bg="#2F4F4F", command=self.telaProvisionar)
-        botaoProvisionar.place(relx=0.437, rely=0.42, relwidth=0.13, relheight=0.071)
+        botaoLimparMac.place(relx=0.677, rely=0.168, relwidth=0.0528, relheight=0.034)
+        botaoProvisionar = atk.Button3d(self.quartaTela, text="Provisionar", bg="#2F4F4F", command=self.provisionarOnu)
+        botaoProvisionar.place(relx=0.437, rely=0.7, relwidth=0.13, relheight=0.071)
         #Balão de mensagem.
         atk.tooltip(labelQuantOnu, "Quantidade de ONU que não foram provisionadas")
         atk.tooltip(labelMac, "MAC da ONU")
@@ -336,37 +347,25 @@ class Interface():
         atk.tooltip(labelPortaOlt, "Porta na OLT que a ONU está conectada")
         atk.tooltip(botaoProvisionar, "Provisiona a ONU achada acima")
 
-    def telaProvisionar(self):
-        self.quintaTela = Toplevel() #Deixa essa janela como prioridade.
-        self.quintaTela.geometry("730x599+430+60")
-        self.quintaTela.iconbitmap(default="icone\\logo.ico")
-        self.quintaTela.title("Provisionar ONU")
-        self.quintaTela.configure(background="#9099A2")
-        self.quintaTela.resizable(width=False, height=False)
-        self.quintaTela.transient(self.quartaTela)
-        self.quintaTela.focus_force()
-        self.quintaTela.grab_set()
-        self.framesTelaProvisionar()
-        self.widgetsTelaProvisionarOnu()
-
-    def framesTelaProvisionar(self):
-        self.esquerdaFrameProvisionar = Frame(self.quintaTela, borderwidth=2, relief="solid", bg='#233237')
-        self.esquerdaFrameProvisionar.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        self.direitaFrameProvisionar = Frame(self.quintaTela, borderwidth=2, relief="solid", bg='#233237')
-        self.direitaFrameProvisionar.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
-
-    def widgetsTelaProvisionarOnu(self):
+    def widgetsTelaProvisionarFramaDentro(self):
         #Criação dos texto.
-        Label(self.quintaTela, text="Provisionar ONU", font="verdana 14 bold", background="#9099A2").place(relx=0.375, rely=0.03)
+        Label(self.quartaTela, text="Provisionar ONU", font="verdana 14 bold", background="#9099A2").place(relx=0.375, rely=0.325)
+        Label(self.dentroFrameProvisionarOnu, text="Modo da ONU", font="arial 10 bold", background="#9099A2").place(relx=0.408, rely=0.032)
+        labelModoOnu = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 10 bold", background="#9099A2", foreground="red")
+        labelModoOnu.place(relx=0.585, rely=0.031)
         #Criação das saídas dos dados.
         #Criação dos botões.
-        #Criação das entradas dos dados.
+        radioBridge = Radiobutton(self.dentroFrameProvisionarOnu, text="Bridge  |", value=1, variable=self.radioButtonSelecionado, background="#9099A2")
+        radioBridge.place(relx=0.39, rely=0.05)
+        radioPppoe = Radiobutton(self.dentroFrameProvisionarOnu, text="PPPOE", value=2, variable=self.radioButtonSelecionado, background="#9099A2")
+        radioPppoe.place(relx=0.52, rely=0.05)
         #Balão de mensagem.
+        atk.tooltip(labelModoOnu, "Campo obrigatório")
 
 class Main(Conexao, Comandos, Interface, Relatorios):
     def __init__(self):
-        self.conectar()
-        self.login()
+        #self.conectar()
+        #self.login()
         self.telaPrincipal()
         #self.telaSinal()
 
