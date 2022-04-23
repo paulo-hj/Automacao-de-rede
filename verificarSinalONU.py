@@ -78,9 +78,6 @@ class Comandos():
         self.widgetsTelaProvisionarOnu()
 
     def verificarPorta(self):
-        #saida = ""
-        #self.portaAndPosicaoOnu = []
-
         self.tn.write(b"onu set ?\n")
         saidaVerificarPorta = self.tn.read_until(b'#').decode()
         print(saidaVerificarPorta)
@@ -102,6 +99,11 @@ class Comandos():
             print("teste")
         else:
             messagebox.showerror(title="Erro", message="Selecione o modo da ONU.")
+        
+    def listaVlanListBox(self):
+        lista = ["141", "142", "143", "144", "145", "146", "147", "148"]
+        for i in lista:
+            self.listBoxVlan.insert(END, i)
 
 class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto só está sendo utilizado na tela de sinal.
     def __init__(self, master=None, placeholder= 'PLACEHOLDER', color= 'gray'):
@@ -301,7 +303,8 @@ class Interface():
         self.radioButtonSelecionado = IntVar() #Variavel para receber a opção do modo da onu, bridge ou pppoe.
         self.framesTelaProvisionar()
         self.widgetsTelaProvisionarOnu()
-        self.widgetsTelaProvisionarFramaDentro() #Função criada para poder limpar campos específicos.
+        self.widgetsTelaProvisionarFrameDentro() #Função criada para poder limpar campos específicos.
+        self.listaVlanListBox()
 
     def framesTelaProvisionar(self):
         esquerdaFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=2, relief="solid", bg='#233237')
@@ -337,7 +340,7 @@ class Interface():
         botaoLimparMac = Button(self.quartaTela, text="Limpar", font="arial 7 bold", command=self.limparTelaProcurarOnu)
         botaoLimparMac.place(relx=0.677, rely=0.168, relwidth=0.0528, relheight=0.034)
         botaoProvisionar = atk.Button3d(self.quartaTela, text="Provisionar", bg="#2F4F4F", command=self.provisionarOnu)
-        botaoProvisionar.place(relx=0.437, rely=0.7, relwidth=0.13, relheight=0.071)
+        botaoProvisionar.place(relx=0.437, rely=0.85, relwidth=0.13, relheight=0.071)
         #Balão de mensagem.
         atk.tooltip(labelQuantOnu, "Quantidade de ONU que não foram provisionadas")
         atk.tooltip(labelMac, "MAC da ONU")
@@ -347,20 +350,39 @@ class Interface():
         atk.tooltip(labelPortaOlt, "Porta na OLT que a ONU está conectada")
         atk.tooltip(botaoProvisionar, "Provisiona a ONU achada acima")
 
-    def widgetsTelaProvisionarFramaDentro(self):
+    def widgetsTelaProvisionarFrameDentro(self):
         #Criação dos texto.
         Label(self.quartaTela, text="Provisionar ONU", font="verdana 14 bold", background="#9099A2").place(relx=0.375, rely=0.325)
-        Label(self.dentroFrameProvisionarOnu, text="Modo da ONU", font="arial 10 bold", background="#9099A2").place(relx=0.408, rely=0.032)
-        labelModoOnu = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 10 bold", background="#9099A2", foreground="red")
-        labelModoOnu.place(relx=0.585, rely=0.031)
+        Label(self.dentroFrameProvisionarOnu, text="Modo da ONU", font="arial 11 bold", background="#9099A2").place(relx=0.391, rely=0.032)
+        Label(self.dentroFrameProvisionarOnu, text="Login", font="arial 12 bold", background="#9099A2").place(relx=0.12, rely=0.09)
+        Label(self.dentroFrameProvisionarOnu, text="Vlan", font="arial 12 bold", background="#9099A2").place(relx=0.46, rely=0.09)
+        Label(self.dentroFrameProvisionarOnu, text="Marca", font="arial 12 bold", background="#9099A2").place(relx=0.78, rely=0.09)
+        labelAstModoOnu = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
+        labelAstModoOnu.place(relx=0.59, rely=0.031)
+        labelAstLogin = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
+        labelAstLogin.place(relx=0.21, rely=0.09)
+        labelAstVlan = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
+        labelAstVlan.place(relx=0.532, rely=0.09)
+        #Criação das entradas dos dados.
+        self.entradaLoginOnu = Entry(self.dentroFrameProvisionarOnu, bd=3, justify=CENTER)
+        self.entradaLoginOnu.place(relx=0.043, rely=0.11, relheight=0.02)
+        #self.entradaVlanOnu = Entry(self.dentroFrameProvisionarOnu, bd=3, justify=CENTER)
+        #self.entradaVlanOnu.place(relx=0.461, rely=0.11, relwidth=0.08 ,relheight=0.02)
+        self.entradaMarcaOnu = Entry(self.dentroFrameProvisionarOnu, bd=3, justify=CENTER)
+        self.entradaMarcaOnu.place(relx=0.7, rely=0.11, relheight=0.02)
+        #Criação de listbox.
+        self.listBoxVlan = Listbox(self.dentroFrameProvisionarOnu, justify=CENTER,width=6, height=6)
+        self.listBoxVlan.place(relx=0.461, rely=0.11)
         #Criação das saídas dos dados.
         #Criação dos botões.
         radioBridge = Radiobutton(self.dentroFrameProvisionarOnu, text="Bridge  |", value=1, variable=self.radioButtonSelecionado, background="#9099A2")
-        radioBridge.place(relx=0.39, rely=0.05)
+        radioBridge.place(relx=0.37, rely=0.05)
         radioPppoe = Radiobutton(self.dentroFrameProvisionarOnu, text="PPPOE", value=2, variable=self.radioButtonSelecionado, background="#9099A2")
-        radioPppoe.place(relx=0.52, rely=0.05)
+        radioPppoe.place(relx=0.5, rely=0.05)
         #Balão de mensagem.
-        atk.tooltip(labelModoOnu, "Campo obrigatório")
+        atk.tooltip(labelAstModoOnu, "Campo obrigatório")
+        atk.tooltip(labelAstLogin, "Campo obrigatório")
+        atk.tooltip(labelAstVlan, "Campo obrigatório")
 
 class Main(Conexao, Comandos, Interface, Relatorios):
     def __init__(self):
