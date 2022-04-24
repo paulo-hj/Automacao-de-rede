@@ -102,19 +102,16 @@ class Comandos():
             messagebox.showerror(title="Erro", message="Selecione o modo da ONU.")
         
     def listaListBox(self):
-        #listaVlan = ["141", "142", "143", "144", "145", "146", "147", "148","4324", "432", "432432", "4324", "4324", "3432", "432"]
         listaMarcaOnu = ["Digistar" ,"Huawei" ,"Unne", "IntelBras", "Tp-link", "Cianet", "Shoreline", "Stavix"]
-        #for i in listaVlan:
-            #self.listBoxVlan.insert(END, i)
-        
         for i in listaMarcaOnu:
             self.listBoxMarcaOnu.insert(END, i)
-        
+
     def verificarOpcaoVlan(self, event):
         indices = self.listBoxVlan.curselection()
         if len(indices) > 0 :
             self.vlan = ",".join([self.listBoxVlan.get(i) for i in indices])
             self.verificaOpcaoRamal()
+            self.verificaopcaoSplitter()
         else:
             pass
             '''
@@ -123,15 +120,31 @@ class Comandos():
         if vlan >= 141 and vlan <= 148:
             self.saidaRamal["text"] = "14"
         '''
+        
     def verificaOpcaoRamal(self):
-        try:
             vlan = self.vlan
-            if int(vlan) >= 141 and int(vlan) <= 148:
+            if int(vlan) >= 131 and int(vlan) <= 138:
+                self.saidaRamal["text"] = "13"
+            elif int(vlan) >= 141 and int(vlan) <= 148:
                 self.saidaRamal["text"] = "14"
-            else:
-                self.saidaRamal["text"] = " "
-        except:
-            pass
+            elif int(vlan) >= 151 and int(vlan) <= 158:
+                self.saidaRamal["text"] = "15"
+            elif int(vlan) >= 161 and int(vlan) <= 168:
+                self.saidaRamal["text"] = "16"
+            elif int(vlan) >= 341 and int(vlan) <= 348:
+                self.saidaRamal["text"] = "34"
+            elif int(vlan) >= 351 and int(vlan) <= 358:
+                self.saidaRamal["text"] = "35"
+            elif int(vlan) >= 361 and int(vlan) <= 368:
+                self.saidaRamal["text"] = "36"
+            elif int(vlan) >= 521 and int(vlan) <= 528:
+                self.saidaRamal["text"] = "52"
+ 
+    def verificaopcaoSplitter(self):
+        dicionarioSplitter = {"141":"0-0-T3-R14-C1", "142":"0-0-T3-R14-C2", "143":"3", "144":"4"}
+        splitter = dicionarioSplitter[self.vlan]
+        self.saidaSplitter["text"] = splitter
+
 class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto só está sendo utilizado na tela de sinal.
     def __init__(self, master=None, placeholder= 'PLACEHOLDER', color= 'gray'):
         super().__init__(master)
@@ -404,7 +417,10 @@ class Interface():
         self.entradaLoginOnu.place(relx=0.043, rely=0.11, relheight=0.02)
 
         #Criação de listbox.
-        listaVlan = ["141", "142", "143", "144", "145", "146", "147", "148", "4324", "432", "432432", "4324", "4324", "3432", "432"]
+        listaVlan = ["131", "132", "133", "134", "135", "136", "137", "138","141", "142", "143", "144", "145", "146", "147", "148",
+         "151", "152", "153", "154", "155", "156", "157", "158", "161", "162", "163", "164", "165", "166", "167", "168", 
+         "341", "342", "343", "344", "345", "346", "347", "348", "351", "352", "353", "354", "355", "356", "357", "358",
+          "361", "362", "363", "364", "365", "366", "367", "368", "521", "522", "523", "524", "525", "526", "527", "528"]
         langs_var = tkinter.IntVar(value=listaVlan)
 
         self.listBoxVlan = tkinter.Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=6, height=4, listvariable=langs_var)
