@@ -1,8 +1,6 @@
-from msilib.schema import ComboBox
 import telnetlib
 from tkinter import *
 from tkinter import ttk, messagebox
-from tkinter import font
 #from awesometkinter import *
 import awesometkinter as atk
 import tkinter.filedialog #Selecionar diretório.
@@ -49,7 +47,7 @@ class Comandos():
 
     def selecionarDiretorio(self):
         opcoes = {}
-        self.nomeDiretorio= tkinter.filedialog.askdirectory(**opcoes)
+        self.nomeDiretorio = tkinter.filedialog.askdirectory(**opcoes)
         self.saidaDiretorio["text"] = self.nomeDiretorio
 
     def procurarOnu(self):
@@ -89,24 +87,34 @@ class Comandos():
         self.saidaPortaOlt["text"] = listaPortaOlt[0]
 
     def provisionarOnu(self):
+        msgTratamentoErro = "Está faltando informar os campos abaixo: "
+        contTratamentoErro = 0
         #self.marca = self.listBoxMarcaOnu.get(ACTIVE)
         try:
             quantMac = self.listaMacOnu[0] #Usado para fazer a validação com o try se a ONU foi achada ou não.
-            if self.radioButtonSelecionado.get() == 1:
-                if len(self.entradaLoginOnu.get()) > 0 and len(self.vlan) > 0 and int(self.comboBoxPortaCto.get()) > 0:
-                    comando = "onu set {0} {1} \n".format(self.listaPorta[10], self.listaMacOnu[0]).encode()
-                    self.tn.write(b""+comando)
-                    saidaProvisionarOnu = self.tn.read_until(b'#').decode()
-                    print(saidaProvisionarOnu)
-                else:
-                    messagebox.showerror(title="Erro", message="Informe todos os campos obrigatórios.")
-            elif self.radioButtonSelecionado.get() == 2:
-                if len(self.entradaLoginOnu.get()) > 1 or len(self.vlan) > 1:#or
-                    print("teste")
-                else:
-                    messagebox.showerror(title="Erro", message="Informe todos os campos obrigatórios.")
-            else:
-                messagebox.showerror(title="Erro", message="Informe todos os campos obrigatórios.")
+            if self.radioButtonSelecionado.get() != 1 and self.radioButtonSelecionado.get() != 2:
+                msgTratamentoErro = msgTratamentoErro + "\nModo da ONU"
+                contTratamentoErro = contTratamentoErro + 1
+            if len(self.entradaLoginOnu.get()) <= 0:
+                msgTratamentoErro = msgTratamentoErro + "\nLogin"
+                contTratamentoErro = contTratamentoErro + 1
+            if len(self.vlan) <= 0:
+                msgTratamentoErro = msgTratamentoErro + "\nVlan"
+                contTratamentoErro = contTratamentoErro + 1
+            if int(self.comboBoxPortaCto.get()) <= 0:
+                msgTratamentoErro = msgTratamentoErro + "\nPorta da CTO"
+                contTratamentoErro = contTratamentoErro + 1
+            if contTratamentoErro > 0:
+                messagebox.showerror(title="Erro", message=msgTratamentoErro)
+            if contTratamentoErro == 0:
+                if self.radioButtonSelecionado.get() == 1:
+                    print("Bridge")
+                    #comando = "onu set {0} {1} \n".format(self.listaPorta[10], self.listaMacOnu[0]).encode()
+                    #self.tn.write(b""+comando)
+                    #saidaProvisionarOnu = self.tn.read_until(b'#').decode()
+                    #print(saidaProvisionarOnu)
+                elif self.radioButtonSelecionado.get() == 2:
+                    print("PPPOE")
         except:
             messagebox.showerror(title="Erro", message="É necessário primeiro procurar a ONU.")
 
@@ -192,7 +200,7 @@ class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto só est
             self.put_placeholder()
 
 class Relatorios():
-    def printPdf(self):   
+    def printPdf(self):
         webbrowser.open(self.nomeDiretorio+"\\ONU Digistar.pdf")
 
     def geraRelatCliente(self):
@@ -285,6 +293,7 @@ class Interface():
         self.segundaTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
         self.segundaTela.focus_force() #Força o foco nessa janela.
         self.segundaTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
+        self.nomeDiretorio = "C:\\Users\\Public\\Desktop"
         self.framesTelaSinal()
         self.widgetsTelaSinal()
     
@@ -319,7 +328,7 @@ class Interface():
         Label(self.segundaTela, text="0%", font="arial 6", background="#9099A2").place(relx=0.235, rely=0.942)
         Label(self.segundaTela, text="100%", font="arial 6", background="#9099A2", foreground="green").place(relx=0.73, rely=0.942)
         #Criação das saídas dos dados.
-        self.saidaDiretorio = Label(self.segundaTela, text="", font="arial 8", background="#E9C893")
+        self.saidaDiretorio = Label(self.segundaTela, text="C:\\Users\\Public\\Desktop", font="arial 8", background="#E9C893")
         self.saidaDiretorio.place(relx=0.275, rely=0.655, relwidth=0.37)
         #Criação dos botões.
         botaoDefinirDiretorio = atk.Button3d(self.segundaTela, text="Definir", command=self.selecionarDiretorio)
