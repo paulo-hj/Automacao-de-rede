@@ -2,6 +2,7 @@ from msilib.schema import ComboBox
 import telnetlib
 from tkinter import *
 from tkinter import ttk, messagebox
+from tkinter import font
 #from awesometkinter import *
 import awesometkinter as atk
 import tkinter.filedialog #Selecionar diretório.
@@ -76,37 +77,38 @@ class Comandos():
             messagebox.showerror(title="Erro", message="Nenhum MAC para ser copiado.")
 
     def limparTelaProcurarOnu(self):
+        self.listaMacOnu = []
         self.widgetsTelaProvisionarOnu()
 
     def verificarPorta(self):
         self.tn.write(b"onu set ?\n")
         saidaVerificarPorta = self.tn.read_until(b'#').decode()
         print(saidaVerificarPorta)
-        listaPorta = saidaVerificarPorta.split(" ", 10)
-        #self.portaAndPosicaoOnu = listaPorta[10]
-        listaPorta = listaPorta[10].split("/", 1)
-        self.saidaPortaOlt["text"] = listaPorta[0]
+        self.listaPorta = saidaVerificarPorta.split(" ", 11)
+        listaPortaOlt = self.listaPorta[10].split("/", 1)
+        self.saidaPortaOlt["text"] = listaPortaOlt[0]
 
     def provisionarOnu(self):
         #self.marca = self.listBoxMarcaOnu.get(ACTIVE)
-        if self.radioButtonSelecionado.get() == 1:
-            if len(self.entradaLoginOnu.get()) > 1 and len(self.vlan) > 1:#or
-                self.tn.write(b"onu set ?\n")
-                saidaVerificarPorta = self.tn.read_until(b'#').decode()
-                listaPorta = saidaVerificarPorta.split(" ", 11) #Transforma o retorno do comando em uma lista para que seja pego somente a parte da porta e posição da ONU.
-                comando = "onu set {0} {1} \n".format(listaPorta[10], self.listaMacOnu[0]).encode()
-                self.tn.write(b""+comando)
-                saidaProvisionarOnu = self.tn.read_until(b'#').decode()
-                print(saidaProvisionarOnu)
+        try:
+            quantMac = self.listaMacOnu[0] #Usado para fazer a validação com o try se a ONU foi achada ou não.
+            if self.radioButtonSelecionado.get() == 1:
+                if len(self.entradaLoginOnu.get()) > 1 and len(self.vlan) > 1:#or
+                    comando = "onu set {0} {1} \n".format(self.listaPorta[10], self.listaMacOnu[0]).encode()
+                    self.tn.write(b""+comando)
+                    saidaProvisionarOnu = self.tn.read_until(b'#').decode()
+                    print(saidaProvisionarOnu)
+                else:
+                    messagebox.showerror(title="Erro", message="Informe todos os campos obrigatórios.")
+            elif self.radioButtonSelecionado.get() == 2:
+                if len(self.entradaLoginOnu.get()) > 1 or len(self.vlan) > 1:#or
+                    print("teste")
+                else:
+                    messagebox.showerror(title="Erro", message="Informe todos os campos obrigatórios.")
             else:
                 messagebox.showerror(title="Erro", message="Informe todos os campos obrigatórios.")
-        elif self.radioButtonSelecionado.get() == 2:
-            if len(self.entradaLoginOnu.get()) > 1 or len(self.vlan) > 1:#or
-                print("teste")
-            else:
-                messagebox.showerror(title="Erro", message="Informe todos os campos obrigatórios.")
-        else:
-            messagebox.showerror(title="Erro", message="Informe todos os campos obrigatórios.")
+        except:
+            messagebox.showerror(title="Erro", message="É necessário primeiro procurar a ONU.")
 
     def listaListBoxVlan(self):
         self.listaVlan = ["131", "132", "133", "134", "135", "136", "137", "138","141", "142", "143", "144", "145", "146", "147", "148",
