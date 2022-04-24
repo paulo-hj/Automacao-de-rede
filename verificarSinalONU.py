@@ -1,3 +1,4 @@
+from msilib.schema import ComboBox
 import telnetlib
 from tkinter import *
 from tkinter import ttk, messagebox
@@ -87,19 +88,32 @@ class Comandos():
         self.saidaPortaOlt["text"] = listaPorta[0]
 
     def provisionarOnu(self):
-        self.verificaOpcaoVlan()
+        #self.marca = self.listBoxMarcaOnu.get(ACTIVE)
         if self.radioButtonSelecionado.get() == 1:
-            self.tn.write(b"onu set ?\n")
-            saidaVerificarPorta = self.tn.read_until(b'#').decode()
-            listaPorta = saidaVerificarPorta.split(" ", 11) #Transforma o retorno do comando em uma lista para que seja pego somente a parte da porta e posição da ONU.
-            comando = "onu set {0} {1} \n".format(listaPorta[10], self.listaMacOnu[0]).encode()
-            self.tn.write(b""+comando)
-            saidaProvisionarOnu = self.tn.read_until(b'#').decode()
-            print(saidaProvisionarOnu)
+            if len(self.entradaLoginOnu.get()) > 1 and len(self.vlan) > 1:#or
+                self.tn.write(b"onu set ?\n")
+                saidaVerificarPorta = self.tn.read_until(b'#').decode()
+                listaPorta = saidaVerificarPorta.split(" ", 11) #Transforma o retorno do comando em uma lista para que seja pego somente a parte da porta e posição da ONU.
+                comando = "onu set {0} {1} \n".format(listaPorta[10], self.listaMacOnu[0]).encode()
+                self.tn.write(b""+comando)
+                saidaProvisionarOnu = self.tn.read_until(b'#').decode()
+                print(saidaProvisionarOnu)
+            else:
+                messagebox.showerror(title="Erro", message="Informe todos os campos obrigatórios.")
         elif self.radioButtonSelecionado.get() == 2:
-            print("teste")
+            if len(self.entradaLoginOnu.get()) > 1 or len(self.vlan) > 1:#or
+                print("teste")
+            else:
+                messagebox.showerror(title="Erro", message="Informe todos os campos obrigatórios.")
         else:
-            messagebox.showerror(title="Erro", message="Selecione o modo da ONU.")
+            messagebox.showerror(title="Erro", message="Informe todos os campos obrigatórios.")
+
+    def listaListBoxVlan(self):
+        self.listaVlan = ["131", "132", "133", "134", "135", "136", "137", "138","141", "142", "143", "144", "145", "146", "147", "148",
+         "151", "152", "153", "154", "155", "156", "157", "158", "161", "162", "163", "164", "165", "166", "167", "168", 
+         "341", "342", "343", "344", "345", "346", "347", "348", "351", "352", "353", "354", "355", "356", "357", "358",
+          "361", "362", "363", "364", "365", "366", "367", "368", "521", "522", "523", "524", "525", "526", "527", "528"]
+        self.nintVar = tkinter.IntVar(value=self.listaVlan)
         
     def listaListBox(self):
         listaMarcaOnu = ["Digistar" ,"Huawei" ,"Unne", "IntelBras", "Tp-link", "Cianet", "Shoreline", "Stavix"]
@@ -111,7 +125,7 @@ class Comandos():
         if len(indices) > 0 :
             self.vlan = ",".join([self.listBoxVlan.get(i) for i in indices])
             self.verificaOpcaoRamal()
-            self.verificaopcaoSplitter()
+            self.verificaopcaoSplitterAndPortaCto()
         else:
             pass
             '''
@@ -120,7 +134,7 @@ class Comandos():
         if vlan >= 141 and vlan <= 148:
             self.saidaRamal["text"] = "14"
         '''
-        
+
     def verificaOpcaoRamal(self):
             vlan = self.vlan
             if int(vlan) >= 131 and int(vlan) <= 138:
@@ -140,10 +154,17 @@ class Comandos():
             elif int(vlan) >= 521 and int(vlan) <= 528:
                 self.saidaRamal["text"] = "52"
  
-    def verificaopcaoSplitter(self):
-        dicionarioSplitter = {"141":"0-0-T3-R14-C1", "142":"0-0-T3-R14-C2", "143":"3", "144":"4"}
+    def verificaopcaoSplitterAndPortaCto(self):
+        dicionarioSplitter = {"141":"0-1-P7-D17-T3-R14-C1", "142":"0-0-T3-R14-C2", "143":"3", "144":"4"}
         splitter = dicionarioSplitter[self.vlan]
         self.saidaSplitter["text"] = splitter
+        dicionarioPortaCto = {"141":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "142":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "143":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "144":["1", "2", "3", "4"]}
+        self.listaPortaCto = dicionarioPortaCto[self.vlan]
+        self.widgetsTelaProvisionarComboBox()
+        #self.quartaTela.update()
 
 class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto só está sendo utilizado na tela de sinal.
     def __init__(self, master=None, placeholder= 'PLACEHOLDER', color= 'gray'):
@@ -340,10 +361,14 @@ class Interface():
         self.quartaTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
         self.quartaTela.focus_force() #Força o foco nessa janela.
         self.quartaTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
+        self.listaPortaCto = []
+        self.vlan = ""
         self.radioButtonSelecionado = IntVar() #Variavel para receber a opção do modo da onu, bridge ou pppoe.
+        self.listaListBoxVlan()
         self.framesTelaProvisionar()
         self.widgetsTelaProvisionarOnu()
         self.widgetsTelaProvisionarFrameDentro() #Função criada para poder limpar campos específicos.
+        self.widgetsTelaProvisionarComboBox()
         self.listaListBox()
 
     def framesTelaProvisionar(self):
@@ -417,21 +442,14 @@ class Interface():
         self.entradaLoginOnu.place(relx=0.043, rely=0.11, relheight=0.02)
 
         #Criação de listbox.
-        listaVlan = ["131", "132", "133", "134", "135", "136", "137", "138","141", "142", "143", "144", "145", "146", "147", "148",
-         "151", "152", "153", "154", "155", "156", "157", "158", "161", "162", "163", "164", "165", "166", "167", "168", 
-         "341", "342", "343", "344", "345", "346", "347", "348", "351", "352", "353", "354", "355", "356", "357", "358",
-          "361", "362", "363", "364", "365", "366", "367", "368", "521", "522", "523", "524", "525", "526", "527", "528"]
-        langs_var = tkinter.IntVar(value=listaVlan)
-
-        self.listBoxVlan = tkinter.Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=6, height=4, listvariable=langs_var)
+        self.listBoxVlan = tkinter.Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=6, height=4, listvariable=self.nintVar)
         self.listBoxVlan.place(relx=0.461, rely=0.11)
         self.listBoxVlan.bind('<<ListboxSelect>>', self.verificarOpcaoVlan)
 
-
         self.listBoxMarcaOnu = Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=11, height=4)
         self.listBoxMarcaOnu.place(relx=0.746, rely=0.11)
-        self.listBoxPortaCto = Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=5, height=4)
-        self.listBoxPortaCto.place(relx=0.8, rely=0.211)
+        #self.listBoxPortaCto = Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=5, height=4)
+        #self.listBoxPortaCto.place(relx=0.8, rely=0.211)
         #Criação de barra de rolagem.
         barraRolagemVlan = Scrollbar(self.dentroFrameProvisionarOnu, orient="vertical")
         self.listBoxVlan.configure(yscroll=barraRolagemVlan.set)
@@ -441,17 +459,22 @@ class Interface():
         self.listBoxMarcaOnu.configure(yscroll=barraRolagemMarcaOnu.set)
         barraRolagemMarcaOnu.place(relx=0.883, rely=0.11, relwidth=0.025,relheight=0.057)
 
-
         #Criação das saídas dos dados.
         self.saidaRamal = Label(self.dentroFrameProvisionarOnu, text="", background="#fff", anchor=CENTER)
         self.saidaRamal.place(relx=0.135, rely=0.211, relwidth=0.07)
         self.saidaSplitter = Label(self.dentroFrameProvisionarOnu, text="", background="#fff", anchor=CENTER)
-        self.saidaSplitter.place(relx=0.439, rely=0.211, relwidth=0.158)
-        #Criação dos botões.
+        self.saidaSplitter.place(relx=0.398, rely=0.211, relwidth=0.239)
+
+        #Criação de radio button.
         radioBridge = Radiobutton(self.dentroFrameProvisionarOnu, text="Bridge  |", value=1, variable=self.radioButtonSelecionado, background="#9099A2")
         radioBridge.place(relx=0.37, rely=0.05)
         radioPppoe = Radiobutton(self.dentroFrameProvisionarOnu, text="PPPOE", value=2, variable=self.radioButtonSelecionado, background="#9099A2")
         radioPppoe.place(relx=0.5, rely=0.05)
+
+        #Criação de combo box.
+        #self.portaCto = ttk.Combobox(self.dentroFrameProvisionarOnu, values=self.listaPortaCto)
+        #self.portaCto.place(relx=0.7, rely=0.211)
+        #Criação dos botões.
         #Balão de mensagem.
         atk.tooltip(labelAstModoOnu, "Campo obrigatório")
         atk.tooltip(labelAstLogin, "Campo obrigatório")
@@ -460,10 +483,16 @@ class Interface():
         atk.tooltip(labelAstSplitter, "Campo obrigatório")
         atk.tooltip(labelAstPortaCto, "Campo obrigatório")
 
+    def widgetsTelaProvisionarComboBox(self):
+        self.portaCto = ttk.Combobox(self.dentroFrameProvisionarOnu, values=self.listaPortaCto, justify=CENTER)
+        self.portaCto.set("0")
+        self.portaCto.place(relx=0.793, rely=0.211, relwidth=0.085)
+
+
 class Main(Conexao, Comandos, Interface, Relatorios):
     def __init__(self):
-        #self.conectar()
-        #self.login()
+        self.conectar()
+        self.login()
         self.telaPrincipal()
         #self.telaSinal()
 
