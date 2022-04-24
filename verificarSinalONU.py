@@ -14,6 +14,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import SimpleDocTemplate, Image
 import webbrowser
 
+
 class Conexao():
     def conectar(self):
         HOST = "10.50.50.50"
@@ -61,6 +62,7 @@ class Comandos():
             self.saidaQuantOnu["text"] = self.listaOnu[10] #Printa quantas ONU estão conectadas.
             self.listaMacOnu = self.listaOnu[11].split("\r", 1) #Filtra mac da ONU achada.
             self.saidaMacOnu["text"] = self.listaMacOnu[0] #Printa Mac da ONU achada.
+            self.verificarPorta()
         except:
             self.saidaQuantOnu["text"] = "0"
             self.saidaPortaOlt["text"] = "0"
@@ -81,10 +83,10 @@ class Comandos():
     def verificarPorta(self):
         self.tn.write(b"onu set ?\n")
         saidaVerificarPorta = self.tn.read_until(b'#').decode()
-        print(saidaVerificarPorta)
         self.listaPorta = saidaVerificarPorta.split(" ", 11)
-        listaPortaOlt = self.listaPorta[10].split("/", 1)
-        self.saidaPortaOlt["text"] = listaPortaOlt[0]
+        self.listaPortaOlt = self.listaPorta[10].split("/", 1)
+        self.saidaPortaOlt["text"] = self.listaPortaOlt[0]
+        self.tn.read_until(b'#').decode()
 
     def provisionarOnu(self):
         msgTratamentoErro = "Está faltando informar os campos abaixo: "
@@ -108,11 +110,14 @@ class Comandos():
                 messagebox.showerror(title="Erro", message=msgTratamentoErro)
             if contTratamentoErro == 0:
                 if self.radioButtonSelecionado.get() == 1:
-                    print("Bridge")
-                    #comando = "onu set {0} {1} \n".format(self.listaPorta[10], self.listaMacOnu[0]).encode()
-                    #self.tn.write(b""+comando)
-                    #saidaProvisionarOnu = self.tn.read_until(b'#').decode()
-                    #print(saidaProvisionarOnu)
+                    print(self.listaPorta[0])
+                    comandoAddOnu = "onu set {} {} \n".format(self.listaPorta[10], self.listaMacOnu[0]).encode()
+                    self.tn.write(b""+comandoAddOnu)
+                    #self.tn.read_until(b'#').decode()
+                    gpon = "gpon-"+self.listaPortaOlt[0]
+                    gem = "50"+self.listaPortaOlt[1]
+                    comandoAddBridge = "bridge add {} onu 1 gem {} gtp 1 vlan {}\n".format(gpon, gem, self.vlan).encode()
+                    self.tn.write(b""+comandoAddBridge)
                 elif self.radioButtonSelecionado.get() == 2:
                     print("PPPOE")
         except:
