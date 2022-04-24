@@ -93,7 +93,7 @@ class Comandos():
         try:
             quantMac = self.listaMacOnu[0] #Usado para fazer a validação com o try se a ONU foi achada ou não.
             if self.radioButtonSelecionado.get() == 1:
-                if len(self.entradaLoginOnu.get()) > 1 and len(self.vlan) > 1:#or
+                if len(self.entradaLoginOnu.get()) > 0 and len(self.vlan) > 0 and int(self.comboBoxPortaCto.get()) > 0:
                     comando = "onu set {0} {1} \n".format(self.listaPorta[10], self.listaMacOnu[0]).encode()
                     self.tn.write(b""+comando)
                     saidaProvisionarOnu = self.tn.read_until(b'#').decode()
@@ -486,9 +486,9 @@ class Interface():
         atk.tooltip(labelAstPortaCto, "Campo obrigatório")
 
     def widgetsTelaProvisionarComboBox(self):
-        self.portaCto = ttk.Combobox(self.dentroFrameProvisionarOnu, values=self.listaPortaCto, justify=CENTER)
-        self.portaCto.set("0")
-        self.portaCto.place(relx=0.793, rely=0.211, relwidth=0.085)
+        self.comboBoxPortaCto = ttk.Combobox(self.dentroFrameProvisionarOnu, values=self.listaPortaCto, justify=CENTER)
+        self.comboBoxPortaCto.set("0")
+        self.comboBoxPortaCto.place(relx=0.793, rely=0.211, relwidth=0.085)
 
 
 class Main(Conexao, Comandos, Interface, Relatorios):
