@@ -82,7 +82,7 @@ class Comandos():
         self.widgetsTelaProvisionarOnu()
 
     def verificarPorta(self):
-        self.tn.write(b"onu set ?\n")
+        self.tn.write(b"onu set ? \n")
         saidaVerificarPorta = self.tn.read_until(b'#').decode()
         self.listaPorta = saidaVerificarPorta.split(" ", 11)
         self.listaPortaOlt = self.listaPorta[10].split("/", 1)
@@ -111,14 +111,14 @@ class Comandos():
                 messagebox.showerror(title="Erro", message=msgTratamentoErro)
             if contTratamentoErro == 0:
                 if self.radioButtonSelecionado.get() == 1:
-                    print(self.listaPorta[0])
                     comandoAddOnu = "onu set {} {} \n".format(self.listaPorta[10], self.listaMacOnu[0]).encode()
                     self.tn.write(b""+comandoAddOnu)
-                    #self.tn.read_until(b'#').decode()
+                    self.tn.read_until(b'#').decode()
                     gpon = "gpon-"+self.listaPortaOlt[0]
                     gem = "50"+self.listaPortaOlt[1]
                     comandoAddBridge = "bridge add {} onu 1 gem {} gtp 1 vlan {}\n".format(gpon, gem, self.vlan).encode()
                     self.tn.write(b""+comandoAddBridge)
+                    self.tn.read_until(b'#').decode()
                 elif self.radioButtonSelecionado.get() == 2:
                     print("PPPOE")
         except:
@@ -171,13 +171,77 @@ class Comandos():
                 self.saidaRamal["text"] = "52"
  
     def verificaopcaoSplitterAndPortaCto(self):
-        dicionarioSplitter = {"141":"0-1-P7-D17-T3-R14-C1", "142":"0-0-T3-R14-C2", "143":"3", "144":"4"}
+        dicionarioSplitter = {"131":"0-1-P8-D24-T3-R13-C1", "132":"0-1-P8-D24-T3-R13-C2", "133":"0-1-P8-D24-T3-R13-C3", 
+        "134":"0-1-P8-D24-T3-R13-C4", "135":"0-1-P8-D24-T3-R13-C5", "136":"0-1-P8-D24-T3-R13-C6", "137":"0-1-P8-D24-T3-R13-C7", 
+        "138":"0-1-P8-D24-T3-R13-C8", "141":"0-1-P7-D17-T3-R14-C1", "142":"0-1-P7-D17-T3-R14-C2", "143":"0-1-P7-D17-T3-R14-C3", 
+        "144":"0-1-P7-D17-T3-R14-C4", "145":"0-1-P7-D17-T3-R14-C5", "146":"0-1-P7-D17-T3-R14-C6", "147":"0-1-P7-D17-T3-R14-C7", 
+        "148":"0-1-P7-D17-T3-R14-C8", "":"", "":"", "":"", "":"", "":"", "":"", "":"", "":"", "":""}
         splitter = dicionarioSplitter[self.vlan]
         self.saidaSplitter["text"] = splitter
-        dicionarioPortaCto = {"141":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+        dicionarioPortaCto = {"131":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "132":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "133":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "134":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "135":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "136":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "137":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "138":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "141":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
                                 "142":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
                                 "143":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "144":["1", "2", "3", "4"]}
+                                "144":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "145":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "146":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "147":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "148":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "151":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "152":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "153":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "154":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "155":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "156":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "157":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "158":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "161":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "162":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "163":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "164":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "165":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "166":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "167":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "168":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "341":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "342":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "343":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "344":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "345":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "346":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "347":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "348":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "351":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "352":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "353":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "354":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "355":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "356":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "357":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "358":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "361":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "362":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "363":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "364":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "365":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "366":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "367":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "368":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "521":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "522":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "523":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "524":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "525":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "526":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
+                                "527":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
+                                "528":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],}
         self.listaPortaCto = dicionarioPortaCto[self.vlan]
         self.widgetsTelaProvisionarComboBox()
         #self.quartaTela.update()
@@ -206,7 +270,7 @@ class InformacoesOlt():
     def infoLog(self):
         self.tn.write(b"show history\n")
         logOlt = self.tn.read_until(b'#').decode()
-        listaLogOlt = logOlt.split("\r", 40)
+        listaLogOlt = logOlt.split("\n", 20)
         for i in listaLogOlt:
             self.listBoxLog.insert(END, i)
         self.listBoxLog.delete(1, 10)
@@ -283,12 +347,12 @@ class Interface():
     def telaPrincipal(self):
         primeiraTela = Tk()
         primeiraTela.geometry("950x600+210+60")
-        primeiraTela.iconbitmap(default="icone\\logo.ico")
+        #primeiraTela.iconbitmap(default="icone\\logo.ico")
         primeiraTela.title("BRCOM - OLT Digistar")
         primeiraTela.configure(background="#2F4F4F")
         #primeiraTela.resizable(width=False, height=False)
         self.primeiraTela = primeiraTela
-        self.imgOlt = PhotoImage(file="imagens/imgOlt.png")
+        #self.imgOlt = PhotoImage(file="imagens/imgOlt.png")
         self.framesTelaPrincipal()
         self.widgetsTelaPrincipal()
         self.infoUptimeOlt()
@@ -325,6 +389,8 @@ class Interface():
         botaoTelaSinal.place(relx=0.13, rely=0.15, relwidth=0.73, relheight=0.1)
         botaoTelaVlan = atk.Button3d(self.frameVertical, text="VLAN's UPLINK", bg="#233237", command=self.telaVlan)
         botaoTelaVlan.place(relx=0.13, rely=0.26, relwidth=0.73, relheight=0.1)
+        botaoTelaDeletarOnu = atk.Button3d(self.frameVertical, text="Deletar ONU", bg="#233237", command=self.telaDeletarOnu)
+        botaoTelaDeletarOnu.place(relx=0.13, rely=0.37, relwidth=0.73, relheight=0.1)
         botaoLog = Button(self.frameTela, text="Log", font="arial 8 bold", background="#fff", command=self.telaLog)
         botaoLog.place(relx=0.155, rely=0.37, relwidth=0.051, relheight=0.058)
         #Criação das entradas dos dados.
@@ -333,13 +399,13 @@ class Interface():
         atk.tooltip(botaoTelaSinal, "Verifica os sinais das onu")
         atk.tooltip(botaoTelaVlan, "Verifica todas as vlan criadas")
         #Imagens
-        imagemOltDigistar = Label(self.frameTela, image=self.imgOlt)
-        imagemOltDigistar.place(relx=0.105, rely=0.05)
+        #imagemOltDigistar = Label(self.frameTela, image=self.imgOlt)
+        #imagemOltDigistar.place(relx=0.105, rely=0.05)
 
     def telaSinal(self):
         self.segundaTela = Toplevel() #Deixa essa janela como prioridade.
         self.segundaTela.geometry("730x599+430+60")
-        self.segundaTela.iconbitmap(default="icone\\logo.ico")
+        #self.segundaTela.iconbitmap(default="icone\\logo.ico")
         self.segundaTela.title("Sinais das ONU's")
         self.segundaTela.configure(background="#9099A2") #"gray20" and "#2F4F4F"
         self.segundaTela.resizable(width=False, height=False)
@@ -398,7 +464,7 @@ class Interface():
     def telaVlan(self):
         self.terceiraTela = Toplevel() #Deixa essa janela como prioridade.
         self.terceiraTela.geometry("730x599+430+60")
-        self.terceiraTela.iconbitmap(default="icone\\logo.ico")
+        #self.terceiraTela.iconbitmap(default="icone\\logo.ico")
         self.terceiraTela.title("Vlan's bridge/...")
         self.terceiraTela.configure(background="#9099A2") #"gray20" and "#2F4F4F"
         self.terceiraTela.resizable(width=False, height=False)
@@ -418,7 +484,7 @@ class Interface():
     def telaProvisionar(self):
         self.quartaTela = Toplevel() #Deixa essa janela como prioridade.
         self.quartaTela.geometry("730x599+430+60")
-        self.quartaTela.iconbitmap(default="icone\\logo.ico")
+        #self.quartaTela.iconbitmap(default="icone\\logo.ico")
         self.quartaTela.title("Provisionar ONU")
         self.quartaTela.configure(background="#9099A2") #"gray20" and "#2F4F4F"
         self.quartaTela.resizable(width=False, height=False)
@@ -555,7 +621,7 @@ class Interface():
     def telaLog(self):
         self.logTela = Toplevel()
         self.logTela.geometry("730x599+430+60")
-        self.logTela.iconbitmap(default="icone\\logo.ico")
+        #self.logTela.iconbitmap(default="icone\\logo.ico")
         self.logTela.title("Log da OLT")
         self.logTela.configure(background="#9099A2")
         self.logTela.resizable(width=False, height=False)
@@ -577,11 +643,32 @@ class Interface():
         self.listBoxLog = Listbox(self.logTela, justify=CENTER, font="arial 10",width=50, height=30)
         self.listBoxLog.place(relx=0.258, rely=0.068)
 
+    def telaDeletarOnu(self):
+        self.deletarOnuTela = Toplevel()
+        self.deletarOnuTela.geometry("730x599+430+60")
+        #self.logTela.iconbitmap(default="icone\\logo.ico")
+        self.deletarOnuTela.title("Deletar ONU")
+        self.deletarOnuTela.configure(background="#9099A2")
+        self.deletarOnuTela.resizable(width=False, height=False)
+        self.deletarOnuTela.transient(self.primeiraTela)
+        self.deletarOnuTela.focus_force()
+        self.deletarOnuTela.grab_set()
+        self.farmesTelaDeletarOnu()
+        self.widgetsTelaDeletarOnu()
+
+    def farmesTelaDeletarOnu(self):
+        esquerdaFrameDeletarOnu = Frame(self.deletarOnuTela, borderwidth=2, relief="solid", bg='#233237')
+        esquerdaFrameDeletarOnu.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
+        direitaFrameDeletarOnu = Frame(self.deletarOnuTela, borderwidth=2, relief="solid", bg='#233237')
+        direitaFrameDeletarOnu.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
+    
+    def widgetsTelaDeletarOnu(self):
+        pass
+
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt):
     def __init__(self):
         self.conectar()
         self.login()
         self.telaPrincipal()
-        #self.telaSinal()
 
 Main()
