@@ -13,7 +13,8 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import SimpleDocTemplate, Image
 import webbrowser
-
+from PIL import ImageTk, Image
+import base64 #Necessário para utilizar imagens dentro do código sem dá erro na hora de compilar.
 
 class Conexao():
     def conectar(self):
@@ -149,7 +150,7 @@ class Comandos():
         if vlan >= 141 and vlan <= 148:
             self.saidaRamal["text"] = "14"
         '''
-
+        
     def verificaOpcaoRamal(self):
             vlan = self.vlan
             if int(vlan) >= 131 and int(vlan) <= 138:
@@ -180,6 +181,35 @@ class Comandos():
         self.listaPortaCto = dicionarioPortaCto[self.vlan]
         self.widgetsTelaProvisionarComboBox()
         #self.quartaTela.update()
+
+class InformacoesOlt():
+    def infoUptimeOlt(self):
+        self.tn.write(b"show uptime\n")
+        uptimeOlt = self.tn.read_until(b'#').decode()
+        listaUptimeOlt = uptimeOlt.split(" ", 5)
+        self.saidaUptime["text"] = listaUptimeOlt[4] + " dias"
+
+    def infoMemoriaOlt(self):
+        self.tn.write(b"show memory\n")
+        memoriaOlt = self.tn.read_until(b'#').decode()
+        listaMemoria = memoriaOlt.split(":", 2)
+        listaMemoria = listaMemoria[1].split(" ", 1)
+
+        self.saidaMemoria["text"] = "Total     |   Usada    |    Livre\n                          " + listaMemoria[1]
+
+    def infoTemperaturaOlt(self):
+        self.tn.write(b"show temperature\n")
+        temperaturaOlt = self.tn.read_until(b'#').decode()
+        listaTemperaturaOlt = temperaturaOlt.split(" ", 4)
+        self.saidaTemperatura["text"] = listaTemperaturaOlt[3] + "  ºC"
+
+    def infoLog(self):
+        self.tn.write(b"show history\n")
+        logOlt = self.tn.read_until(b'#').decode()
+        listaLogOlt = logOlt.split("\r", 40)
+        for i in listaLogOlt:
+            self.listBoxLog.insert(END, i)
+        self.listBoxLog.delete(1, 10)
 
 class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto só está sendo utilizado na tela de sinal.
     def __init__(self, master=None, placeholder= 'PLACEHOLDER', color= 'gray'):
@@ -258,8 +288,12 @@ class Interface():
         primeiraTela.configure(background="#2F4F4F")
         #primeiraTela.resizable(width=False, height=False)
         self.primeiraTela = primeiraTela
+        self.imgOlt = PhotoImage(file="imagens/imgOlt.png")
         self.framesTelaPrincipal()
         self.widgetsTelaPrincipal()
+        self.infoUptimeOlt()
+        self.infoTemperaturaOlt()
+        self.infoMemoriaOlt()
         primeiraTela.mainloop()
 
     def framesTelaPrincipal(self):
@@ -274,7 +308,16 @@ class Interface():
 
     def widgetsTelaPrincipal(self):
         #Criação dos texto.
+        Label(self.frameTela, text="Uptime:", font="verdana 9 bold", background="#9099A2").place(relx=0.15, rely=0.225)
+        Label(self.frameTela, text="Temperatura:", font="verdana 9 bold", background="#9099A2").place(relx=0.15, rely=0.287)
+        Label(self.frameTela, text="Memória:", font="verdana 9 bold", background="#9099A2").place(relx=0.517, rely=0.225)
         #Criação das saídas dos dados.
+        self.saidaUptime = Label(self.frameTela, text="", background="#9099A2")
+        self.saidaUptime.place(relx=0.225, rely=0.225)
+        self.saidaTemperatura = Label(self.frameTela, text="", background="#9099A2")
+        self.saidaTemperatura.place(relx=0.28, rely=0.287)
+        self.saidaMemoria = Label(self.frameTela, text="", background="#9099A2", anchor=N)
+        self.saidaMemoria.place(relx=0.602, rely=0.217, relwidth=0.218, relheight=0.1)
         #Criação dos botões.
         botaoTelaProvisionarOnu = atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#233237", command=self.telaProvisionar)
         botaoTelaProvisionarOnu.place(relx=0.13, rely=0.04, relwidth=0.73, relheight=0.1)
@@ -282,11 +325,16 @@ class Interface():
         botaoTelaSinal.place(relx=0.13, rely=0.15, relwidth=0.73, relheight=0.1)
         botaoTelaVlan = atk.Button3d(self.frameVertical, text="VLAN's UPLINK", bg="#233237", command=self.telaVlan)
         botaoTelaVlan.place(relx=0.13, rely=0.26, relwidth=0.73, relheight=0.1)
+        botaoLog = Button(self.frameTela, text="Log", font="arial 8 bold", background="#fff", command=self.telaLog)
+        botaoLog.place(relx=0.155, rely=0.37, relwidth=0.051, relheight=0.058)
         #Criação das entradas dos dados.
         #Balão de mensagem.
         atk.tooltip(botaoTelaProvisionarOnu, "Autoriza ONU em modo bridge")
         atk.tooltip(botaoTelaSinal, "Verifica os sinais das onu")
         atk.tooltip(botaoTelaVlan, "Verifica todas as vlan criadas")
+        #Imagens
+        imagemOltDigistar = Label(self.frameTela, image=self.imgOlt)
+        imagemOltDigistar.place(relx=0.105, rely=0.05)
 
     def telaSinal(self):
         self.segundaTela = Toplevel() #Deixa essa janela como prioridade.
@@ -447,10 +495,10 @@ class Interface():
         labelAstLogin.place(relx=0.21, rely=0.09)
         labelAstVlan = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
         labelAstVlan.place(relx=0.532, rely=0.09)
-        labelAstRamal = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
-        labelAstRamal.place(relx=0.216, rely=0.19)
-        labelAstSplitter = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
-        labelAstSplitter.place(relx=0.562, rely=0.19)
+        #labelAstRamal = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
+        #labelAstRamal.place(relx=0.216, rely=0.19)
+        #labelAstSplitter = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
+        #labelAstSplitter.place(relx=0.562, rely=0.19)
         labelAstPortaCto = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
         labelAstPortaCto.place(relx=0.9344, rely=0.189)
         #Criação das entradas dos dados.
@@ -495,8 +543,8 @@ class Interface():
         atk.tooltip(labelAstModoOnu, "Campo obrigatório")
         atk.tooltip(labelAstLogin, "Campo obrigatório")
         atk.tooltip(labelAstVlan, "Campo obrigatório")
-        atk.tooltip(labelAstRamal, "Campo obrigatório")
-        atk.tooltip(labelAstSplitter, "Campo obrigatório")
+        #atk.tooltip(labelAstRamal, "Campo obrigatório")
+        #atk.tooltip(labelAstSplitter, "Campo obrigatório")
         atk.tooltip(labelAstPortaCto, "Campo obrigatório")
 
     def widgetsTelaProvisionarComboBox(self):
@@ -504,8 +552,32 @@ class Interface():
         self.comboBoxPortaCto.set("0")
         self.comboBoxPortaCto.place(relx=0.793, rely=0.211, relwidth=0.085)
 
+    def telaLog(self):
+        self.logTela = Toplevel()
+        self.logTela.geometry("730x599+430+60")
+        self.logTela.iconbitmap(default="icone\\logo.ico")
+        self.logTela.title("Log da OLT")
+        self.logTela.configure(background="#9099A2")
+        self.logTela.resizable(width=False, height=False)
+        self.logTela.transient(self.primeiraTela)
+        self.logTela.focus_force()
+        self.logTela.grab_set()
+        self.framesTelaLog()
+        self.widgetsTelaLog()
+        self.infoLog()
 
-class Main(Conexao, Comandos, Interface, Relatorios):
+    def framesTelaLog(self):
+        esquerdaFrameLog = Frame(self.logTela, borderwidth=2, relief="solid", bg='#233237')
+        esquerdaFrameLog.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
+        direitaFrameLog = Frame(self.logTela, borderwidth=2, relief="solid", bg='#233237')
+        direitaFrameLog.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
+
+    def widgetsTelaLog(self):
+        #Saida de texto.
+        self.listBoxLog = Listbox(self.logTela, justify=CENTER, font="arial 10",width=50, height=30)
+        self.listBoxLog.place(relx=0.258, rely=0.068)
+
+class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt):
     def __init__(self):
         self.conectar()
         self.login()
