@@ -355,9 +355,9 @@ class Interface():
         #self.imgOlt = PhotoImage(file="imagens/imgOlt.png")
         self.framesTelaPrincipal()
         self.widgetsTelaPrincipal()
-        self.infoUptimeOlt()
-        self.infoTemperaturaOlt()
-        self.infoMemoriaOlt()
+        #self.infoUptimeOlt()
+        #self.infoTemperaturaOlt()
+        #self.infoMemoriaOlt()
         primeiraTela.mainloop()
 
     def framesTelaPrincipal(self):
@@ -384,13 +384,13 @@ class Interface():
         self.saidaMemoria.place(relx=0.602, rely=0.217, relwidth=0.218, relheight=0.1)
         #Criação dos botões.
         botaoTelaProvisionarOnu = atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#233237", command=self.telaProvisionar)
-        botaoTelaProvisionarOnu.place(relx=0.13, rely=0.04, relwidth=0.73, relheight=0.1)
-        botaoTelaSinal = atk.Button3d(self.frameVertical, text="SINAL DA ONU", bg="#233237", command=self.telaSinal)
-        botaoTelaSinal.place(relx=0.13, rely=0.15, relwidth=0.73, relheight=0.1)
+        botaoTelaProvisionarOnu.place(relx=0.13, rely=0.055, relwidth=0.73, relheight=0.1)
+        botaoTelaSinal = atk.Button3d(self.frameVertical, text="VERIFICAR SINAL", bg="#233237", command=self.telaSinal)
+        botaoTelaSinal.place(relx=0.13, rely=0.175, relwidth=0.73, relheight=0.1)
         botaoTelaVlan = atk.Button3d(self.frameVertical, text="VLAN's UPLINK", bg="#233237", command=self.telaVlan)
-        botaoTelaVlan.place(relx=0.13, rely=0.26, relwidth=0.73, relheight=0.1)
+        botaoTelaVlan.place(relx=0.13, rely=0.294, relwidth=0.73, relheight=0.1)
         botaoTelaDeletarOnu = atk.Button3d(self.frameVertical, text="Deletar ONU", bg="#233237", command=self.telaDeletarOnu)
-        botaoTelaDeletarOnu.place(relx=0.13, rely=0.37, relwidth=0.73, relheight=0.1)
+        botaoTelaDeletarOnu.place(relx=0.13, rely=0.413, relwidth=0.73, relheight=0.1)
         botaoLog = Button(self.frameTela, text="Log", font="arial 8 bold", background="#fff", command=self.telaLog)
         botaoLog.place(relx=0.155, rely=0.37, relwidth=0.051, relheight=0.058)
         #Criação das entradas dos dados.
@@ -661,14 +661,26 @@ class Interface():
         esquerdaFrameDeletarOnu.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
         direitaFrameDeletarOnu = Frame(self.deletarOnuTela, borderwidth=2, relief="solid", bg='#233237')
         direitaFrameDeletarOnu.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
+        linhaFrameDeletarOnu = Frame(self.deletarOnuTela, borderwidth=1, relief="solid", background="#9099A2")
+        linhaFrameDeletarOnu.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
     
     def widgetsTelaDeletarOnu(self):
-        pass
+        #Criação dos texto.
+        Label(self.deletarOnuTela, text="Deletar ONU", font="verdana 14 bold", background="#9099A2").place(relx=0.406, rely=0.03)
+        Label(self.deletarOnuTela, text="Informe o login", font="arial 12 bold", background="#9099A2").place(relx=0.42, rely=0.14)
+        #Criação de entrada de dados.
+        self.entradaLoginDeletarOnu = Entry(self.deletarOnuTela, bd=3, justify=CENTER)
+        self.entradaLoginDeletarOnu.place(relx=0.426, rely=0.19, relwidth=0.152, relheight=0.038)
+        #Criação de botões.
+        botaoDeletarOnu = atk.Button3d(self.deletarOnuTela, text="Deletar", bg="red",)#command=self.provisionarOnu)
+        botaoDeletarOnu.place(relx=0.434, rely=0.295, relwidth=0.13, relheight=0.071)
+        #Balão de mensagem.
+        atk.tooltip(botaoDeletarOnu, "Deletar ONU do login informado acima.")
 
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt):
     def __init__(self):
-        self.conectar()
-        self.login()
+        #self.conectar()
+        #self.login()
         self.telaPrincipal()
 
 Main()
