@@ -349,7 +349,7 @@ class Interface():
         primeiraTela.geometry("950x600+210+60")
         #primeiraTela.iconbitmap(default="icone\\logo.ico")
         primeiraTela.title("BRCOM - OLT Digistar")
-        primeiraTela.configure(background="#2F4F4F")
+        primeiraTela.configure(background="#062F4F")
         #primeiraTela.resizable(width=False, height=False)
         self.primeiraTela = primeiraTela
         #self.imgOlt = PhotoImage(file="imagens/imgOlt.png")
@@ -361,12 +361,10 @@ class Interface():
         primeiraTela.mainloop()
 
     def framesTelaPrincipal(self):
-        self.frameVertical = atk.Frame3d(self.primeiraTela, bg='#2F4F4F')
+        self.frameVertical = atk.Frame3d(self.primeiraTela, bg='#062F4F')
         self.frameVertical.place(relx=0, rely=0.225, relwidth=0.23, relheight=0.78)
-        self.frameHorizontal = atk.Frame3d(self.primeiraTela, bg='#2F4F4F')
+        self.frameHorizontal = atk.Frame3d(self.primeiraTela, bg='#062F4F')
         self.frameHorizontal.place(relx=0, rely=0, relwidth=1.002, relheight=0.23)
-        #self.frameQuadrado = Frame(self.primeiraTela, borderwidth=1, relief="solid")
-        #self.frameQuadrado.place(relx=0.004, rely=0.004, relwidth=0.223, relheight=0.221)
         self.frameTela = atk.Frame3d(self.primeiraTela, bg='#9099A2')
         self.frameTela.place(relx=0.23, rely=0.2299, relwidth=0.771, relheight=0.776)
 
@@ -393,6 +391,8 @@ class Interface():
         botaoTelaDeletarOnu.place(relx=0.13, rely=0.413, relwidth=0.73, relheight=0.1)
         botaoLog = Button(self.frameTela, text="Log", font="arial 8 bold", background="#fff", command=self.telaLog)
         botaoLog.place(relx=0.155, rely=0.37, relwidth=0.051, relheight=0.058)
+        botaoTelaDadosOnu = atk.Button3d(self.frameVertical, text="PROVISIONADAS", bg="#233237", command=self.telaDadosClientes)
+        botaoTelaDadosOnu.place(relx=0.13, rely=0.535, relwidth=0.73, relheight=0.1)
         #Criação das entradas dos dados.
         #Balão de mensagem.
         atk.tooltip(botaoTelaProvisionarOnu, "Autoriza ONU em modo bridge")
@@ -609,8 +609,6 @@ class Interface():
         atk.tooltip(labelAstModoOnu, "Campo obrigatório")
         atk.tooltip(labelAstLogin, "Campo obrigatório")
         atk.tooltip(labelAstVlan, "Campo obrigatório")
-        #atk.tooltip(labelAstRamal, "Campo obrigatório")
-        #atk.tooltip(labelAstSplitter, "Campo obrigatório")
         atk.tooltip(labelAstPortaCto, "Campo obrigatório")
 
     def widgetsTelaProvisionarComboBox(self):
@@ -676,6 +674,26 @@ class Interface():
         botaoDeletarOnu.place(relx=0.434, rely=0.295, relwidth=0.13, relheight=0.071)
         #Balão de mensagem.
         atk.tooltip(botaoDeletarOnu, "Deletar ONU do login informado acima.")
+
+    def telaDadosClientes(self):
+        self.dadosOnuCliente = Toplevel()
+        self.dadosOnuCliente.geometry("730x599+430+60")
+        #self.logTela.iconbitmap(default="icone\\logo.ico")
+        self.dadosOnuCliente.title("Deletar ONU")
+        self.dadosOnuCliente.configure(background="#9099A2")
+        self.dadosOnuCliente.resizable(width=False, height=False)
+        self.dadosOnuCliente.transient(self.primeiraTela)
+        self.dadosOnuCliente.focus_force()
+        self.dadosOnuCliente.grab_set()
+        self.farmesTelaDadosOnu()
+
+    def farmesTelaDadosOnu(self):
+        esquerdaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=2, relief="solid", bg='#233237')
+        esquerdaFrameDadosOnu.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
+        direitaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=2, relief="solid", bg='#233237')
+        direitaFrameDadosOnu.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
+        linhaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=1, relief="solid", background="#9099A2")
+        linhaFrameDadosOnu.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
 
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt):
     def __init__(self):
