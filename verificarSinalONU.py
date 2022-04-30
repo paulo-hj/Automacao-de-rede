@@ -16,6 +16,8 @@ import webbrowser
 from PIL import ImageTk, Image
 import base64 #Necessário para utilizar imagens dentro do código sem dá erro na hora de compilar.
 
+from datetime import datetime
+
 class Conexao():
     def conectar(self):
         HOST = "10.50.50.50"
@@ -246,6 +248,11 @@ class Comandos():
         self.widgetsTelaProvisionarComboBox()
         #self.quartaTela.update()
 
+    def infoDataHora(self):
+        dataEHora = datetime.now()
+        dataEHora = dataEHora.strftime("%d/%m/%Y - %H:%M")
+        return dataEHora
+
 class InformacoesOlt():
     def infoUptimeOlt(self):
         self.tn.write(b"show uptime\n")
@@ -307,6 +314,8 @@ class Relatorios():
             self.c = canvas.Canvas(self.nomeDiretorio+"\\ONU Digistar.pdf")
             self.c.setFont("Helvetica-Bold", 24)
             self.c.drawString(200, 790, "Sinais das ONU's")
+            self.c.setFont("Helvetica-Bold", 10)
+            self.c.drawString(25, 820, self.infoDataHora())
             porta = 1
             onu = 1
             pularLinhaTexto = 733
@@ -570,12 +579,10 @@ class Interface():
         #Criação das entradas dos dados.
         self.entradaLoginOnu = Entry(self.dentroFrameProvisionarOnu, bd=3, justify=CENTER)
         self.entradaLoginOnu.place(relx=0.043, rely=0.11, relheight=0.02)
-
         #Criação de listbox.
         self.listBoxVlan = tkinter.Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=6, height=4, listvariable=self.nintVar)
         self.listBoxVlan.place(relx=0.461, rely=0.11)
         self.listBoxVlan.bind('<<ListboxSelect>>', self.verificarOpcaoVlan)
-
         self.listBoxMarcaOnu = Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=11, height=4)
         self.listBoxMarcaOnu.place(relx=0.746, rely=0.11)
         #self.listBoxPortaCto = Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=5, height=4)
@@ -588,19 +595,16 @@ class Interface():
         barraRolagemMarcaOnu = Scrollbar(self.dentroFrameProvisionarOnu, orient="vertical")
         self.listBoxMarcaOnu.configure(yscroll=barraRolagemMarcaOnu.set)
         barraRolagemMarcaOnu.place(relx=0.883, rely=0.11, relwidth=0.025,relheight=0.057)
-
         #Criação das saídas dos dados.
         self.saidaRamal = Label(self.dentroFrameProvisionarOnu, text="", background="#fff", anchor=CENTER)
         self.saidaRamal.place(relx=0.135, rely=0.211, relwidth=0.07)
         self.saidaSplitter = Label(self.dentroFrameProvisionarOnu, text="", background="#fff", anchor=CENTER)
         self.saidaSplitter.place(relx=0.398, rely=0.211, relwidth=0.239)
-
         #Criação de radio button.
         radioBridge = Radiobutton(self.dentroFrameProvisionarOnu, text="Bridge  |", value=1, variable=self.radioButtonSelecionado, background="#9099A2")
         radioBridge.place(relx=0.37, rely=0.05)
         radioPppoe = Radiobutton(self.dentroFrameProvisionarOnu, text="PPPOE", value=2, variable=self.radioButtonSelecionado, background="#9099A2")
         radioPppoe.place(relx=0.5, rely=0.05)
-
         #Criação de combo box.
         #self.portaCto = ttk.Combobox(self.dentroFrameProvisionarOnu, values=self.listaPortaCto)
         #self.portaCto.place(relx=0.7, rely=0.211)
@@ -697,8 +701,8 @@ class Interface():
 
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt):
     def __init__(self):
-        #self.conectar()
-        #self.login()
+        self.conectar()
+        self.login()
         self.telaPrincipal()
 
 Main()
