@@ -17,6 +17,7 @@ from PIL import ImageTk, Image
 import base64 #Necessário para utilizar imagens dentro do código sem dá erro na hora de compilar.
 
 from datetime import datetime
+from tkinter import colorchooser
 
 class Conexao():
     def conectar(self):
@@ -42,12 +43,19 @@ class Comandos():
         self.saidaSinalOnu["text"] = "{}".format(str(saida))
 
     def carregarBarraProgresso(self):
+        tipoDeRelatorio = ""
         self.barraProgresso.stop()
         for x in range(20):
             self.barraProgresso['value'] += 5
-            self.segundaTela.update_idletasks()
+            self.relatoriosTela.update_idletasks()
             time.sleep(0.09)
-        self.geraRelatCliente()
+        tipoDeRelatorio = self.listBoxRelatorio.get(ACTIVE)
+        if len(self.nomeDiretorio) == 0:
+            messagebox.showerror(title="Erro", message="Por favor, informe o caminho do arquivo.")
+        elif tipoDeRelatorio == "Sinais das ONU's":
+            self.geraRelatCliente()
+        else:
+            messagebox.showerror(title="Erro", message="Escolha o modelo de relatório.")
 
     def selecionarDiretorio(self):
         opcoes = {}
@@ -133,7 +141,7 @@ class Comandos():
           "361", "362", "363", "364", "365", "366", "367", "368", "521", "522", "523", "524", "525", "526", "527", "528"]
         self.nintVar = tkinter.IntVar(value=self.listaVlan)
         
-    def listaListBox(self):
+    def listaListBoxMarcaOnu(self):
         listaMarcaOnu = ["Digistar" ,"Huawei" ,"Unne", "IntelBras", "Tp-link", "Cianet", "Shoreline", "Stavix"]
         for i in listaMarcaOnu:
             self.listBoxMarcaOnu.insert(END, i)
@@ -253,6 +261,12 @@ class Comandos():
         dataEHora = dataEHora.strftime("%d/%m/%Y - %H:%M")
         return dataEHora
 
+    def listaListBoxRelatorios(self):
+        listaTiposRelatorios = ["-------------------------------------------", "Sinais das ONU's", "-------------------------------------------",
+        "Todos as ONU", "-------------------------------------------","Log"]
+        for i in listaTiposRelatorios:
+            self.listBoxRelatorio.insert(END, i)
+
 class InformacoesOlt():
     def infoUptimeOlt(self):
         self.tn.write(b"show uptime\n")
@@ -310,48 +324,45 @@ class Relatorios():
         webbrowser.open(self.nomeDiretorio+"\\ONU Digistar.pdf")
 
     def geraRelatCliente(self):
-        try:
-            self.c = canvas.Canvas(self.nomeDiretorio+"\\ONU Digistar.pdf")
-            self.c.setFont("Helvetica-Bold", 24)
-            self.c.drawString(200, 790, "Sinais das ONU's")
-            self.c.setFont("Helvetica-Bold", 10)
-            self.c.drawString(25, 820, self.infoDataHora())
-            porta = 1
-            onu = 1
-            pularLinhaTexto = 733
-            pularLinhaTraço = 720
-            self.c.setFont("Helvetica", 10)
-            while onu < 17: #onu < 17:
-                lista2= ['d']
-                comando = "onu status {}/{}\n".format(porta,onu).encode()
-                self.tn.write(b""+comando)
-                saida = str(self.tn.read_until(b'#').decode())
-                if len(saida) == 186 or len(saida) == 191:
-                    lista = saida.split("N", 3)
-                    texto = str(lista[0] + lista[1] + lista[2])
-                    lista2 = texto.split("\r", 1)
-                    lista.append(texto.split("d", 2))
-                    texto2 = str(lista[2])
-                    lista = texto2.split("I", 1)
-                    self.c.drawString(25, pularLinhaTexto, lista2[0])
-                    self.c.rect(25, pularLinhaTraço, 545, 1, fill= True, stroke=True)
-                    self.c.drawString(115, pularLinhaTexto, lista[0])
-                    pularLinhaTexto = pularLinhaTexto - 30
-                    pularLinhaTraço = pularLinhaTraço - 30
-                    onu = onu + 1
-                else:
-                    onu = onu + 1
-                if onu == 17 and porta < 8: #onu == 17 and porta < 8:
-                    porta = porta + 1
-                    onu = 1
-            #self.c.rect(20, 720, 550, 200, fill= False, stroke=True)
-            self.c.showPage()
-            self.c.showPage()
-            self.c.save()
-            self.printPdf()
-        except:
-            messagebox.showerror(title="Erro", message="Por favor, informe o caminho do arquivo.")
-
+        self.c = canvas.Canvas(self.nomeDiretorio+"\\ONU Digistar.pdf")
+        self.c.setFont("Helvetica-Bold", 24)
+        self.c.drawString(200, 790, "Sinais das ONU's")
+        self.c.setFont("Helvetica-Bold", 10)
+        self.c.drawString(25, 820, self.infoDataHora())
+        porta = 1
+        onu = 1
+        pularLinhaTexto = 733
+        pularLinhaTraço = 720
+        self.c.setFont("Helvetica", 10)
+        while onu < 17: #onu < 17:
+            lista2= ['d']
+            comando = "onu status {}/{}\n".format(porta,onu).encode()
+            self.tn.write(b""+comando)
+            saida = str(self.tn.read_until(b'#').decode())
+            if len(saida) == 186 or len(saida) == 191:
+                lista = saida.split("N", 3)
+                texto = str(lista[0] + lista[1] + lista[2])
+                lista2 = texto.split("\r", 1)
+                lista.append(texto.split("d", 2))
+                texto2 = str(lista[2])
+                lista = texto2.split("I", 1)
+                self.c.drawString(25, pularLinhaTexto, lista2[0])
+                self.c.rect(25, pularLinhaTraço, 545, 1, fill= True, stroke=True)
+                self.c.drawString(115, pularLinhaTexto, lista[0])
+                pularLinhaTexto = pularLinhaTexto - 30
+                pularLinhaTraço = pularLinhaTraço - 30
+                onu = onu + 1
+            else:
+                onu = onu + 1
+            if onu == 17 and porta < 8: #onu == 17 and porta < 8:
+                porta = porta + 1
+                onu = 1
+        #self.c.rect(20, 720, 550, 200, fill= False, stroke=True)
+        self.c.showPage()
+        self.c.showPage()
+        self.c.save()
+        self.printPdf()
+    
 class Interface():
     def telaPrincipal(self):
         primeiraTela = Tk()
@@ -362,6 +373,7 @@ class Interface():
         #primeiraTela.resizable(width=False, height=False)
         self.primeiraTela = primeiraTela
         #self.imgOlt = PhotoImage(file="imagens/imgOlt.png")
+        #self.barraDeMenuTelaPrincipal()
         self.framesTelaPrincipal()
         self.widgetsTelaPrincipal()
         #self.infoUptimeOlt()
@@ -394,7 +406,7 @@ class Interface():
         botaoTelaProvisionarOnu.place(relx=0.13, rely=0.055, relwidth=0.73, relheight=0.1)
         botaoTelaSinal = atk.Button3d(self.frameVertical, text="VERIFICAR SINAL", bg="#233237", command=self.telaSinal)
         botaoTelaSinal.place(relx=0.13, rely=0.175, relwidth=0.73, relheight=0.1)
-        botaoTelaVlan = atk.Button3d(self.frameVertical, text="VLAN's UPLINK", bg="#233237", command=self.telaVlan)
+        botaoTelaVlan = atk.Button3d(self.frameVertical, text="RELATÓRIOS", bg="#233237", command=self.telaRelatorios)
         botaoTelaVlan.place(relx=0.13, rely=0.294, relwidth=0.73, relheight=0.1)
         botaoTelaDeletarOnu = atk.Button3d(self.frameVertical, text="Deletar ONU", bg="#233237", command=self.telaDeletarOnu)
         botaoTelaDeletarOnu.place(relx=0.13, rely=0.413, relwidth=0.73, relheight=0.1)
@@ -411,6 +423,27 @@ class Interface():
         #imagemOltDigistar = Label(self.frameTela, image=self.imgOlt)
         #imagemOltDigistar.place(relx=0.105, rely=0.05)
 
+    def barraDeMenuTelaPrincipal(self):
+        barramenus = Menu(self.primeiraTela) #Cria uma barra de menus.
+
+        arquivomenu = Menu(barramenus) #Cria uma coluna dentro do menu.
+        arquivomenu = Menu(arquivomenu, tearoff=0) #Tira um tracejado que vem por padrão nos menu.
+        barramenus.add_cascade(label="Arquivo", menu=arquivomenu) #Da um nome a o menu e diz que vai ser em forma de cascata.
+        #arquivomenu.add_command(label="Novo")", command=principal) #Cria submenus.
+        arquivomenu.add_separator()
+        confmenu = Menu(barramenus)
+        confmenu = Menu(confmenu, tearoff=0) #Tira um tracejado que vem por padrão nos menu.
+        barramenus.add_cascade(label="Configurações", menu=confmenu)
+        confmenu.add_command(label="Cores")#, command=self.telaEscolherCores)
+
+        sobremenu = Menu(barramenus)
+        sobremenu = Menu(sobremenu, tearoff=0) #Tira um tracejado que vem por padrão nos menu.
+        barramenus.add_cascade(label="Ajuda", menu=sobremenu)
+        #sobremenu.add_command(label="Código fonte", command=senha)
+        #sobremenu.add_command(label="Introdução", command=comousar)
+
+        self.primeiraTela.config(menu=barramenus)
+
     def telaSinal(self):
         self.segundaTela = Toplevel() #Deixa essa janela como prioridade.
         self.segundaTela.geometry("730x599+430+60")
@@ -421,7 +454,6 @@ class Interface():
         self.segundaTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
         self.segundaTela.focus_force() #Força o foco nessa janela.
         self.segundaTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
-        self.nomeDiretorio = "C:\\Users\\Public\\Desktop"
         self.framesTelaSinal()
         self.widgetsTelaSinal()
     
@@ -430,8 +462,10 @@ class Interface():
         esquerdaFrameSinal.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
         direitaFrameSinal = Frame(self.segundaTela, borderwidth=2, relief="solid", bg='#233237')
         direitaFrameSinal.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
-        linhaFrameSinal = Frame(self.segundaTela, borderwidth=5, relief="solid", bg='#233237')
-        linhaFrameSinal.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.005)
+        linhaFrameSinal = Frame(self.segundaTela, borderwidth=1, relief="solid", background="#9099A2")
+        linhaFrameSinal.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
+        linhaFrameSinal2 = Frame(self.segundaTela, borderwidth=5, relief="solid", bg='#233237')
+        linhaFrameSinal2.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.005)
 
     def widgetsTelaSinal(self):
         #*Primeiro Frame
@@ -455,9 +489,6 @@ class Interface():
         Label(self.segundaTela, text="Defina a pasta que deseja salvar o arquivo", font="arial 8", background="#9099A2").place(relx=0.271, rely=0.625)
         Label(self.segundaTela, text="0%", font="arial 6", background="#9099A2").place(relx=0.235, rely=0.942)
         Label(self.segundaTela, text="100%", font="arial 6", background="#9099A2", foreground="green").place(relx=0.73, rely=0.942)
-        #Criação das saídas dos dados.
-        self.saidaDiretorio = Label(self.segundaTela, text="C:\\Users\\Public\\Desktop", font="arial 8", background="#E9C893")
-        self.saidaDiretorio.place(relx=0.275, rely=0.655, relwidth=0.37)
         #Criação dos botões.
         botaoDefinirDiretorio = atk.Button3d(self.segundaTela, text="Definir", command=self.selecionarDiretorio)
         botaoDefinirDiretorio.place(relx=0.645, rely=0.64, relwidth=0.09, relheight=0.059)
@@ -470,25 +501,53 @@ class Interface():
         atk.tooltip(botaoDefinirDiretorio, "Selecione o diretório que deseja salvar o arquivo")
         atk.tooltip(botaoGerarPdf, 'Gera um arquivo com nome padrão de "ONU Digistar.pdf"')
 
-    def telaVlan(self):
-        self.terceiraTela = Toplevel() #Deixa essa janela como prioridade.
-        self.terceiraTela.geometry("730x599+430+60")
+    def telaRelatorios(self):
+        self.relatoriosTela = Toplevel() #Deixa essa janela como prioridade.
+        self.relatoriosTela.geometry("730x599+430+60")
         #self.terceiraTela.iconbitmap(default="icone\\logo.ico")
-        self.terceiraTela.title("Vlan's bridge/...")
-        self.terceiraTela.configure(background="#9099A2") #"gray20" and "#2F4F4F"
-        self.terceiraTela.resizable(width=False, height=False)
-        self.terceiraTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
-        self.terceiraTela.focus_force() #Força o foco nessa janela.
-        self.terceiraTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
-        self.framesTelaVlan()
+        self.relatoriosTela.title("Relatórios")
+        self.relatoriosTela.configure(background="#9099A2") #"gray20" and "#2F4F4F"
+        self.relatoriosTela.resizable(width=False, height=False)
+        self.relatoriosTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
+        self.relatoriosTela.focus_force() #Força o foco nessa janela.
+        self.relatoriosTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
+        self.nomeDiretorio = "C:\\Users\\Public\\Desktop"
+        self.framesTelaRelatorios()
+        self.widgetsTelaRelatorios()
+        self.listaListBoxRelatorios()
 
-    def framesTelaVlan(self):
-        esquerdaFrameVlan = Frame(self.terceiraTela, borderwidth=2, relief="solid", bg='#233237')
-        esquerdaFrameVlan.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        direitaFrameVlan = Frame(self.terceiraTela, borderwidth=2, relief="solid", bg='#233237')
-        direitaFrameVlan.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
-        linhaFrameVlan = Frame(self.terceiraTela, borderwidth=5, relief="solid", bg='#233237')
-        linhaFrameVlan.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.005)
+    def framesTelaRelatorios(self):
+        esquerdaFrameRelatorios = Frame(self.relatoriosTela, borderwidth=2, relief="solid", bg='#233237')
+        esquerdaFrameRelatorios.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
+        direitaFrameRelatorios = Frame(self.relatoriosTela, borderwidth=2, relief="solid", bg='#233237')
+        direitaFrameRelatorios.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
+        linhaFrameRelatorios = Frame(self.relatoriosTela, borderwidth=1, relief="solid", background="#9099A2")
+        linhaFrameRelatorios.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
+
+    def widgetsTelaRelatorios(self):
+        #Criação de texto.
+        Label(self.relatoriosTela, text="Gerar relatório", font="verdana 14 bold", background="#9099A2").place(relx=0.384, rely=0.03)
+        Label(self.relatoriosTela, text="Defina a pasta que deseja salvar o arquivo", font="arial 9 bold", background="#9099A2").place(relx=0.302, rely=0.135)
+        Label(self.relatoriosTela, text="Escolha o modelo de relatório", font="arial 9 bold", background="#9099A2").place(relx=0.38, rely=0.31)
+        Label(self.relatoriosTela, text="0%", font="arial 6", background="#9099A2").place(relx=0.235, rely=0.942)
+        Label(self.relatoriosTela, text="100%", font="arial 6", background="#9099A2", foreground="green").place(relx=0.73, rely=0.942)
+        #Criação das entrada dos dados.
+        self.saidaDiretorio = Label(self.relatoriosTela, text="C:\\Users\\Public\\Desktop", font="arial 8", background="#E9C893")
+        self.saidaDiretorio.place(relx=0.285, rely=0.167, relwidth=0.37)
+        #Criação dos botões.
+        botaoDefinirDiretorio = atk.Button3d(self.relatoriosTela, text="Definir", command=self.selecionarDiretorio)
+        botaoDefinirDiretorio.place(relx=0.657, rely=0.153, relwidth=0.09, relheight=0.059)
+        botaoGerarPdf = atk.Button3d(self.relatoriosTela, text="Gerar PDF", command=self.carregarBarraProgresso)
+        botaoGerarPdf.place(relx=0.44, rely=0.66, relwidth=0.12, relheight=0.075)
+        #Balão de mensagem.
+        atk.tooltip(botaoDefinirDiretorio, "Selecione o diretório que deseja salvar o arquivo")
+        atk.tooltip(botaoGerarPdf, 'Gera um arquivo com nome padrão de "ONU Digistar.pdf"')
+        #Criação de list box.
+        self.listBoxRelatorio = Listbox(self.relatoriosTela, justify=CENTER, width=25, height=8, bg="#9099A2", font="arial 10 bold", bd=2)
+        self.listBoxRelatorio.place(relx=0.375, rely=0.35)
+        #Barra de progresso.
+        self.barraProgresso = ttk.Progressbar(self.relatoriosTela, orient=HORIZONTAL, length=380, mode='determinate')
+        self.barraProgresso.place(relx=0.24, rely=0.91)
 
     def telaProvisionar(self):
         self.quartaTela = Toplevel() #Deixa essa janela como prioridade.
@@ -508,7 +567,7 @@ class Interface():
         self.widgetsTelaProvisionarOnu()
         self.widgetsTelaProvisionarFrameDentro() #Função criada para poder limpar campos específicos.
         self.widgetsTelaProvisionarComboBox()
-        self.listaListBox()
+        self.listaListBoxMarcaOnu()
 
     def framesTelaProvisionar(self):
         esquerdaFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=2, relief="solid", bg='#233237')
@@ -683,7 +742,7 @@ class Interface():
         self.dadosOnuCliente = Toplevel()
         self.dadosOnuCliente.geometry("730x599+430+60")
         #self.logTela.iconbitmap(default="icone\\logo.ico")
-        self.dadosOnuCliente.title("Deletar ONU")
+        self.dadosOnuCliente.title("Provisionadas")
         self.dadosOnuCliente.configure(background="#9099A2")
         self.dadosOnuCliente.resizable(width=False, height=False)
         self.dadosOnuCliente.transient(self.primeiraTela)
