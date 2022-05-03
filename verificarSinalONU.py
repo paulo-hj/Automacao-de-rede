@@ -120,7 +120,6 @@ class Comandos():
             if contTratamentoErro > 0:
                 messagebox.showerror(title="Erro", message=msgTratamentoErro)
             if contTratamentoErro == 0:
-                self.widgetsButtonVerificarSinal()
                 if self.radioButtonSelecionado.get() == 1:
                     comandoAddOnu = "onu set {} {} \n".format(self.listaPorta[10], self.listaMacOnu[0]).encode()
                     self.tn.write(b""+comandoAddOnu)
@@ -132,6 +131,15 @@ class Comandos():
                     self.tn.read_until(b'#').decode()
                 elif self.radioButtonSelecionado.get() == 2:
                     print("PPPOE")
+                listaReset = list(range(1, 10))
+                listaPonto = [1, 2, 3]
+                for i in listaReset:
+                    for x in listaPonto:
+                        ponto = "." * x
+                        texto = "Aguardando"+ponto
+                        self.saidaAguardandoBotao["text"] = texto
+                        time.sleep(0.2)
+                self.widgetsButtonVerificarSinal()
         except:
             messagebox.showerror(title="Erro", message="É necessário primeiro procurar a ONU.")
 
@@ -653,6 +661,8 @@ class Interface():
         self.saidaRamal.place(relx=0.135, rely=0.211, relwidth=0.07)
         self.saidaSplitter = Label(self.dentroFrameProvisionarOnu, text="", background="#fff", anchor=CENTER)
         self.saidaSplitter.place(relx=0.398, rely=0.211, relwidth=0.239)
+        self.saidaAguardandoBotao = Label(self.dentroFrameProvisionarOnu, text="", font="arial 10 bold", background="#9099A2")
+        self.saidaAguardandoBotao.place(relx=0.7, rely=0.27)
         #Criação de radio button.
         radioBridge = Radiobutton(self.dentroFrameProvisionarOnu, text="Bridge  |", value=1, variable=self.radioButtonSelecionado, background="#9099A2")
         radioBridge.place(relx=0.37, rely=0.05)
