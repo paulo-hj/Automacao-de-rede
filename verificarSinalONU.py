@@ -463,10 +463,10 @@ class Interface():
         self.widgetsTelaSinal()
     
     def framesTelaSinal(self):
-        esquerdaFrameSinal = Frame(self.segundaTela, borderwidth=2, relief="solid", bg='#233237')
+        esquerdaFrameSinal = Frame(self.segundaTela, borderwidth=0, relief="solid", bg='#233237')
         esquerdaFrameSinal.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        direitaFrameSinal = Frame(self.segundaTela, borderwidth=2, relief="solid", bg='#233237')
-        direitaFrameSinal.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
+        direitaFrameSinal = Frame(self.segundaTela, borderwidth=0, relief="solid", bg='#233237')
+        direitaFrameSinal.place(relx=0.8489, rely=0, relwidth=0.151, relheight=1.005)
         linhaFrameSinal = Frame(self.segundaTela, borderwidth=1, relief="solid", background="#9099A2")
         linhaFrameSinal.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
 
@@ -502,10 +502,10 @@ class Interface():
         self.listaListBoxRelatorios()
 
     def framesTelaRelatorios(self):
-        esquerdaFrameRelatorios = Frame(self.relatoriosTela, borderwidth=2, relief="solid", bg='#233237')
+        esquerdaFrameRelatorios = Frame(self.relatoriosTela, borderwidth=0, relief="solid", bg='#233237')
         esquerdaFrameRelatorios.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        direitaFrameRelatorios = Frame(self.relatoriosTela, borderwidth=2, relief="solid", bg='#233237')
-        direitaFrameRelatorios.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
+        direitaFrameRelatorios = Frame(self.relatoriosTela, borderwidth=0, relief="solid", bg='#233237')
+        direitaFrameRelatorios.place(relx=0.8489, rely=0, relwidth=0.151, relheight=1.005)
         linhaFrameRelatorios = Frame(self.relatoriosTela, borderwidth=1, relief="solid", background="#9099A2")
         linhaFrameRelatorios.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
 
@@ -513,7 +513,7 @@ class Interface():
         #Criação de texto.
         Label(self.relatoriosTela, text="Gerar relatório", font="verdana 14 bold", background="#9099A2").place(relx=0.384, rely=0.03)
         Label(self.relatoriosTela, text="Defina a pasta que deseja salvar o arquivo", font="arial 9 bold", background="#9099A2").place(relx=0.281, rely=0.135)
-        Label(self.relatoriosTela, text="Escolha um modelo de relatório", font="arial 9 bold", background="#9099A2").place(relx=0.38, rely=0.31)
+        Label(self.relatoriosTela, text="Escolha um modelo de relatório", font="arial 9 bold", background="#9099A2").place(relx=0.371, rely=0.31)
         Label(self.relatoriosTela, text="0%", font="arial 6", background="#9099A2").place(relx=0.235, rely=0.942)
         Label(self.relatoriosTela, text="100%", font="arial 6", background="#9099A2", foreground="green").place(relx=0.73, rely=0.942)
         #Criação das entrada dos dados.
@@ -555,10 +555,10 @@ class Interface():
         self.listaListBoxMarcaOnu()
 
     def framesTelaProvisionar(self):
-        esquerdaFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=2, relief="solid", bg='#233237')
+        esquerdaFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=0, relief="solid", bg='#233237')
         esquerdaFrameProvisionarOnu.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        direitaFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=2, relief="solid", bg='#233237')
-        direitaFrameProvisionarOnu.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
+        direitaFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=0, relief="solid", bg='#233237')
+        direitaFrameProvisionarOnu.place(relx=0.8489, rely=0, relwidth=0.151, relheight=1.005)
         linhaFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=1, relief="solid", background="#9099A2")
         linhaFrameProvisionarOnu.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
         self.dentroFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=1, relief="solid", background="#9099A2")
@@ -604,7 +604,7 @@ class Interface():
         Label(self.dentroFrameProvisionarOnu, text="Modo da ONU", font="arial 11 bold", background="#9099A2").place(relx=0.391, rely=0.032)
         Label(self.dentroFrameProvisionarOnu, text="Login", font="arial 12 bold", background="#9099A2").place(relx=0.12, rely=0.09)
         Label(self.dentroFrameProvisionarOnu, text="Vlan", font="arial 12 bold", background="#9099A2").place(relx=0.46, rely=0.09)
-        Label(self.dentroFrameProvisionarOnu, text="Marca", font="arial 12 bold", background="#9099A2").place(relx=0.75, rely=0.09)
+        Label(self.dentroFrameProvisionarOnu, text="Marca", font="arial 12 bold", background="#9099A2").place(relx=0.76, rely=0.09)
         Label(self.dentroFrameProvisionarOnu, text="Ramal", font="arial 12 bold", background="#9099A2").place(relx=0.117, rely=0.19)
         Label(self.dentroFrameProvisionarOnu, text="Splitter", font="arial 12 bold", background="#9099A2").place(relx=0.45, rely=0.19)
         Label(self.dentroFrameProvisionarOnu, text="Porta da CTO", font="arial 12 bold", background="#9099A2").place(relx=0.73, rely=0.19)
@@ -703,10 +703,10 @@ class Interface():
         self.widgetsTelaDeletarOnu()
 
     def farmesTelaDeletarOnu(self):
-        esquerdaFrameDeletarOnu = Frame(self.deletarOnuTela, borderwidth=2, relief="solid", bg='#233237')
+        esquerdaFrameDeletarOnu = Frame(self.deletarOnuTela, borderwidth=0, relief="solid", bg='#233237')
         esquerdaFrameDeletarOnu.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        direitaFrameDeletarOnu = Frame(self.deletarOnuTela, borderwidth=2, relief="solid", bg='#233237')
-        direitaFrameDeletarOnu.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
+        direitaFrameDeletarOnu = Frame(self.deletarOnuTela, borderwidth=0, relief="solid", bg='#233237')
+        direitaFrameDeletarOnu.place(relx=0.8489, rely=0, relwidth=0.151, relheight=1.005)
         linhaFrameDeletarOnu = Frame(self.deletarOnuTela, borderwidth=1, relief="solid", background="#9099A2")
         linhaFrameDeletarOnu.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
     
@@ -736,12 +736,25 @@ class Interface():
         self.farmesTelaDadosOnu()
 
     def farmesTelaDadosOnu(self):
-        esquerdaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=2, relief="solid", bg='#233237')
+        meioFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#9099A2')
+        meioFrameDadosOnu.place(relx=0.1499, rely=0, relwidth=0.6989, relheight=1.005)
+        esquerdaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#233237')
         esquerdaFrameDadosOnu.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        direitaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=2, relief="solid", bg='#233237')
-        direitaFrameDadosOnu.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
-        linhaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=1, relief="solid", background="#9099A2")
-        linhaFrameDadosOnu.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
+        direitaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#233237')
+        direitaFrameDadosOnu.place(relx=0.8489, rely=0, relwidth=0.151, relheight=1.005)
+        #linhaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=1, relief="solid", background="#9099A2")
+        #linhaFrameDadosOnu.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
+        #Criação de abas.
+        self.abas = ttk.Notebook(meioFrameDadosOnu) #Chamando a função para criar as abas.
+        self.abaProvisionadas = Frame(self.abas) #Criando a primeira aba.
+        self.abaProvisionadas.configure(background="#9099A2")
+        self.abas.add(self.abaProvisionadas, text="Provisionadas") #Dando um nome da primeira aba.
+        self.abaSinais = Frame(self.abas)
+        self.abaSinais.configure(background="#9099A2")
+        self.abas.add(self.abaSinais, text="Sinais das ONU")
+        self.abas.place(relx=0, rely=0, relwidth=101, relheight=1)
+
+
 
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt):
     def __init__(self):
