@@ -450,39 +450,41 @@ class Interface():
         self.primeiraTela.config(menu=barramenus)
 
     def telaSinal(self):
-        self.segundaTela = Toplevel() #Deixa essa janela como prioridade.
-        self.segundaTela.geometry("730x599+430+60")
-        #self.segundaTela.iconbitmap(default="icone\\logo.ico")
-        self.segundaTela.title("Sinais das ONU's")
-        self.segundaTela.configure(background="#9099A2") #"gray20" and "#2F4F4F"
-        self.segundaTela.resizable(width=False, height=False)
-        self.segundaTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
-        self.segundaTela.focus_force() #Força o foco nessa janela.
-        self.segundaTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
+        self.sinalTela = Toplevel() #Deixa essa janela como prioridade.
+        self.sinalTela.geometry("730x599+430+60")
+        #self.sinalTela.iconbitmap(default="icone\\logo.ico")
+        self.sinalTela.title("Sinais das ONU's")
+        self.sinalTela.configure(background="#9099A2") #"gray20" and "#2F4F4F"
+        self.sinalTela.resizable(width=False, height=False)
+        self.sinalTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
+        self.sinalTela.focus_force() #Força o foco nessa janela.
+        self.sinalTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
         self.framesTelaSinal()
         self.widgetsTelaSinal()
     
     def framesTelaSinal(self):
-        esquerdaFrameSinal = Frame(self.segundaTela, borderwidth=0, relief="solid", bg='#233237')
+        esquerdaFrameSinal = Frame(self.sinalTela, borderwidth=0, relief="solid", bg='#233237')
         esquerdaFrameSinal.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        direitaFrameSinal = Frame(self.segundaTela, borderwidth=0, relief="solid", bg='#233237')
+        direitaFrameSinal = Frame(self.sinalTela, borderwidth=0, relief="solid", bg='#233237')
         direitaFrameSinal.place(relx=0.8489, rely=0, relwidth=0.151, relheight=1.005)
-        linhaFrameSinal = Frame(self.segundaTela, borderwidth=1, relief="solid", background="#9099A2")
+        linhaFrameSinal = Frame(self.sinalTela, borderwidth=1, relief="solid", background="#9099A2")
         linhaFrameSinal.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
 
     def widgetsTelaSinal(self):
         #*Primeiro Frame
         #Criação dos texto.
-        Label(self.segundaTela, text="Verificar sinal da ONU", font="verdana 14 bold", background="#9099A2").place(relx=0.334, rely=0.03)
+        Label(self.sinalTela, text="Verificar sinal da ONU", font="verdana 14 bold", background="#9099A2").place(relx=0.334, rely=0.03)
+        Label(self.sinalTela, text="Informe o login", font="arial 12 bold", background="#9099A2").place(relx=0.42, rely=0.14)
         #Criação das entradas dos dados.
-        self.entradaPosicaoOnu = EntPlaceHold(self.segundaTela, '            LOGIN')
-        self.entradaPosicaoOnu.place(relx=0.425, rely=0.15, relwidth=0.152, relheight=0.038)
+        self.entradaPosicaoOnu = Entry(self.sinalTela, bd=3, justify=CENTER)
+        self.entradaPosicaoOnu.place(relx=0.426, rely=0.19, relwidth=0.152, relheight=0.038)
+        self.entradaPosicaoOnu.focus()
         #Criação dos botões.
-        botaoVerificar = atk.Button3d(self.segundaTela, text="Verificar sinal", command=self.verificarSinal)
-        botaoVerificar.place(relx=0.439, rely=0.238, relwidth=0.13, relheight=0.075)
+        botaoVerificar = atk.Button3d(self.sinalTela, text="Verificar", command=self.verificarSinal)
+        botaoVerificar.place(relx=0.437, rely=0.295, relwidth=0.13, relheight=0.071)
         #Criação das saídas dos dados.
-        self.saidaSinalOnu = Label(self.segundaTela, text="", font="arial 9 bold", anchor=N, background="#9099A2")#2F4F4F
-        self.saidaSinalOnu.place(relx=0.18, rely=0.355, relwidth=0.65, relheight=0.2)
+        self.saidaSinalOnu = Label(self.sinalTela, text="", font="arial 9 bold", anchor=N, background="#9099A2")#2F4F4F
+        self.saidaSinalOnu.place(relx=0.18, rely=0.41, relwidth=0.65, relheight=0.2)
         #Balão de mensagem.
         atk.tooltip(botaoVerificar, "Verifica o sinal da ONU informada acima")
 
@@ -552,6 +554,7 @@ class Interface():
         self.widgetsTelaProvisionarOnu()
         self.widgetsTelaProvisionarFrameDentro() #Função criada para poder limpar campos específicos.
         self.widgetsTelaProvisionarComboBox()
+        self.widgetsButtonVerificarSinal()
         self.listaListBoxMarcaOnu()
 
     def framesTelaProvisionar(self):
@@ -664,6 +667,11 @@ class Interface():
         self.comboBoxPortaCto.set("0")
         self.comboBoxPortaCto.place(relx=0.793, rely=0.211, relwidth=0.085)
 
+    def widgetsButtonVerificarSinal(self):
+        botaoVerificarSinalOnuProvisionada = Button(self.quartaTela, text="VERIFICAR\nSINAL", font="arial 7", command=self.limparTelaProcurarOnu)
+        botaoVerificarSinalOnuProvisionada.place(relx=0.7, rely=0.895, relwidth=0.078, relheight=0.045)
+        atk.tooltip(botaoVerificarSinalOnuProvisionada, "Verificar sinal da ONU que acabou de ser provisionada")
+
     def telaLog(self):
         self.logTela = Toplevel()
         self.logTela.geometry("730x599+430+60")
@@ -717,11 +725,12 @@ class Interface():
         #Criação de entrada de dados.
         self.entradaLoginDeletarOnu = Entry(self.deletarOnuTela, bd=3, justify=CENTER)
         self.entradaLoginDeletarOnu.place(relx=0.426, rely=0.19, relwidth=0.152, relheight=0.038)
+        self.entradaLoginDeletarOnu.focus()
         #Criação de botões.
         botaoDeletarOnu = atk.Button3d(self.deletarOnuTela, text="Deletar", bg="red", command=self.deletarOnu)
-        botaoDeletarOnu.place(relx=0.434, rely=0.295, relwidth=0.13, relheight=0.071)
+        botaoDeletarOnu.place(relx=0.437, rely=0.295, relwidth=0.13, relheight=0.071)
         #Balão de mensagem.
-        atk.tooltip(botaoDeletarOnu, "Deletar ONU do login informado acima.")
+        atk.tooltip(botaoDeletarOnu, "Deletar ONU do login informado acima")
 
     def telaDadosClientes(self):
         self.dadosOnuCliente = Toplevel()
@@ -734,6 +743,7 @@ class Interface():
         self.dadosOnuCliente.focus_force()
         self.dadosOnuCliente.grab_set()
         self.farmesTelaDadosOnu()
+        self.widgetsTelaDadosOnu()
 
     def farmesTelaDadosOnu(self):
         meioFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#9099A2')
@@ -753,6 +763,9 @@ class Interface():
         self.abaSinais.configure(background="#9099A2")
         self.abas.add(self.abaSinais, text="Sinais das ONU")
         self.abas.place(relx=0, rely=0, relwidth=101, relheight=1)
+    
+    def widgetsTelaDadosOnu(self):
+        pass
 
 
 
