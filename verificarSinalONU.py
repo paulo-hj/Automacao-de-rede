@@ -263,9 +263,15 @@ class Comandos():
 
     def listaListBoxRelatorios(self):
         listaTiposRelatorios = ["-------------------------------------------", "Sinais das ONU's", "-------------------------------------------",
-        "Todos as ONU", "-------------------------------------------","Log"]
+        "Todos as ONU", "-------------------------------------------","Log", "-------------------------------------------"]
         for i in listaTiposRelatorios:
             self.listBoxRelatorio.insert(END, i)
+
+    def deletarOnu(self):
+        loginDelete = self.entradaLoginDeletarOnu.get()
+        escolha = messagebox.askyesno("Deletar ONU", 'Deseja deletar o login: "{}" ?'.format(loginDelete))
+        if escolha == True:
+            pass
 
 class InformacoesOlt():
     def infoUptimeOlt(self):
@@ -441,7 +447,6 @@ class Interface():
         barramenus.add_cascade(label="Ajuda", menu=sobremenu)
         #sobremenu.add_command(label="Código fonte", command=senha)
         #sobremenu.add_command(label="Introdução", command=comousar)
-
         self.primeiraTela.config(menu=barramenus)
 
     def telaSinal(self):
@@ -464,42 +469,22 @@ class Interface():
         direitaFrameSinal.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
         linhaFrameSinal = Frame(self.segundaTela, borderwidth=1, relief="solid", background="#9099A2")
         linhaFrameSinal.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
-        linhaFrameSinal2 = Frame(self.segundaTela, borderwidth=5, relief="solid", bg='#233237')
-        linhaFrameSinal2.place(relx=0.15, rely=0.5, relwidth=0.7, relheight=0.005)
 
     def widgetsTelaSinal(self):
         #*Primeiro Frame
         #Criação dos texto.
-        Label(self.segundaTela, text="Informe a porta e posição da ONU", font="verdana 14 bold", background="#9099A2").place(relx=0.243, rely=0.03)
+        Label(self.segundaTela, text="Verificar sinal da ONU", font="verdana 14 bold", background="#9099A2").place(relx=0.334, rely=0.03)
         #Criação das entradas dos dados.
-        self.entradaPosicaoOnu = EntPlaceHold(self.segundaTela, 'Ex: 2/4')
-        self.entradaPosicaoOnu.place(relx=0.475, rely=0.11, relwidth=0.055, relheight=0.043)
+        self.entradaPosicaoOnu = EntPlaceHold(self.segundaTela, '            LOGIN')
+        self.entradaPosicaoOnu.place(relx=0.425, rely=0.15, relwidth=0.152, relheight=0.038)
         #Criação dos botões.
         botaoVerificar = atk.Button3d(self.segundaTela, text="Verificar sinal", command=self.verificarSinal)
-        botaoVerificar.place(relx=0.439, rely=0.188, relwidth=0.13, relheight=0.075)
+        botaoVerificar.place(relx=0.439, rely=0.238, relwidth=0.13, relheight=0.075)
         #Criação das saídas dos dados.
         self.saidaSinalOnu = Label(self.segundaTela, text="", font="arial 9 bold", anchor=N, background="#9099A2")#2F4F4F
-        self.saidaSinalOnu.place(relx=0.18, rely=0.28, relwidth=0.65, relheight=0.2)
+        self.saidaSinalOnu.place(relx=0.18, rely=0.355, relwidth=0.65, relheight=0.2)
         #Balão de mensagem.
         atk.tooltip(botaoVerificar, "Verifica o sinal da ONU informada acima")
-
-        #Criação dos texto.
-        #Label(self.segundaTela, text="Relatório", font="verdana 13 bold", background="#2F4F4F").place(relx=0.42, rely=0.07)
-        Label(self.segundaTela, text="Gerar PDF com os sinais de todas as ONU's", font="verdana 13 bold", background="#9099A2").place(relx=0.21, rely=0.535)
-        Label(self.segundaTela, text="Defina a pasta que deseja salvar o arquivo", font="arial 8", background="#9099A2").place(relx=0.271, rely=0.625)
-        Label(self.segundaTela, text="0%", font="arial 6", background="#9099A2").place(relx=0.235, rely=0.942)
-        Label(self.segundaTela, text="100%", font="arial 6", background="#9099A2", foreground="green").place(relx=0.73, rely=0.942)
-        #Criação dos botões.
-        botaoDefinirDiretorio = atk.Button3d(self.segundaTela, text="Definir", command=self.selecionarDiretorio)
-        botaoDefinirDiretorio.place(relx=0.645, rely=0.64, relwidth=0.09, relheight=0.059)
-        botaoGerarPdf = atk.Button3d(self.segundaTela, text="Gerar PDF", command=self.carregarBarraProgresso)
-        botaoGerarPdf.place(relx=0.44, rely=0.78, relwidth=0.12, relheight=0.075)
-        #Barra de progresso.
-        self.barraProgresso = ttk.Progressbar(self.segundaTela, orient=HORIZONTAL, length=380, mode='determinate')
-        self.barraProgresso.place(relx=0.24, rely=0.91)
-        #Balão de mensagem.
-        atk.tooltip(botaoDefinirDiretorio, "Selecione o diretório que deseja salvar o arquivo")
-        atk.tooltip(botaoGerarPdf, 'Gera um arquivo com nome padrão de "ONU Digistar.pdf"')
 
     def telaRelatorios(self):
         self.relatoriosTela = Toplevel() #Deixa essa janela como prioridade.
@@ -527,8 +512,8 @@ class Interface():
     def widgetsTelaRelatorios(self):
         #Criação de texto.
         Label(self.relatoriosTela, text="Gerar relatório", font="verdana 14 bold", background="#9099A2").place(relx=0.384, rely=0.03)
-        Label(self.relatoriosTela, text="Defina a pasta que deseja salvar o arquivo", font="arial 9 bold", background="#9099A2").place(relx=0.302, rely=0.135)
-        Label(self.relatoriosTela, text="Escolha o modelo de relatório", font="arial 9 bold", background="#9099A2").place(relx=0.38, rely=0.31)
+        Label(self.relatoriosTela, text="Defina a pasta que deseja salvar o arquivo", font="arial 9 bold", background="#9099A2").place(relx=0.281, rely=0.135)
+        Label(self.relatoriosTela, text="Escolha um modelo de relatório", font="arial 9 bold", background="#9099A2").place(relx=0.38, rely=0.31)
         Label(self.relatoriosTela, text="0%", font="arial 6", background="#9099A2").place(relx=0.235, rely=0.942)
         Label(self.relatoriosTela, text="100%", font="arial 6", background="#9099A2", foreground="green").place(relx=0.73, rely=0.942)
         #Criação das entrada dos dados.
@@ -536,7 +521,7 @@ class Interface():
         self.saidaDiretorio.place(relx=0.285, rely=0.167, relwidth=0.37)
         #Criação dos botões.
         botaoDefinirDiretorio = atk.Button3d(self.relatoriosTela, text="Definir", command=self.selecionarDiretorio)
-        botaoDefinirDiretorio.place(relx=0.657, rely=0.153, relwidth=0.09, relheight=0.059)
+        botaoDefinirDiretorio.place(relx=0.657, rely=0.151, relwidth=0.09, relheight=0.063)
         botaoGerarPdf = atk.Button3d(self.relatoriosTela, text="Gerar PDF", command=self.carregarBarraProgresso)
         botaoGerarPdf.place(relx=0.44, rely=0.66, relwidth=0.12, relheight=0.075)
         #Balão de mensagem.
@@ -733,7 +718,7 @@ class Interface():
         self.entradaLoginDeletarOnu = Entry(self.deletarOnuTela, bd=3, justify=CENTER)
         self.entradaLoginDeletarOnu.place(relx=0.426, rely=0.19, relwidth=0.152, relheight=0.038)
         #Criação de botões.
-        botaoDeletarOnu = atk.Button3d(self.deletarOnuTela, text="Deletar", bg="red",)#command=self.provisionarOnu)
+        botaoDeletarOnu = atk.Button3d(self.deletarOnuTela, text="Deletar", bg="red", command=self.deletarOnu)
         botaoDeletarOnu.place(relx=0.434, rely=0.295, relwidth=0.13, relheight=0.071)
         #Balão de mensagem.
         atk.tooltip(botaoDeletarOnu, "Deletar ONU do login informado acima.")
@@ -760,8 +745,8 @@ class Interface():
 
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt):
     def __init__(self):
-        self.conectar()
-        self.login()
+        #self.conectar()
+        #self.login()
         self.telaPrincipal()
 
 Main()
