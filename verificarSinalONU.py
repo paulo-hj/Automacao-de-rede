@@ -37,7 +37,7 @@ class Conexao():
 class Comandos():
     def verificarSinal(self):
         posicao = self.entradaPosicaoOnu.get()
-        comando = "onu status {}\n".format(posicao).encode()
+        comando = "onu status {} \n".format(posicao).encode()
         self.tn.write(b""+comando)
         saida = self.tn.read_until(b'#').decode()
         self.saidaSinalOnu["text"] = "{}".format(str(saida))
@@ -64,7 +64,7 @@ class Comandos():
 
     def procurarOnu(self):
         try:
-            self.tn.write(b"onu show discovered\n")
+            self.tn.write(b"onu show discovered \n")
             saidaProcurarOnu = self.tn.read_until(b'#').decode()
             self.listaOnu = saidaProcurarOnu.split(" ", 11) #Filtra quantas ONU estão conectadas.
             nporta = self.listaOnu[3] #Para filtrar a porta que a ONU está conectada.
@@ -120,6 +120,7 @@ class Comandos():
             if contTratamentoErro > 0:
                 messagebox.showerror(title="Erro", message=msgTratamentoErro)
             if contTratamentoErro == 0:
+                self.widgetsButtonVerificarSinal()
                 if self.radioButtonSelecionado.get() == 1:
                     comandoAddOnu = "onu set {} {} \n".format(self.listaPorta[10], self.listaMacOnu[0]).encode()
                     self.tn.write(b""+comandoAddOnu)
@@ -272,6 +273,12 @@ class Comandos():
         escolha = messagebox.askyesno("Deletar ONU", 'Deseja deletar o login: "{}" ?'.format(loginDelete))
         if escolha == True:
             pass
+    
+    def verificarSinalUltimaOnuProv(self):
+        comando = "onu status {} \n".format(self.listaPorta[10]).encode()
+        self.tn.write(b""+comando)
+        saida = self.tn.read_until(b'#').decode()
+        self.saidaSinalUltimaOnu["text"] = "{}".format(str(saida))
 
 class InformacoesOlt():
     def infoUptimeOlt(self):
@@ -554,7 +561,6 @@ class Interface():
         self.widgetsTelaProvisionarOnu()
         self.widgetsTelaProvisionarFrameDentro() #Função criada para poder limpar campos específicos.
         self.widgetsTelaProvisionarComboBox()
-        self.widgetsButtonVerificarSinal()
         self.listaListBoxMarcaOnu()
 
     def framesTelaProvisionar(self):
@@ -668,10 +674,30 @@ class Interface():
         self.comboBoxPortaCto.place(relx=0.793, rely=0.211, relwidth=0.085)
 
     def widgetsButtonVerificarSinal(self):
-        botaoVerificarSinalOnuProvisionada = Button(self.quartaTela, text="VERIFICAR\nSINAL", font="arial 7", command=self.limparTelaProcurarOnu)
+        botaoVerificarSinalOnuProvisionada = Button(self.quartaTela, text="VERIFICAR\nSINAL", font="arial 7", command=self.telaVerificarSinalUltimaOnu)
         botaoVerificarSinalOnuProvisionada.place(relx=0.7, rely=0.895, relwidth=0.078, relheight=0.045)
         atk.tooltip(botaoVerificarSinalOnuProvisionada, "Verificar sinal da ONU que acabou de ser provisionada")
+    
+    def telaVerificarSinalUltimaOnu(self):
+        loginOnu = self.entradaLoginOnu.get()
+        self.ultimaOnuSinalTela = Toplevel()
+        self.ultimaOnuSinalTela.geometry("400x250+595+230")
+        #self.ultimaOnuSinalTela.iconbitmap(default="icone\\logo.ico")
+        self.ultimaOnuSinalTela.title("Sinal do cliente: {}".format(loginOnu))
+        self.ultimaOnuSinalTela.configure(background="#9099A2")
+        self.ultimaOnuSinalTela.resizable(width=False, height=False)
+        self.ultimaOnuSinalTela.transient(self.primeiraTela)
+        self.ultimaOnuSinalTela.focus_force()
+        self.ultimaOnuSinalTela.grab_set()
+        self.widgetstelaVerificarSinalUltimaOnu()
+        self.verificarSinalUltimaOnuProv()
 
+    def widgetstelaVerificarSinalUltimaOnu(self):
+        self.saidaSinalUltimaOnu = Label(self.ultimaOnuSinalTela, text="", font="arial 9 bold", anchor=N, background="#9099A2")
+        self.saidaSinalUltimaOnu.place(relx=0.05, rely=0.06, relwidth=0.9, relheight=0.7)
+        atualizarUltimoSinal = atk.Button3d(self.ultimaOnuSinalTela, text="Atualizar", command=self.verificarSinalUltimaOnuProv)
+        atualizarUltimoSinal.place(relx=0.41, rely=0.8, relwidth=0.175, relheight=0.147)
+        
     def telaLog(self):
         self.logTela = Toplevel()
         self.logTela.geometry("730x599+430+60")
@@ -766,8 +792,6 @@ class Interface():
     
     def widgetsTelaDadosOnu(self):
         pass
-
-
 
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt):
     def __init__(self):
