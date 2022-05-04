@@ -36,11 +36,13 @@ class Conexao():
 
 class Comandos():
     def verificarSinal(self):
+        login = self.entradaPosicaoOnu.get()
         posicao = self.entradaPosicaoOnu.get()
         comando = "onu status {} \n".format(posicao).encode()
         self.tn.write(b""+comando)
         saida = self.tn.read_until(b'#').decode()
         self.saidaSinalOnu["text"] = "{}".format(str(saida))
+        self.listaLog.append("Verificado sinal do login "+ login +" - Data/Hora: " + self.infoDataHora())
 
     def carregarBarraProgresso(self):
         tipoDeRelatorio = ""
@@ -53,7 +55,7 @@ class Comandos():
         if len(self.nomeDiretorio) == 0:
             messagebox.showerror(title="Erro", message="Por favor, informe o caminho do arquivo.")
         elif tipoDeRelatorio == "Sinais das ONU's":
-            self.geraRelatCliente()
+            self.geraRelatSinais()
         else:
             messagebox.showerror(title="Erro", message="Escolha o modelo de relatório.")
 
@@ -102,13 +104,14 @@ class Comandos():
     def provisionarOnu(self):
         msgTratamentoErro = "Está faltando informar os campos abaixo: "
         contTratamentoErro = 0
+        login = self.entradaLoginOnu.get()
         #self.marca = self.listBoxMarcaOnu.get(ACTIVE)
         try:
             quantMac = self.listaMacOnu[0] #Usado para fazer a validação com o try se a ONU foi achada ou não.
             if self.radioButtonSelecionado.get() != 1 and self.radioButtonSelecionado.get() != 2:
                 msgTratamentoErro = msgTratamentoErro + "\nModo da ONU"
                 contTratamentoErro = contTratamentoErro + 1
-            if len(self.entradaLoginOnu.get()) <= 0:
+            if len(login) <= 0:
                 msgTratamentoErro = msgTratamentoErro + "\nLogin"
                 contTratamentoErro = contTratamentoErro + 1
             if len(self.vlan) <= 0:
@@ -129,7 +132,9 @@ class Comandos():
                     comandoAddBridge = "bridge add {} onu 1 gem {} gtp 1 vlan {}\n".format(gpon, gem, self.vlan).encode()
                     self.tn.write(b""+comandoAddBridge)
                     self.tn.read_until(b'#').decode()
+                    self.listaLog.append("Provisionada ONU do login "+ login +" em modo bridge - Data/Hora: " + self.infoDataHora())
                 elif self.radioButtonSelecionado.get() == 2:
+                    self.listaLog.append("Provisionada ONU do login "+ login +" em modo PPPoE - Data/Hora: " + self.infoDataHora())
                     print("PPPOE")
                 listaReset = list(range(1, 10))
                 listaPonto = [1, 2, 3]
@@ -277,12 +282,14 @@ class Comandos():
             self.listBoxRelatorio.insert(END, i)
 
     def deletarOnu(self):
+        login = self.entradaLoginDeletarOnu.get()
         loginDelete = self.entradaLoginDeletarOnu.get()
         escolha = messagebox.askyesno("Deletar ONU", 'Deseja deletar o login: "{}" ?'.format(loginDelete))
         if escolha == True:
             self.entradaLoginDeletarOnu.delete(0, END)
             self.entradaLoginDeletarOnu.focus()
             self.saidaOnuDeletada["text"] = "Status: Sucesso\n Login: " + loginDelete + "\n Vlan:"
+            self.listaLog.append("Deletada ONU do login "+ login +" - Data/Hora: " + self.infoDataHora())
         else:
             self.entradaLoginDeletarOnu.delete(0, END)
             self.entradaLoginDeletarOnu.focus()
@@ -292,6 +299,10 @@ class Comandos():
         self.tn.write(b""+comando)
         saida = self.tn.read_until(b'#').decode()
         self.saidaSinalUltimaOnu["text"] = "{}".format(str(saida))
+
+    def acessarGerWeb(self):
+        self.listaLog.append("Acesso ao site  - Data/Hora: " + self.infoDataHora())
+        webbrowser.open("http://10.50.50.50/cgi-bin/p?logon.pt")
 
 class InformacoesOlt():
     def infoUptimeOlt(self):
@@ -315,12 +326,8 @@ class InformacoesOlt():
         self.saidaTemperatura["text"] = listaTemperaturaOlt[3] + "  ºC"
 
     def infoLog(self):
-        self.tn.write(b"show history\n")
-        logOlt = self.tn.read_until(b'#').decode()
-        listaLogOlt = logOlt.split("\n", 20)
-        for i in listaLogOlt:
+        for i in self.listaLog:
             self.listBoxLog.insert(END, i)
-        self.listBoxLog.delete(1, 10)
 
 class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto só está sendo utilizado na tela de sinal.
     def __init__(self, master=None, placeholder= 'PLACEHOLDER', color= 'gray'):
@@ -349,7 +356,7 @@ class Relatorios():
     def printPdf(self):
         webbrowser.open(self.nomeDiretorio+"\\ONU Digistar.pdf")
 
-    def geraRelatCliente(self):
+    def geraRelatSinais(self):
         self.c = canvas.Canvas(self.nomeDiretorio+"\\ONU Digistar.pdf")
         self.c.setFont("Helvetica-Bold", 24)
         self.c.drawString(200, 790, "Sinais das ONU's")
@@ -387,6 +394,7 @@ class Relatorios():
         self.c.showPage()
         self.c.showPage()
         self.c.save()
+        self.listaLog.append("Gerado relatório de sinais  - Data/Hora: " + self.infoDataHora())
         self.printPdf()
     
 class Interface():
@@ -402,9 +410,9 @@ class Interface():
         #self.barraDeMenuTelaPrincipal()
         self.framesTelaPrincipal()
         self.widgetsTelaPrincipal()
-        #self.infoUptimeOlt()
-        #self.infoTemperaturaOlt()
-        #self.infoMemoriaOlt()
+        self.infoUptimeOlt()
+        self.infoTemperaturaOlt()
+        self.infoMemoriaOlt()
         primeiraTela.mainloop()
 
     def framesTelaPrincipal(self):
@@ -438,6 +446,8 @@ class Interface():
         botaoTelaDeletarOnu.place(relx=0.13, rely=0.413, relwidth=0.73, relheight=0.1)
         botaoLog = Button(self.frameTela, text="Log", font="arial 8 bold", background="#fff", command=self.telaLog)
         botaoLog.place(relx=0.155, rely=0.37, relwidth=0.051, relheight=0.058)
+        botaoWeb = Button(self.frameTela, text="Web", font="arial 8 bold", background="#fff", command=self.acessarGerWeb)
+        botaoWeb.place(relx=0.218, rely=0.37, relwidth=0.051, relheight=0.058)
         botaoTelaDadosOnu = atk.Button3d(self.frameVertical, text="PROVISIONADAS", bg="#233237", command=self.telaDadosClientes)
         botaoTelaDadosOnu.place(relx=0.13, rely=0.535, relwidth=0.73, relheight=0.1)
         #Criação das entradas dos dados.
@@ -728,15 +738,15 @@ class Interface():
         self.infoLog()
 
     def framesTelaLog(self):
-        esquerdaFrameLog = Frame(self.logTela, borderwidth=2, relief="solid", bg='#233237')
+        esquerdaFrameLog = Frame(self.logTela, borderwidth=0, relief="solid", bg='#233237')
         esquerdaFrameLog.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        direitaFrameLog = Frame(self.logTela, borderwidth=2, relief="solid", bg='#233237')
+        direitaFrameLog = Frame(self.logTela, borderwidth=0, relief="solid", bg='#233237')
         direitaFrameLog.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
 
     def widgetsTelaLog(self):
         #Saida de texto.
-        self.listBoxLog = Listbox(self.logTela, justify=CENTER, font="arial 10",width=50, height=30)
-        self.listBoxLog.place(relx=0.258, rely=0.068)
+        self.listBoxLog = Listbox(self.logTela, justify=CENTER, font="arial 10",width=72, height=50)
+        self.listBoxLog.place(relx=0.15, rely=0)
 
     def telaDeletarOnu(self):
         self.deletarOnuTela = Toplevel()
@@ -813,8 +823,9 @@ class Interface():
 
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt):
     def __init__(self):
-        #self.conectar()
-        #self.login()
+        self.listaLog = []
+        self.conectar()
+        self.login()
         self.telaPrincipal()
 
 Main()
