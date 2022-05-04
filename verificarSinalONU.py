@@ -56,6 +56,8 @@ class Comandos():
             messagebox.showerror(title="Erro", message="Por favor, informe o caminho do arquivo.")
         elif tipoDeRelatorio == "Sinais das ONU's":
             self.geraRelatSinais()
+        elif tipoDeRelatorio == "Todas as Vlan's":
+            self.geraRelatVlan()
         else:
             messagebox.showerror(title="Erro", message="Escolha o modelo de relatório.")
 
@@ -277,7 +279,8 @@ class Comandos():
 
     def listaListBoxRelatorios(self):
         listaTiposRelatorios = ["-------------------------------------------", "Sinais das ONU's", "-------------------------------------------",
-        "Todos as ONU", "-------------------------------------------","Log", "-------------------------------------------"]
+        "Todos as ONU", "-------------------------------------------","Log", "-------------------------------------------", "Todas as Vlan's",
+         "-------------------------------------------"]
         for i in listaTiposRelatorios:
             self.listBoxRelatorio.insert(END, i)
 
@@ -316,7 +319,6 @@ class InformacoesOlt():
         memoriaOlt = self.tn.read_until(b'#').decode()
         listaMemoria = memoriaOlt.split(":", 2)
         listaMemoria = listaMemoria[1].split(" ", 1)
-
         self.saidaMemoria["text"] = "Total     |   Usada    |    Livre\n                          " + listaMemoria[1]
 
     def infoTemperaturaOlt(self):
@@ -332,14 +334,11 @@ class InformacoesOlt():
 class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto só está sendo utilizado na tela de sinal.
     def __init__(self, master=None, placeholder= 'PLACEHOLDER', color= 'gray'):
         super().__init__(master)
-
         self.placeholder = placeholder
         self.placeholder_color = color
         self.default_fg_color = self['fg']
-
         self.bind('<FocusIn>', self.foc_in)
         self.bind('<FocusOut>', self.foc_out)
-
         self.put_placeholder()
     def put_placeholder(self):
         self.insert(0, self.placeholder)
@@ -353,11 +352,8 @@ class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto só est
             self.put_placeholder()
 
 class Relatorios():
-    def printPdf(self):
-        webbrowser.open(self.nomeDiretorio+"\\ONU Digistar.pdf")
-
     def geraRelatSinais(self):
-        self.c = canvas.Canvas(self.nomeDiretorio+"\\ONU Digistar.pdf")
+        self.c = canvas.Canvas(self.nomeDiretorio+"\\Sinais das ONU - OLT Digistar.pdf")
         self.c.setFont("Helvetica-Bold", 24)
         self.c.drawString(200, 790, "Sinais das ONU's")
         self.c.setFont("Helvetica-Bold", 10)
@@ -395,8 +391,63 @@ class Relatorios():
         self.c.showPage()
         self.c.save()
         self.listaLog.append("Gerado relatório de sinais  - Data/Hora: " + self.infoDataHora())
-        self.printPdf()
+        webbrowser.open(self.nomeDiretorio+"\\Sinais das ONU - OLT Digistar.pdf")
     
+    def geraRelatVlan(self):
+        linha = 863
+        cont = 0
+        self.c = canvas.Canvas(self.nomeDiretorio+"\\Vlan's OLT Digistar.pdf")
+        self.c.setFont("Helvetica-Bold", 24)
+        self.c.drawString(190, 790, "Vlan's OLT Digistar")
+        self.c.setFont("Helvetica-Bold", 10)
+        self.c.drawString(25, 820, self.infoDataHora())
+        comando = "bridge show ?".encode()
+        self.tn.write(b""+comando)
+        saida = str(self.tn.read_until(b'#').decode())
+        saida = saida.replace("bridge show ?", "")
+        saida = saida.replace("BRIDGE  Bridge identifier", "")
+        saida = saida.replace("eth-6-60", "")
+        saida = saida.replace("eth-6-61" and "onu     Show information about onu", "")
+        saida = saida.replace("onu     Show information about onu", "")
+        saida = saida.replace("ports   Show information about onu UNI ports", "")
+        saida = saida.replace("<cr>", "")
+        contLinhasVlan = saida.count("\r\n") 
+        listaSaida = saida.split("\r\n", contLinhasVlan)
+        for i in listaSaida:
+            self.c.drawString(15, linha, listaSaida[cont])
+            linha = linha - 30
+            cont = cont + 1
+            if cont == 28:
+                break
+        linha = 745
+        for i in listaSaida:
+            self.c.drawString(270, linha, listaSaida[cont])
+            linha = linha - 30
+            cont = cont + 1
+            if cont == 52:
+                break
+        linha = 745
+        for i in listaSaida:
+            self.c.drawString(510, linha, listaSaida[cont])
+            linha = linha - 30
+            cont = cont + 1
+            if cont == 76:
+                break
+        self.c.showPage()
+        linha = 795
+        self.c.setFont("Helvetica-Bold", 10)
+        for i in listaSaida:
+            self.c.drawString(25, linha, listaSaida[cont])
+            linha = linha - 30
+            cont = cont + 1
+            if cont == contLinhasVlan:
+                break
+        
+        self.c.showPage()
+        self.c.save()
+        self.listaLog.append("Gerado relatório de vlan's  - Data/Hora: " + self.infoDataHora())
+        webbrowser.open(self.nomeDiretorio+"\\Vlan's OLT Digistar.pdf")
+
 class Interface():
     def telaPrincipal(self):
         primeiraTela = Tk()
@@ -410,9 +461,9 @@ class Interface():
         #self.barraDeMenuTelaPrincipal()
         self.framesTelaPrincipal()
         self.widgetsTelaPrincipal()
-        self.infoUptimeOlt()
-        self.infoTemperaturaOlt()
-        self.infoMemoriaOlt()
+        #self.infoUptimeOlt()
+        #self.infoTemperaturaOlt()
+        #self.infoMemoriaOlt()
         primeiraTela.mainloop()
 
     def framesTelaPrincipal(self):
@@ -555,12 +606,12 @@ class Interface():
         botaoDefinirDiretorio = atk.Button3d(self.relatoriosTela, text="Definir", command=self.selecionarDiretorio)
         botaoDefinirDiretorio.place(relx=0.657, rely=0.151, relwidth=0.09, relheight=0.063)
         botaoGerarPdf = atk.Button3d(self.relatoriosTela, text="Gerar PDF", command=self.carregarBarraProgresso)
-        botaoGerarPdf.place(relx=0.44, rely=0.66, relwidth=0.12, relheight=0.075)
+        botaoGerarPdf.place(relx=0.44, rely=0.7, relwidth=0.12, relheight=0.075)
         #Balão de mensagem.
         atk.tooltip(botaoDefinirDiretorio, "Selecione o diretório que deseja salvar o arquivo")
         atk.tooltip(botaoGerarPdf, 'Gera um arquivo com nome padrão de "ONU Digistar.pdf"')
         #Criação de list box.
-        self.listBoxRelatorio = Listbox(self.relatoriosTela, justify=CENTER, width=25, height=8, bg="#9099A2", font="arial 10 bold", bd=2)
+        self.listBoxRelatorio = Listbox(self.relatoriosTela, justify=CENTER, width=25, height=10, bg="#9099A2", font="arial 10 bold", bd=2)
         self.listBoxRelatorio.place(relx=0.375, rely=0.35)
         #Barra de progresso.
         self.barraProgresso = ttk.Progressbar(self.relatoriosTela, orient=HORIZONTAL, length=380, mode='determinate')
@@ -824,8 +875,8 @@ class Interface():
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt):
     def __init__(self):
         self.listaLog = []
-        self.conectar()
-        self.login()
+        #self.conectar()
+        #self.login()
         self.telaPrincipal()
 
 Main()
