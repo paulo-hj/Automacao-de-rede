@@ -280,7 +280,12 @@ class Comandos():
         loginDelete = self.entradaLoginDeletarOnu.get()
         escolha = messagebox.askyesno("Deletar ONU", 'Deseja deletar o login: "{}" ?'.format(loginDelete))
         if escolha == True:
-            pass
+            self.entradaLoginDeletarOnu.delete(0, END)
+            self.entradaLoginDeletarOnu.focus()
+            self.saidaOnuDeletada["text"] = "Status: Sucesso\n Login: " + loginDelete + "\n Vlan:"
+        else:
+            self.entradaLoginDeletarOnu.delete(0, END)
+            self.entradaLoginDeletarOnu.focus()
     
     def verificarSinalUltimaOnuProv(self):
         comando = "onu status {} \n".format(self.listaPorta[10]).encode()
@@ -498,8 +503,8 @@ class Interface():
         botaoVerificar = atk.Button3d(self.sinalTela, text="Verificar", command=self.verificarSinal)
         botaoVerificar.place(relx=0.437, rely=0.295, relwidth=0.13, relheight=0.071)
         #Criação das saídas dos dados.
-        self.saidaSinalOnu = Label(self.sinalTela, text="", font="arial 9 bold", anchor=N, background="#9099A2")#2F4F4F
-        self.saidaSinalOnu.place(relx=0.18, rely=0.41, relwidth=0.65, relheight=0.2)
+        self.saidaSinalOnu = Label(self.sinalTela, text="", font="arial 9 bold", anchor=N, background="#9099A2")
+        self.saidaSinalOnu.place(relx=0.174, rely=0.43, relwidth=0.65, relheight=0.32)
         #Balão de mensagem.
         atk.tooltip(botaoVerificar, "Verifica o sinal da ONU informada acima")
 
@@ -767,6 +772,9 @@ class Interface():
         botaoDeletarOnu.place(relx=0.437, rely=0.295, relwidth=0.13, relheight=0.071)
         #Balão de mensagem.
         atk.tooltip(botaoDeletarOnu, "Deletar ONU do login informado acima")
+        #Saída de dados.
+        self.saidaOnuDeletada = Label(self.deletarOnuTela, text="", font="arial 9 bold", anchor=N, background="#9099A2")
+        self.saidaOnuDeletada.place(relx=0.174, rely=0.43, relwidth=0.65, relheight=0.32)
 
     def telaDadosClientes(self):
         self.dadosOnuCliente = Toplevel()
