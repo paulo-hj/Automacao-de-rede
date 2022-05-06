@@ -8,8 +8,7 @@ import tkinter.filedialog #Selecionar diretório.
 import time
 #Imports necessários para gerar um arquivo pdf.
 from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter, A4 #Para as folhas.
-from reportlab.pdfbase import pdfmetrics
+from reportlab.lib.pagesizes import A4 #Para as folhas.
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import SimpleDocTemplate, Image
 import webbrowser
@@ -17,9 +16,6 @@ from PIL import ImageTk, Image
 import base64 #Necessário para utilizar imagens dentro do código sem dá erro na hora de compilar.
 
 from datetime import datetime
-from tkinter import colorchooser
-
-import threading
 
 class Conexao():
     def conectar(self):
