@@ -46,23 +46,11 @@ class Comandos():
         self.saidaSinalOnu["text"] = "{}".format(str(saida))
         self.listaLog.append("Verificado sinal do login "+ login +" - Data/Hora: " + self.infoDataHora())
 
-    def carregarBarraProgresso(self):
-        tipoDeRelatorio = ""
-        self.barraProgresso.stop()
-        tipoDeRelatorio = self.listBoxRelatorio.get(ACTIVE)
-        if len(self.nomeDiretorio) == 0:
-            messagebox.showerror(title="Erro", message="Por favor, informe o caminho do arquivo.")
-        elif tipoDeRelatorio != "Sinais das ONU's" and tipoDeRelatorio != "Todas as Vlan's":
-            messagebox.showerror(title="Erro", message="Escolha o modelo de relatório.")
-        else:
-            for x in range(20):
-                self.barraProgresso['value'] += 4
-                self.relatoriosTela.update_idletasks()
-                time.sleep(0.09)
-            if tipoDeRelatorio == "Sinais das ONU's":
-                self.geraRelatSinais()
-            elif tipoDeRelatorio == "Todas as Vlan's":
-                self.geraRelatVlan()
+    def carregarBarraProgresso(self, nVezes):
+        for x in range(nVezes):
+            self.barraProgresso['value'] += 5
+            self.relatoriosTela.update_idletasks()
+            time.sleep(0.09)
 
     def selecionarDiretorio(self):
         opcoes = {}
@@ -355,10 +343,22 @@ class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto só est
             self.put_placeholder()
 
 class Relatorios():
+    def verificarOpcaoRelatorio(self):
+        tipoDeRelatorio = ""
+        self.barraProgresso.stop()
+        tipoDeRelatorio = self.listBoxRelatorio.get(ACTIVE)
+        if len(self.nomeDiretorio) == 0:
+            messagebox.showerror(title="Erro", message="Por favor, informe o caminho do arquivo.")
+        elif tipoDeRelatorio != "Sinais das ONU's" and tipoDeRelatorio != "Todas as Vlan's":
+            messagebox.showerror(title="Erro", message="Escolha o modelo de relatório.")
+        else:
+            self.carregarBarraProgresso(14)
+            if tipoDeRelatorio == "Sinais das ONU's":
+                self.geraRelatSinais()
+            elif tipoDeRelatorio == "Todas as Vlan's":
+                self.geraRelatVlan()
+
     def geraRelatSinais(self):
-        self.barraProgresso['value'] += 5
-        self.relatoriosTela.update_idletasks()
-        time.sleep(0.09)
         self.c = canvas.Canvas(self.nomeDiretorio+"\\Sinais das ONU - OLT Digistar.pdf")
         self.c.setFont("Helvetica-Bold", 24)
         self.c.drawString(200, 790, "Sinais das ONU's")
@@ -369,9 +369,6 @@ class Relatorios():
         pularLinhaTexto = 733
         pularLinhaTraço = 720
         self.c.setFont("Helvetica", 10)
-        self.barraProgresso['value'] += 5
-        self.relatoriosTela.update_idletasks()
-        time.sleep(0.09)
         while onu < 17: #onu < 17:
             lista2= ['d']
             comando = "onu status {}/{}\n".format(porta,onu).encode()
@@ -396,22 +393,14 @@ class Relatorios():
                 porta = porta + 1
                 onu = 1
         #self.c.rect(20, 720, 550, 200, fill= False, stroke=True)
-        self.barraProgresso['value'] += 7
-        self.relatoriosTela.update_idletasks()
-        time.sleep(0.09)
         self.c.showPage()
         self.c.showPage()
         self.c.save()
-        self.barraProgresso['value'] += 3
-        self.relatoriosTela.update_idletasks()
-        time.sleep(0.09)
+        self.carregarBarraProgresso(6)
         self.listaLog.append("Gerado relatório de sinais  - Data/Hora: " + self.infoDataHora())
         webbrowser.open(self.nomeDiretorio+"\\Sinais das ONU - OLT Digistar.pdf")
     
     def geraRelatVlan(self):
-        self.barraProgresso['value'] += 5
-        self.relatoriosTela.update_idletasks()
-        time.sleep(0.09)
         linha = 863
         cont = 0
         self.c = canvas.Canvas(self.nomeDiretorio+"\\Vlan's OLT Digistar.pdf")
@@ -460,11 +449,7 @@ class Relatorios():
             cont = cont + 1
             if cont == contLinhasVlan:
                 break
-        n = [1, 2, 3]
-        for i in n:
-            self.barraProgresso['value'] += 5
-            self.relatoriosTela.update_idletasks()
-            time.sleep(0.09)
+        self.carregarBarraProgresso(6)
         self.c.showPage()
         self.c.save()
         self.listaLog.append("Gerado relatório de vlan's  - Data/Hora: " + self.infoDataHora())
@@ -627,7 +612,7 @@ class Interface():
         #Criação dos botões.
         botaoDefinirDiretorio = atk.Button3d(self.relatoriosTela, text="Definir", command=self.selecionarDiretorio)
         botaoDefinirDiretorio.place(relx=0.657, rely=0.151, relwidth=0.09, relheight=0.063)
-        botaoGerarPdf = atk.Button3d(self.relatoriosTela, text="Gerar PDF", command=self.carregarBarraProgresso)
+        botaoGerarPdf = atk.Button3d(self.relatoriosTela, text="Gerar PDF", command=self.verificarOpcaoRelatorio)
         botaoGerarPdf.place(relx=0.44, rely=0.7, relwidth=0.12, relheight=0.075)
         #Balão de mensagem.
         atk.tooltip(botaoDefinirDiretorio, "Selecione o diretório que deseja salvar o arquivo")
