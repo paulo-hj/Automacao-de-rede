@@ -19,6 +19,8 @@ import base64 #Necessário para utilizar imagens dentro do código sem dá erro 
 from datetime import datetime
 from tkinter import colorchooser
 
+import threading
+
 class Conexao():
     def conectar(self):
         HOST = "10.50.50.50"
@@ -47,19 +49,20 @@ class Comandos():
     def carregarBarraProgresso(self):
         tipoDeRelatorio = ""
         self.barraProgresso.stop()
-        for x in range(20):
-            self.barraProgresso['value'] += 5
-            self.relatoriosTela.update_idletasks()
-            time.sleep(0.09)
         tipoDeRelatorio = self.listBoxRelatorio.get(ACTIVE)
         if len(self.nomeDiretorio) == 0:
             messagebox.showerror(title="Erro", message="Por favor, informe o caminho do arquivo.")
-        elif tipoDeRelatorio == "Sinais das ONU's":
-            self.geraRelatSinais()
-        elif tipoDeRelatorio == "Todas as Vlan's":
-            self.geraRelatVlan()
-        else:
+        elif tipoDeRelatorio != "Sinais das ONU's" and tipoDeRelatorio != "Todas as Vlan's":
             messagebox.showerror(title="Erro", message="Escolha o modelo de relatório.")
+        else:
+            for x in range(20):
+                self.barraProgresso['value'] += 5
+                self.relatoriosTela.update_idletasks()
+                time.sleep(0.09)
+            if tipoDeRelatorio == "Sinais das ONU's":
+                self.geraRelatSinais()
+            elif tipoDeRelatorio == "Todas as Vlan's":
+                self.geraRelatVlan()
 
     def selecionarDiretorio(self):
         opcoes = {}
