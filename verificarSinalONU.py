@@ -55,7 +55,7 @@ class Comandos():
 
     def procurarOnu(self):
         try:
-            self.tn.write(b"onu show discovered \n")
+            self.tn.write(b"onu show discovered\n")
             saidaProcurarOnu = self.tn.read_until(b'#').decode()
             self.listaOnu = saidaProcurarOnu.split(" ", 11) #Filtra quantas ONU estão conectadas.
             nporta = self.listaOnu[3] #Para filtrar a porta que a ONU está conectada.
@@ -83,7 +83,7 @@ class Comandos():
         self.widgetsTelaProvisionarOnu()
 
     def verificarPorta(self):
-        self.tn.write(b"onu set ? \n")
+        self.tn.write(b"onu set ?\n")
         saidaVerificarPorta = self.tn.read_until(b'#').decode()
         self.listaPorta = saidaVerificarPorta.split(" ", 11)
         self.listaPortaOlt = self.listaPorta[10].split("/", 1)
@@ -113,7 +113,7 @@ class Comandos():
                 messagebox.showerror(title="Erro", message=msgTratamentoErro)
             if contTratamentoErro == 0:
                 if self.radioButtonSelecionado.get() == 1:
-                    comandoAddOnu = "onu set {} {} \n".format(self.listaPorta[10], self.listaMacOnu[0]).encode()
+                    comandoAddOnu = "onu set {} {}\n".format(self.listaPorta[10], self.listaMacOnu[0]).encode()
                     self.tn.write(b""+comandoAddOnu)
                     self.tn.read_until(b'#').decode()
                     gpon = "gpon-"+self.listaPortaOlt[0]
@@ -121,18 +121,14 @@ class Comandos():
                     comandoAddBridge = "bridge add {} onu 1 gem {} gtp 1 vlan {}\n".format(gpon, gem, self.vlan).encode()
                     self.tn.write(b""+comandoAddBridge)
                     self.tn.read_until(b'#').decode()
+                    self.limparTelaProcurarOnu()
                     self.listaLog.append("Provisionada ONU do login "+ login +" em modo bridge - Data/Hora: " + self.infoDataHora())
                 elif self.radioButtonSelecionado.get() == 2:
                     self.listaLog.append("Provisionada ONU do login "+ login +" em modo PPPoE - Data/Hora: " + self.infoDataHora())
                     print("PPPOE")
-                listaReset = list(range(1, 10))
-                listaPonto = [1, 2, 3]
-                for i in listaReset:
-                    for x in listaPonto:
-                        ponto = "." * x
-                        texto = "Aguardando"+ponto
-                        self.saidaAguardandoBotao["text"] = texto
-                        time.sleep(0.2)
+                self.saidaAguardandoBotao["text"] = "Aguarde..."
+                time.sleep(0.8)
+                self.saidaAguardandoBotao(0, END)
                 self.widgetsButtonVerificarSinal()
         except:
             messagebox.showerror(title="Erro", message="É necessário primeiro procurar a ONU.")
@@ -278,6 +274,12 @@ class Comandos():
         if escolha == True:
             self.entradaLoginDeletarOnu.delete(0, END)
             self.entradaLoginDeletarOnu.focus()
+
+            #self.tn.write(b"onu show discovered\n")
+            #saidaDeletarOnu = self.tn.read_until(b'#').decode()
+
+
+
             self.saidaOnuDeletada["text"] = "Status: Sucesso\n Login: " + loginDelete + "\n Vlan:"
             self.listaLog.append("Deletada ONU do login "+ login +" - Data/Hora: " + self.infoDataHora())
         else:
@@ -404,13 +406,13 @@ class Relatorios():
         self.c.drawString(190, 790, "Vlan's OLT Digistar")
         self.c.setFont("Helvetica-Bold", 10)
         self.c.drawString(25, 820, self.infoDataHora())
-        comando = "bridge show ?".encode()
+        comando = "bridge show ?\n".encode()
         self.tn.write(b""+comando)
         saida = str(self.tn.read_until(b'#').decode())
         saida = saida.replace("bridge show ?", "")
         saida = saida.replace("BRIDGE  Bridge identifier", "")
         saida = saida.replace("eth-6-60", "")
-        saida = saida.replace("eth-6-61" and "onu     Show information about onu", "")
+        saida = saida.replace("eth-6-61", "")
         saida = saida.replace("onu     Show information about onu", "")
         saida = saida.replace("ports   Show information about onu UNI ports", "")
         saida = saida.replace("<cr>", "")
@@ -464,9 +466,9 @@ class Interface():
         #self.barraDeMenuTelaPrincipal()
         self.framesTelaPrincipal()
         self.widgetsTelaPrincipal()
-        #self.infoUptimeOlt()
-        #self.infoTemperaturaOlt()
-        #self.infoMemoriaOlt()
+        self.infoUptimeOlt()
+        self.infoTemperaturaOlt()
+        self.infoMemoriaOlt()
         primeiraTela.mainloop()
 
     def framesTelaPrincipal(self):
