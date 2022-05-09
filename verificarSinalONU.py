@@ -91,7 +91,7 @@ class Comandos():
         self.tn.read_until(b'#').decode()
 
     def provisionarOnu(self):
-        msgTratamentoErro = "Está faltando informar os campos abaixo: "
+        msgTratamentoErro = "É necessário preencher ou corrigir os campos baixo:"
         contTratamentoErro = 0
         login = self.entradaLoginOnu.get()
         #self.marca = self.listBoxMarcaOnu.get(ACTIVE)
@@ -108,6 +108,9 @@ class Comandos():
                 contTratamentoErro = contTratamentoErro + 1
             if int(self.comboBoxPortaCto.get()) <= 0:
                 msgTratamentoErro = msgTratamentoErro + "\nPorta da CTO"
+                contTratamentoErro = contTratamentoErro + 1
+            if len(login) > 30:
+                msgTratamentoErro = msgTratamentoErro + "\nO login não pode ter mais de 30 caracteres."
                 contTratamentoErro = contTratamentoErro + 1
             if contTratamentoErro > 0:
                 messagebox.showerror(title="Erro", message=msgTratamentoErro)
