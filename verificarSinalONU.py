@@ -15,6 +15,9 @@ import webbrowser
 from PIL import ImageTk, Image
 import base64 #Necessário para utilizar imagens dentro do código sem dá erro na hora de compilar.
 
+#Banco de dados
+from BD import *
+
 from datetime import datetime
 
 class Conexao():
@@ -58,9 +61,9 @@ class Comandos():
             self.tn.write(b"onu show discovered\n")
             saidaProcurarOnu = self.tn.read_until(b'#').decode()
             self.listaOnu = saidaProcurarOnu.split(" ", 11) #Filtra quantas ONU estão conectadas.
-            nporta = self.listaOnu[3] #Para filtrar a porta que a ONU está conectada.
-            nporta = nporta.split(":", 1)
-            self.saidaPortaOlt["text"] = nporta[0] #Printa porta que ONU está conectada.
+            self.nporta = self.listaOnu[3] #Para filtrar a porta que a ONU está conectada.
+            self.nporta = self.nporta.split(":", 1)
+            self.saidaPortaOlt["text"] = self.nporta[0] #Printa porta que ONU está conectada.
             self.saidaQuantOnu["text"] = self.listaOnu[10] #Printa quantas ONU estão conectadas.
             self.listaMacOnu = self.listaOnu[11].split("\r", 1) #Filtra mac da ONU achada.
             self.saidaMacOnu["text"] = self.listaMacOnu[0] #Printa Mac da ONU achada.
@@ -82,10 +85,10 @@ class Comandos():
         self.listaMacOnu = []
         self.widgetsTelaProvisionarOnu()
 
-    def verificarPorta(self):
+    def verificarPorta(self): #Verifica porta e posição que a onu está conectada.
         self.tn.write(b"onu set ?\n")
         saidaVerificarPorta = self.tn.read_until(b'#').decode()
-        self.listaPorta = saidaVerificarPorta.split(" ", 11)
+        self.listaPorta = saidaVerificarPorta.split(" ", 11) #self.listaPorta[10] guarda a porta e posição.
         self.listaPortaOlt = self.listaPorta[10].split("/", 1)
         self.saidaPortaOlt["text"] = self.listaPortaOlt[0]
         self.tn.read_until(b'#').decode()
@@ -94,7 +97,6 @@ class Comandos():
         msgTratamentoErro = "É necessário preencher ou corrigir os campos baixo:"
         contTratamentoErro = 0
         login = self.entradaLoginOnu.get()
-        #self.marca = self.listBoxMarcaOnu.get(ACTIVE)
         try:
             quantMac = self.listaMacOnu[0] #Usado para fazer a validação com o try se a ONU foi achada ou não.
             if self.radioButtonSelecionado.get() != 1 and self.radioButtonSelecionado.get() != 2:
@@ -124,14 +126,41 @@ class Comandos():
                     comandoAddBridge = "bridge add {} onu 1 gem {} gtp 1 vlan {}\n".format(gpon, gem, self.vlan).encode()
                     self.tn.write(b""+comandoAddBridge)
                     self.tn.read_until(b'#').decode()
-                    self.limparTelaProcurarOnu()
-                    self.listaLog.append("Provisionada ONU do login "+ login +" em modo bridge - Data/Hora: " + self.infoDataHora())
+                    dataHora = str(self.infoDataHora())
+                    modo = "Bridge"
+                    self.listaLog.append("Provisionada ONU do login "+ login +" em modo bridge - Data/Hora: " + dataHora)
                 elif self.radioButtonSelecionado.get() == 2:
                     self.listaLog.append("Provisionada ONU do login "+ login +" em modo PPPoE - Data/Hora: " + self.infoDataHora())
+                    modo = "PPPoE"
                     print("PPPOE")
-                self.saidaAguardandoBotao["text"] = "Aguarde..."
-                time.sleep(0.8)
-                self.saidaAguardandoBotao(0, END)
+
+                textoAguarde = "Aguarde"
+                ponto = ""
+                cont = 0
+                contCor = 0
+                for i in range(16):
+                    if cont > 3:
+                        if contCor == 4:
+                            self.saidaAguardandoBotao["fg"] = "orange"
+                        elif contCor == 8:
+                            self.saidaAguardandoBotao["fg"] = "yellow"
+                        elif contCor ==  12:
+                            self.saidaAguardandoBotao["fg"] = "green"
+                        textoAguarde = "Aguarde"
+                        ponto = ""
+                        cont = 0
+                    self.saidaAguardandoBotao["text"] = textoAguarde = textoAguarde + ponto
+                    self.saidaAguardandoBotao.update()
+                    ponto = "."
+                    cont += 1
+                    contCor += 1
+                    time.sleep(1)
+                self.adicionarOnuDb(login, self.listaPorta[10], int(self.vlan), int(self.comboBoxPortaCto.get()), self.ramal, 
+                self.splitter, modo, self.listaMacOnu[0], self.listBoxMarcaOnu.get(ACTIVE), int(self.nporta[0]), "paulo", dataHora)
+                time.sleep(1)
+                self.limparTelaProcurarOnu()
+                self.saidaAguardandoBotao["text"] = ""
+                self.saidaAguardandoBotao.update()
                 self.widgetsButtonVerificarSinal()
         except:
             messagebox.showerror(title="Erro", message="É necessário primeiro procurar a ONU.")
@@ -166,20 +195,28 @@ class Comandos():
     def verificaOpcaoRamal(self):
             vlan = self.vlan
             if int(vlan) >= 131 and int(vlan) <= 138:
+                self.ramal = "13"
                 self.saidaRamal["text"] = "13"
             elif int(vlan) >= 141 and int(vlan) <= 148:
+                self.ramal = "14"
                 self.saidaRamal["text"] = "14"
             elif int(vlan) >= 151 and int(vlan) <= 158:
+                self.ramal = "15"
                 self.saidaRamal["text"] = "15"
             elif int(vlan) >= 161 and int(vlan) <= 168:
+                self.ramal = "16"
                 self.saidaRamal["text"] = "16"
             elif int(vlan) >= 341 and int(vlan) <= 348:
+                self.ramal = "34"
                 self.saidaRamal["text"] = "34"
             elif int(vlan) >= 351 and int(vlan) <= 358:
+                self.ramal = "35"
                 self.saidaRamal["text"] = "35"
             elif int(vlan) >= 361 and int(vlan) <= 368:
+                self.ramal = "36"
                 self.saidaRamal["text"] = "36"
             elif int(vlan) >= 521 and int(vlan) <= 528:
+                self.ramal = "52"
                 self.saidaRamal["text"] = "52"
  
     def verificaopcaoSplitterAndPortaCto(self):
@@ -188,8 +225,8 @@ class Comandos():
         "138":"0-1-P8-D24-T3-R13-C8", "141":"0-1-P7-D17-T3-R14-C1", "142":"0-1-P7-D17-T3-R14-C2", "143":"0-1-P7-D17-T3-R14-C3", 
         "144":"0-1-P7-D17-T3-R14-C4", "145":"0-1-P7-D17-T3-R14-C5", "146":"0-1-P7-D17-T3-R14-C6", "147":"0-1-P7-D17-T3-R14-C7", 
         "148":"0-1-P7-D17-T3-R14-C8", "":"", "":"", "":"", "":"", "":"", "":"", "":"", "":"", "":""}
-        splitter = dicionarioSplitter[self.vlan]
-        self.saidaSplitter["text"] = splitter
+        self.splitter = dicionarioSplitter[self.vlan]
+        self.saidaSplitter["text"] = self.splitter
         dicionarioPortaCto = {"131":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
                                 "132":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
                                 "133":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
@@ -735,8 +772,8 @@ class Interface():
         self.saidaRamal.place(relx=0.135, rely=0.211, relwidth=0.07)
         self.saidaSplitter = Label(self.dentroFrameProvisionarOnu, text="", background="#fff", anchor=CENTER)
         self.saidaSplitter.place(relx=0.398, rely=0.211, relwidth=0.239)
-        self.saidaAguardandoBotao = Label(self.dentroFrameProvisionarOnu, text="", font="arial 10 bold", background="#9099A2")
-        self.saidaAguardandoBotao.place(relx=0.7, rely=0.27)
+        self.saidaAguardandoBotao = Label(self.dentroFrameProvisionarOnu, text="", font="arial 10 bold", background="#9099A2", fg="red")
+        self.saidaAguardandoBotao.place(relx=0.78, rely=0.27)
         #Criação de radio button.
         radioBridge = Radiobutton(self.dentroFrameProvisionarOnu, text="Bridge  |", value=1, variable=self.radioButtonSelecionado, background="#9099A2")
         radioBridge.place(relx=0.37, rely=0.05)
@@ -883,7 +920,7 @@ class Interface():
     def widgetsTelaDadosOnu(self):
         pass
 
-class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt):
+class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados):
     def __init__(self):
         self.listaLog = []
         self.conectar()

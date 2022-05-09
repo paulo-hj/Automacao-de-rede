@@ -3,3 +3,4 @@ venv
 imagens
 login.py
 BD.py
+__pycache__
