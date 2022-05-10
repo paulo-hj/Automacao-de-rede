@@ -21,11 +21,11 @@ from BD import *
 from datetime import datetime
 
 class Conexao():
-    def conectar(self):
+    def conectarOlt(self):
         HOST = "10.50.50.50"
         self.tn = telnetlib.Telnet(HOST)
 
-    def login(self):
+    def loginOlt(self):
         self.tn.read_until(b":")
         self.tn.write(b"digistar\n")
         self.tn.write(b"enable\n")
@@ -37,13 +37,18 @@ class Conexao():
 
 class Comandos():
     def verificarSinal(self):
-        login = self.entradaPosicaoOnu.get()
-        posicao = self.entradaPosicaoOnu.get()
-        comando = "onu status {} \n".format(posicao).encode()
-        self.tn.write(b""+comando)
-        saida = self.tn.read_until(b'#').decode()
-        self.saidaSinalOnu["text"] = "{}".format(str(saida))
-        self.listaLog.append("Verificado sinal do login "+ login +" - Data/Hora: " + self.infoDataHora())
+        try:
+            login = self.entradaPosicaoOnu.get()
+            listaPortaPosicao = self.bdPortaPosicao(login)
+            portaPosicao = listaPortaPosicao[0][0]
+            comando = "onu status {} \n".format(portaPosicao).encode()
+            self.tn.write(b""+comando)
+            saida = self.tn.read_until(b'#').decode()
+            self.saidaSinalOnu["text"] = "{}".format(str(saida))
+            self.listaLog.append("Verificado sinal do login "+ login +" - Data/Hora: " + self.infoDataHora())
+        except:
+            self.saidaSinalOnu["text"] = ""
+            messagebox.showerror(title="Erro", message="Informe um login válido.")
 
     def carregarBarraProgresso(self, nVezes):
         for x in range(nVezes):
@@ -308,24 +313,33 @@ class Comandos():
             self.listBoxRelatorio.insert(END, i)
 
     def deletarOnu(self):
-        login = self.entradaLoginDeletarOnu.get()
-        loginDelete = self.entradaLoginDeletarOnu.get()
-        escolha = messagebox.askyesno("Deletar ONU", 'Deseja deletar o login: "{}" ?'.format(loginDelete))
-        if escolha == True:
+        try:
+            login = self.entradaLoginDeletarOnu.get()
+            loginDelete = self.entradaLoginDeletarOnu.get()
+            escolha = messagebox.askyesno("Deletar ONU", 'Deseja deletar o login: "{}" ?'.format(loginDelete))
+            if escolha == True:
+                listaOnuVlanPortaposicaoMac = self.dbComandoDeletarOnu(login)
+                vlan = str(listaOnuVlanPortaposicaoMac[0][0])
+                portaPosicao = listaOnuVlanPortaposicaoMac[0][1]
+                mac = listaOnuVlanPortaposicaoMac[0][2]
+
+                #self.tn.write(b"onu show discovered\n")
+                #saidaDeletarOnu = self.tn.read_until(b'#').decode()
+
+                self.entradaLoginDeletarOnu.delete(0, END)
+                self.entradaLoginDeletarOnu.focus()
+                self.saidaOnuDeletada["text"] = ("Status: Sucesso\n\n Informações\n Login: " + loginDelete + 
+                "\n Vlan: " + vlan + "\n Mac: " + mac + "\n Porta/Posição: " + portaPosicao)
+                self.listaLog.append("Deletada ONU do login "+ login +" - Data/Hora: " + self.infoDataHora())
+            else:
+                self.entradaLoginDeletarOnu.delete(0, END)
+                self.entradaLoginDeletarOnu.focus()
+        except:
+            self.saidaOnuDeletada["text"] = ""
             self.entradaLoginDeletarOnu.delete(0, END)
             self.entradaLoginDeletarOnu.focus()
+            messagebox.showerror(title="Erro", message="Informe um login válido")
 
-            #self.tn.write(b"onu show discovered\n")
-            #saidaDeletarOnu = self.tn.read_until(b'#').decode()
-
-
-
-            self.saidaOnuDeletada["text"] = "Status: Sucesso\n Login: " + loginDelete + "\n Vlan:"
-            self.listaLog.append("Deletada ONU do login "+ login +" - Data/Hora: " + self.infoDataHora())
-        else:
-            self.entradaLoginDeletarOnu.delete(0, END)
-            self.entradaLoginDeletarOnu.focus()
-    
     def verificarSinalUltimaOnuProv(self):
         comando = "onu status {} \n".format(self.listaPorta[10]).encode()
         self.tn.write(b""+comando)
@@ -923,8 +937,10 @@ class Interface():
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados):
     def __init__(self):
         self.listaLog = []
-        self.conectar()
-        self.login()
+        self.conectarOlt()
+        self.loginOlt()
+        self.conectarBd()
         self.telaPrincipal()
+        self.bdSair()
 
 Main()
