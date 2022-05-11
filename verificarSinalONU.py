@@ -97,6 +97,12 @@ class Comandos():
         self.listaPortaOlt = self.listaPorta[10].split("/", 1)
         self.saidaPortaOlt["text"] = self.listaPortaOlt[0]
         self.tn.read_until(b'#').decode()
+    
+    def verificarGem(self, porta):
+        if len(porta) < 2:
+            return "50"+porta
+        else:
+            return "5"+porta
 
     def provisionarOnu(self):
         msgTratamentoErro = "É necessário preencher ou corrigir os campos baixo:"
@@ -127,7 +133,7 @@ class Comandos():
                     self.tn.write(b""+comandoAddOnu)
                     self.tn.read_until(b'#').decode()
                     gpon = "gpon-"+self.listaPortaOlt[0]
-                    gem = "50"+self.listaPortaOlt[1]
+                    gem = self.verificarGem(self.listaPortaOlt[1])
                     comandoAddBridge = "bridge add {} onu 1 gem {} gtp 1 vlan {}\n".format(gpon, gem, self.vlan).encode()
                     self.tn.write(b""+comandoAddBridge)
                     self.tn.read_until(b'#').decode()
@@ -138,7 +144,6 @@ class Comandos():
                     self.listaLog.append("Provisionada ONU do login "+ login +" em modo PPPoE - Data/Hora: " + self.infoDataHora())
                     modo = "PPPoE"
                     print("PPPOE")
-
                 textoAguarde = "Aguarde"
                 ponto = ""
                 cont = 0
@@ -322,15 +327,22 @@ class Comandos():
                 vlan = str(listaOnuVlanPortaposicaoMac[0][0])
                 portaPosicao = listaOnuVlanPortaposicaoMac[0][1]
                 mac = listaOnuVlanPortaposicaoMac[0][2]
+                listaPortaPosicao = portaPosicao.split("/", 1)
+                gem = self.verificarGem(listaPortaPosicao[1])
+                deleteBridge = "bridge delete gpon-{}-{}-{}-{}\n".format(listaPortaPosicao[0], listaPortaPosicao[1], gem, vlan).encode()
+                self.tn.write(b""+deleteBridge)
+                self.tn.read_until(b'#').decode()
+                deleteOnu = "onu delete {}\n".format(portaPosicao).encode()
+                self.tn.write(b""+deleteOnu)
+                saida = self.tn.read_until(b'#').decode()
+                print(saida)
 
-                #self.tn.write(b"onu show discovered\n")
-                #saidaDeletarOnu = self.tn.read_until(b'#').decode()
-
+                self.dbDeletarOnu(login)
                 self.entradaLoginDeletarOnu.delete(0, END)
                 self.entradaLoginDeletarOnu.focus()
                 self.saidaOnuDeletada["text"] = ("Status: Sucesso\n\n Informações\n Login: " + loginDelete + 
                 "\n Vlan: " + vlan + "\n Mac: " + mac + "\n Porta/Posição: " + portaPosicao)
-                self.listaLog.append("Deletada ONU do login "+ login +" - Data/Hora: " + self.infoDataHora())
+                self.listaLog.append("Deletada ONU do login "+ loginDelete +" - Data/Hora: " + self.infoDataHora())
             else:
                 self.entradaLoginDeletarOnu.delete(0, END)
                 self.entradaLoginDeletarOnu.focus()
