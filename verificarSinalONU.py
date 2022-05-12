@@ -167,6 +167,7 @@ class Comandos():
                     time.sleep(1)
                 self.adicionarOnuDb(login, self.listaPorta[10], int(self.vlan), int(self.comboBoxPortaCto.get()), self.ramal, 
                 self.splitter, modo, self.listaMacOnu[0], self.listBoxMarcaOnu.get(ACTIVE), int(self.nporta[0]), "paulo", dataHora)
+                self.bdExclPortaCto(self.comboBoxPortaCto.get(), int(self.vlan))
                 time.sleep(1)
                 self.limparTelaProcurarOnu()
                 self.saidaAguardandoBotao["text"] = ""
@@ -192,7 +193,8 @@ class Comandos():
         if len(indices) > 0 :
             self.vlan = ",".join([self.listBoxVlan.get(i) for i in indices])
             self.verificaOpcaoRamal()
-            self.verificaopcaoSplitterAndPortaCto()
+            self.verificarSplitter()
+            self.verificarPortaCto()
         else:
             pass
             '''
@@ -229,7 +231,7 @@ class Comandos():
                 self.ramal = "52"
                 self.saidaRamal["text"] = "52"
  
-    def verificaopcaoSplitterAndPortaCto(self):
+    def verificarSplitter(self):
         dicionarioSplitter = {"131":"0-1-P8-D24-T3-R13-C1", "132":"0-1-P8-D24-T3-R13-C2", "133":"0-1-P8-D24-T3-R13-C3", 
         "134":"0-1-P8-D24-T3-R13-C4", "135":"0-1-P8-D24-T3-R13-C5", "136":"0-1-P8-D24-T3-R13-C6", "137":"0-1-P8-D24-T3-R13-C7", 
         "138":"0-1-P8-D24-T3-R13-C8", "141":"0-1-P7-D17-T3-R14-C1", "142":"0-1-P7-D17-T3-R14-C2", "143":"0-1-P7-D17-T3-R14-C3", 
@@ -237,73 +239,17 @@ class Comandos():
         "148":"0-1-P7-D17-T3-R14-C8", "":"", "":"", "":"", "":"", "":"", "":"", "":"", "":"", "":""}
         self.splitter = dicionarioSplitter[self.vlan]
         self.saidaSplitter["text"] = self.splitter
-        dicionarioPortaCto = {"131":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "132":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "133":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "134":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "135":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "136":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "137":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "138":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "141":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "142":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "143":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "144":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "145":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "146":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "147":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "148":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "151":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "152":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "153":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "154":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "155":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "156":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "157":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "158":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "161":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "162":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "163":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "164":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "165":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "166":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "167":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "168":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "341":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "342":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "343":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "344":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "345":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "346":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "347":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "348":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "351":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "352":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "353":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "354":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "355":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "356":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "357":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "358":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "361":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "362":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "363":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "364":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "365":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "366":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "367":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "368":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "521":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "522":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "523":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "524":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "525":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "526":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], 
-                                "527":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],
-                                "528":["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"],}
-        self.listaPortaCto = dicionarioPortaCto[self.vlan]
+
+    def verificarPortaCto(self):
+        cont = 0
+        tuplaPortasDisponiveis = self.bdListarPortaCto(self.vlan)
+        listaPortasDisponiveis = list(tuplaPortasDisponiveis[0])
+        for x in listaPortasDisponiveis:
+            if x == "0":
+                del listaPortasDisponiveis[cont]
+            cont += 1
+        self.listaPortaCto = listaPortasDisponiveis
         self.widgetsTelaProvisionarComboBox()
-        #self.quartaTela.update()
 
     def infoDataHora(self):
         dataEHora = datetime.now()
@@ -323,10 +269,14 @@ class Comandos():
             loginDelete = self.entradaLoginDeletarOnu.get()
             escolha = messagebox.askyesno("Deletar ONU", 'Deseja deletar o login: "{}" ?'.format(loginDelete))
             if escolha == True:
-                listaOnuVlanPortaposicaoMac = self.dbComandoDeletarOnu(login)
-                vlan = str(listaOnuVlanPortaposicaoMac[0][0])
-                portaPosicao = listaOnuVlanPortaposicaoMac[0][1]
-                mac = listaOnuVlanPortaposicaoMac[0][2]
+                listaOnuVlanPortaposicaoMacPcto = self.dbComandoDeletarOnu(login)
+                vlan = str(listaOnuVlanPortaposicaoMacPcto[0][0])
+                portaPosicao = listaOnuVlanPortaposicaoMacPcto[0][1]
+                mac = listaOnuVlanPortaposicaoMacPcto[0][2]
+                splitter = listaOnuVlanPortaposicaoMacPcto[0][3]
+                portaCto = str(listaOnuVlanPortaposicaoMacPcto[0][4])
+                marca = listaOnuVlanPortaposicaoMacPcto[0][5]
+                modoOnu = listaOnuVlanPortaposicaoMacPcto[0][6]
                 listaPortaPosicao = portaPosicao.split("/", 1)
                 gem = self.verificarGem(listaPortaPosicao[1])
                 deleteBridge = "bridge delete gpon-{}-{}-{}-{}\n".format(listaPortaPosicao[0], listaPortaPosicao[1], gem, vlan).encode()
@@ -334,14 +284,20 @@ class Comandos():
                 self.tn.read_until(b'#').decode()
                 deleteOnu = "onu delete {}\n".format(portaPosicao).encode()
                 self.tn.write(b""+deleteOnu)
-                saida = self.tn.read_until(b'#').decode()
-                print(saida)
-
+                self.tn.read_until(b'#').decode()
                 self.dbDeletarOnu(login)
                 self.entradaLoginDeletarOnu.delete(0, END)
                 self.entradaLoginDeletarOnu.focus()
-                self.saidaOnuDeletada["text"] = ("Status: Sucesso\n\n Informações\n Login: " + loginDelete + 
-                "\n Vlan: " + vlan + "\n Mac: " + mac + "\n Porta/Posição: " + portaPosicao)
+                self.saidaOnuDeletada["text"] = ("Status: Sucesso\n\n Informações\n--------------------------------------------------------------------------------------------------------------------------------\n Login: " +
+                 loginDelete + "\n--------------------------------------------------------------------------------------------------------------------------------\n Vlan: " + vlan + 
+                 "\n--------------------------------------------------------------------------------------------------------------------------------\n Mac: " +
+                  mac + "\n--------------------------------------------------------------------------------------------------------------------------------\n Splitter: " +
+                  splitter + "\n--------------------------------------------------------------------------------------------------------------------------------\n Porta/Posição: " + portaPosicao + 
+                  "\n--------------------------------------------------------------------------------------------------------------------------------\n Porta da CTO: " + portaCto + 
+                  "\n--------------------------------------------------------------------------------------------------------------------------------\n Modo da ONU: " +
+                  modoOnu + "\n--------------------------------------------------------------------------------------------------------------------------------\n Marca: " +
+                  marca)
+                self.bdAddPortaCto(portaCto, int(vlan))
                 self.listaLog.append("Deletada ONU do login "+ loginDelete +" - Data/Hora: " + self.infoDataHora())
             else:
                 self.entradaLoginDeletarOnu.delete(0, END)
@@ -547,16 +503,16 @@ class Interface():
 
     def widgetsTelaPrincipal(self):
         #Criação dos texto.
-        Label(self.frameTela, text="Uptime:", font="verdana 9 bold", background="#9099A2").place(relx=0.15, rely=0.225)
-        Label(self.frameTela, text="Temperatura:", font="verdana 9 bold", background="#9099A2").place(relx=0.15, rely=0.287)
-        Label(self.frameTela, text="Memória:", font="verdana 9 bold", background="#9099A2").place(relx=0.517, rely=0.225)
+        Label(self.frameTela, text="Uptime:", font="Ivy 10 bold", background="#9099A2").place(relx=0.154, rely=0.223)
+        Label(self.frameTela, text="Temperatura:", font="Ivy 10 bold", background="#9099A2").place(relx=0.154, rely=0.2848)
+        Label(self.frameTela, text="Memória:", font="Ivy 10 bold", background="#9099A2").place(relx=0.518, rely=0.224)
         #Criação das saídas dos dados.
-        self.saidaUptime = Label(self.frameTela, text="", background="#9099A2")
-        self.saidaUptime.place(relx=0.225, rely=0.225)
-        self.saidaTemperatura = Label(self.frameTela, text="", background="#9099A2")
-        self.saidaTemperatura.place(relx=0.28, rely=0.287)
-        self.saidaMemoria = Label(self.frameTela, text="", background="#9099A2", anchor=N)
-        self.saidaMemoria.place(relx=0.602, rely=0.217, relwidth=0.218, relheight=0.1)
+        self.saidaUptime = Label(self.frameTela, text="", background="#9099A2", font="Ivy 10")
+        self.saidaUptime.place(relx=0.228, rely=0.224)
+        self.saidaTemperatura = Label(self.frameTela, text="", background="#9099A2", font="Ivy 10")
+        self.saidaTemperatura.place(relx=0.28, rely=0.2845)
+        self.saidaMemoria = Label(self.frameTela, text="", background="#9099A2", anchor=N, font="Ivy 9")
+        self.saidaMemoria.place(relx=0.602, rely=0.226, relwidth=0.235, relheight=0.1)
         #Criação dos botões.
         botaoTelaProvisionarOnu = atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#233237", command=self.telaProvisionar)
         botaoTelaProvisionarOnu.place(relx=0.13, rely=0.055, relwidth=0.73, relheight=0.1)
@@ -566,9 +522,9 @@ class Interface():
         botaoTelaVlan.place(relx=0.13, rely=0.294, relwidth=0.73, relheight=0.1)
         botaoTelaDeletarOnu = atk.Button3d(self.frameVertical, text="Deletar ONU", bg="#233237", command=self.telaDeletarOnu)
         botaoTelaDeletarOnu.place(relx=0.13, rely=0.413, relwidth=0.73, relheight=0.1)
-        botaoLog = Button(self.frameTela, text="Log", font="arial 8 bold", background="#fff", command=self.telaLog)
+        botaoLog = Button(self.frameTela, text="Log", font="Ivy 8 bold", background="#fff", command=self.telaLog)
         botaoLog.place(relx=0.155, rely=0.37, relwidth=0.051, relheight=0.058)
-        botaoWeb = Button(self.frameTela, text="Web", font="arial 8 bold", background="#fff", command=self.acessarGerWeb)
+        botaoWeb = Button(self.frameTela, text="Web", font="Ivy 8 bold", background="#fff", command=self.acessarGerWeb)
         botaoWeb.place(relx=0.218, rely=0.37, relwidth=0.051, relheight=0.058)
         botaoTelaDadosOnu = atk.Button3d(self.frameVertical, text="PROVISIONADAS", bg="#233237", command=self.telaDadosClientes)
         botaoTelaDadosOnu.place(relx=0.13, rely=0.535, relwidth=0.73, relheight=0.1)
@@ -625,17 +581,17 @@ class Interface():
     def widgetsTelaSinal(self):
         #*Primeiro Frame
         #Criação dos texto.
-        Label(self.sinalTela, text="Verificar sinal da ONU", font="verdana 14 bold", background="#9099A2").place(relx=0.334, rely=0.03)
-        Label(self.sinalTela, text="Informe o login", font="arial 12 bold", background="#9099A2").place(relx=0.42, rely=0.14)
+        Label(self.sinalTela, text="Verificar sinal da ONU", font="Ivy 14 bold", background="#9099A2").place(relx=0.3615, rely=0.03)
+        Label(self.sinalTela, text="Informe o login", font="Ivy 12 bold", background="#9099A2").place(relx=0.4195, rely=0.14)
         #Criação das entradas dos dados.
-        self.entradaPosicaoOnu = Entry(self.sinalTela, bd=3, justify=CENTER)
+        self.entradaPosicaoOnu = Entry(self.sinalTela, bd=3, justify=CENTER, font="Ivy 10")
         self.entradaPosicaoOnu.place(relx=0.426, rely=0.19, relwidth=0.152, relheight=0.038)
         self.entradaPosicaoOnu.focus()
         #Criação dos botões.
         botaoVerificar = atk.Button3d(self.sinalTela, text="Verificar", command=self.verificarSinal)
         botaoVerificar.place(relx=0.437, rely=0.295, relwidth=0.13, relheight=0.071)
         #Criação das saídas dos dados.
-        self.saidaSinalOnu = Label(self.sinalTela, text="", font="arial 9 bold", anchor=N, background="#9099A2")
+        self.saidaSinalOnu = Label(self.sinalTela, text="", font="Ivy 11 bold", anchor=N, background="#9099A2")
         self.saidaSinalOnu.place(relx=0.174, rely=0.43, relwidth=0.65, relheight=0.32)
         #Balão de mensagem.
         atk.tooltip(botaoVerificar, "Verifica o sinal da ONU informada acima")
@@ -698,7 +654,6 @@ class Interface():
         self.quartaTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
         self.quartaTela.focus_force() #Força o foco nessa janela.
         self.quartaTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
-        self.listaPortaCto = []
         self.vlan = ""
         self.radioButtonSelecionado = IntVar() #Variavel para receber a opção do modo da onu, bridge ou pppoe.
         self.listaListBoxVlan()
@@ -720,7 +675,7 @@ class Interface():
 
     def widgetsTelaProvisionarOnu(self):
         #Criação dos texto.
-        Label(self.quartaTela, text="Provisionamento em espera", font="verdana 14 bold", background="#9099A2").place(relx=0.289, rely=0.03)
+        Label(self.quartaTela, text="Provisionamento em espera", font="Ivy 14 bold", background="#9099A2").place(relx=0.318, rely=0.03)
         labelQuantOnu = Label(self.quartaTela, text="Quant.", font="arial 10 bold", background="#9099A2")
         labelQuantOnu.place(relx=0.415, rely=0.132)
         labelPortaOlt = Label(self.quartaTela, text="Porta na OLT", font="arial 9 bold", background="#9099A2")
@@ -754,7 +709,7 @@ class Interface():
 
     def widgetsTelaProvisionarFrameDentro(self):
         #Criação dos texto.
-        Label(self.quartaTela, text="Provisionar ONU", font="verdana 14 bold", background="#9099A2").place(relx=0.375, rely=0.325)
+        Label(self.quartaTela, text="Provisionar ONU", font="Ivy 14 bold", background="#9099A2").place(relx=0.39, rely=0.325)
         Label(self.dentroFrameProvisionarOnu, text="Modo da ONU", font="arial 11 bold", background="#9099A2").place(relx=0.391, rely=0.032)
         Label(self.dentroFrameProvisionarOnu, text="Login", font="arial 12 bold", background="#9099A2").place(relx=0.12, rely=0.09)
         Label(self.dentroFrameProvisionarOnu, text="Vlan", font="arial 12 bold", background="#9099A2").place(relx=0.46, rely=0.09)
@@ -775,7 +730,7 @@ class Interface():
         labelAstPortaCto = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
         labelAstPortaCto.place(relx=0.9344, rely=0.189)
         #Criação das entradas dos dados.
-        self.entradaLoginOnu = Entry(self.dentroFrameProvisionarOnu, bd=3, justify=CENTER)
+        self.entradaLoginOnu = Entry(self.dentroFrameProvisionarOnu, bd=3, justify=CENTER, font="Ivy 10")
         self.entradaLoginOnu.place(relx=0.043, rely=0.11, relheight=0.02)
         #Criação de listbox.
         self.listBoxVlan = tkinter.Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=6, height=4, listvariable=self.nintVar)
@@ -798,16 +753,13 @@ class Interface():
         self.saidaRamal.place(relx=0.135, rely=0.211, relwidth=0.07)
         self.saidaSplitter = Label(self.dentroFrameProvisionarOnu, text="", background="#fff", anchor=CENTER)
         self.saidaSplitter.place(relx=0.398, rely=0.211, relwidth=0.239)
-        self.saidaAguardandoBotao = Label(self.dentroFrameProvisionarOnu, text="", font="arial 10 bold", background="#9099A2", fg="red")
+        self.saidaAguardandoBotao = Label(self.dentroFrameProvisionarOnu, text="", font="Ivy 10 bold", background="#9099A2", fg="red")
         self.saidaAguardandoBotao.place(relx=0.78, rely=0.27)
         #Criação de radio button.
         radioBridge = Radiobutton(self.dentroFrameProvisionarOnu, text="Bridge  |", value=1, variable=self.radioButtonSelecionado, background="#9099A2")
         radioBridge.place(relx=0.37, rely=0.05)
         radioPppoe = Radiobutton(self.dentroFrameProvisionarOnu, text="PPPOE", value=2, variable=self.radioButtonSelecionado, background="#9099A2")
         radioPppoe.place(relx=0.5, rely=0.05)
-        #Criação de combo box.
-        #self.portaCto = ttk.Combobox(self.dentroFrameProvisionarOnu, values=self.listaPortaCto)
-        #self.portaCto.place(relx=0.7, rely=0.211)
         #Criação dos botões.
         #Balão de mensagem.
         atk.tooltip(labelAstModoOnu, "Campo obrigatório")
@@ -821,7 +773,7 @@ class Interface():
         self.comboBoxPortaCto.place(relx=0.793, rely=0.211, relwidth=0.085)
 
     def widgetsButtonVerificarSinal(self):
-        botaoVerificarSinalOnuProvisionada = Button(self.quartaTela, text="VERIFICAR\nSINAL", font="arial 7", command=self.telaVerificarSinalUltimaOnu)
+        botaoVerificarSinalOnuProvisionada = Button(self.quartaTela, text="VERIFICAR\nSINAL", font="Ivy 7", command=self.telaVerificarSinalUltimaOnu)
         botaoVerificarSinalOnuProvisionada.place(relx=0.7, rely=0.895, relwidth=0.078, relheight=0.045)
         atk.tooltip(botaoVerificarSinalOnuProvisionada, "Verificar sinal da ONU que acabou de ser provisionada")
     
@@ -840,7 +792,7 @@ class Interface():
         self.verificarSinalUltimaOnuProv()
 
     def widgetstelaVerificarSinalUltimaOnu(self):
-        self.saidaSinalUltimaOnu = Label(self.ultimaOnuSinalTela, text="", font="arial 9 bold", anchor=N, background="#9099A2")
+        self.saidaSinalUltimaOnu = Label(self.ultimaOnuSinalTela, text="", font="Ivy 9 bold", anchor=N, background="#9099A2")
         self.saidaSinalUltimaOnu.place(relx=0.05, rely=0.06, relwidth=0.9, relheight=0.7)
         atualizarUltimoSinal = atk.Button3d(self.ultimaOnuSinalTela, text="Atualizar", command=self.verificarSinalUltimaOnuProv)
         atualizarUltimoSinal.place(relx=0.41, rely=0.8, relwidth=0.175, relheight=0.147)
@@ -893,10 +845,10 @@ class Interface():
     
     def widgetsTelaDeletarOnu(self):
         #Criação dos texto.
-        Label(self.deletarOnuTela, text="Deletar ONU", font="verdana 14 bold", background="#9099A2").place(relx=0.406, rely=0.03)
-        Label(self.deletarOnuTela, text="Informe o login", font="arial 12 bold", background="#9099A2").place(relx=0.42, rely=0.14)
+        Label(self.deletarOnuTela, text="Deletar ONU", font="Ivy 15 bold", background="#9099A2").place(relx=0.418, rely=0.03)
+        Label(self.deletarOnuTela, text="Informe o login", font="Ivy 12 bold", background="#9099A2").place(relx=0.42, rely=0.14)
         #Criação de entrada de dados.
-        self.entradaLoginDeletarOnu = Entry(self.deletarOnuTela, bd=3, justify=CENTER)
+        self.entradaLoginDeletarOnu = Entry(self.deletarOnuTela, bd=3, justify=CENTER, font="Ivy 10")
         self.entradaLoginDeletarOnu.place(relx=0.426, rely=0.19, relwidth=0.152, relheight=0.038)
         self.entradaLoginDeletarOnu.focus()
         #Criação de botões.
@@ -905,8 +857,8 @@ class Interface():
         #Balão de mensagem.
         atk.tooltip(botaoDeletarOnu, "Deletar ONU do login informado acima")
         #Saída de dados.
-        self.saidaOnuDeletada = Label(self.deletarOnuTela, text="", font="arial 9 bold", anchor=N, background="#9099A2")
-        self.saidaOnuDeletada.place(relx=0.174, rely=0.43, relwidth=0.65, relheight=0.32)
+        self.saidaOnuDeletada = Label(self.deletarOnuTela, text="", font="Ivy 10 bold", anchor=N, background="#9099A2")
+        self.saidaOnuDeletada.place(relx=0.174, rely=0.41, relwidth=0.65, relheight=0.55)
 
     def telaDadosClientes(self):
         self.dadosOnuCliente = Toplevel()
@@ -949,6 +901,7 @@ class Interface():
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados):
     def __init__(self):
         self.listaLog = []
+        self.listaPortaCto = []
         self.conectarOlt()
         self.loginOlt()
         self.conectarBd()
