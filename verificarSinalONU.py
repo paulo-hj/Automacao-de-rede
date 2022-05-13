@@ -45,7 +45,8 @@ class Comandos():
             self.tn.write(b""+comando)
             saida = self.tn.read_until(b'#').decode()
             self.saidaSinalOnu["text"] = "{}".format(str(saida))
-            self.listaLog.append("Verificado sinal do login "+ login +" - Data/Hora: " + self.infoDataHora())
+            self.listaLog.append("Verificado sinal do login "+ login +" - Data/Hora: " + self.infoDataHora() + " - Usuário: ")
+            self.addLog()
         except:
             self.saidaSinalOnu["text"] = ""
             messagebox.showerror(title="Erro", message="Informe um login válido.")
@@ -139,9 +140,9 @@ class Comandos():
                     self.tn.read_until(b'#').decode()
                     dataHora = str(self.infoDataHora())
                     modo = "Bridge"
-                    self.listaLog.append("Provisionada ONU do login "+ login +" em modo bridge - Data/Hora: " + dataHora)
+                    self.listaLog.append("Provisionada ONU do login "+ login +" em modo bridge - Data/Hora: " + dataHora + " - Usuário: ")
                 elif self.radioButtonSelecionado.get() == 2:
-                    self.listaLog.append("Provisionada ONU do login "+ login +" em modo PPPoE - Data/Hora: " + self.infoDataHora())
+                    self.listaLog.append("Provisionada ONU do login "+ login +" em modo PPPoE - Data/Hora: " + self.infoDataHora() + " - Usuário: ")
                     modo = "PPPoE"
                     print("PPPOE")
                 textoAguarde = "Aguarde"
@@ -190,19 +191,13 @@ class Comandos():
 
     def verificarOpcaoVlan(self, event):
         indices = self.listBoxVlan.curselection()
-        if len(indices) > 0 :
-            self.vlan = ",".join([self.listBoxVlan.get(i) for i in indices])
-            self.verificaOpcaoRamal()
-            self.verificarSplitter()
-            self.verificarPortaCto()
-        else:
-            pass
-            '''
-        vlan = int(self.listBoxVlan.get(ACTIVE))
-        print(vlan)
-        if vlan >= 141 and vlan <= 148:
-            self.saidaRamal["text"] = "14"
-        '''
+        #if len(indices) > 0 :
+        self.vlan = ",".join([self.listBoxVlan.get(i) for i in indices])
+        self.verificaOpcaoRamal()
+        self.verificarSplitter()
+        self.verificarPortaCto()
+        #else:
+        #    pass
         
     def verificaOpcaoRamal(self):
             vlan = self.vlan
@@ -298,7 +293,7 @@ class Comandos():
                   modoOnu + "\n--------------------------------------------------------------------------------------------------------------------------------\n Marca: " +
                   marca)
                 self.bdAddPortaCto(portaCto, int(vlan))
-                self.listaLog.append("Deletada ONU do login "+ loginDelete +" - Data/Hora: " + self.infoDataHora())
+                self.listaLog.append("Deletada ONU do login "+ loginDelete +" - Data/Hora: " + self.infoDataHora() + " - Usuário: ")
             else:
                 self.entradaLoginDeletarOnu.delete(0, END)
                 self.entradaLoginDeletarOnu.focus()
@@ -315,8 +310,21 @@ class Comandos():
         self.saidaSinalUltimaOnu["text"] = "{}".format(str(saida))
 
     def acessarGerWeb(self):
-        self.listaLog.append("Acesso ao site  - Data/Hora: " + self.infoDataHora())
+        self.listaLog.append("Acesso ao site - Data/Hora: " + self.infoDataHora() + " - Usuário: ")
         webbrowser.open("http://10.50.50.50/cgi-bin/p?logon.pt")
+    
+    def addLog(self):
+        cont = 0
+        log = "'{"
+        for x in self.listaLog:
+            if len(self.listaLog[cont]) > 0:
+                log += self.listaLog[cont]
+                log += "--"
+                cont += 1
+            else:
+                break
+        log += "}'"
+        self.bdAddLog(log)
 
 class InformacoesOlt():
     def infoUptimeOlt(self):
@@ -417,7 +425,7 @@ class Relatorios():
         self.c.showPage()
         self.c.save()
         self.carregarBarraProgresso(6)
-        self.listaLog.append("Gerado relatório de sinais  - Data/Hora: " + self.infoDataHora())
+        self.listaLog.append("Gerado relatório de sinais  - Data/Hora: " + self.infoDataHora() + " - Usuário: ")
         webbrowser.open(self.nomeDiretorio+"\\Sinais das ONU - OLT Digistar.pdf")
     
     def geraRelatVlan(self):
@@ -472,7 +480,7 @@ class Relatorios():
         self.carregarBarraProgresso(6)
         self.c.showPage()
         self.c.save()
-        self.listaLog.append("Gerado relatório de vlan's  - Data/Hora: " + self.infoDataHora())
+        self.listaLog.append("Gerado relatório de vlan's  - Data/Hora: " + self.infoDataHora() + " - Usuário: ")
         webbrowser.open(self.nomeDiretorio+"\\Vlan's OLT Digistar.pdf")
 
 class Interface():
@@ -514,19 +522,19 @@ class Interface():
         self.saidaMemoria = Label(self.frameTela, text="", background="#9099A2", anchor=N, font="Ivy 9")
         self.saidaMemoria.place(relx=0.602, rely=0.226, relwidth=0.235, relheight=0.1)
         #Criação dos botões.
-        botaoTelaProvisionarOnu = atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#233237", command=self.telaProvisionar)
+        botaoTelaProvisionarOnu = atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#38576b", command=self.telaProvisionar)
         botaoTelaProvisionarOnu.place(relx=0.13, rely=0.055, relwidth=0.73, relheight=0.1)
-        botaoTelaSinal = atk.Button3d(self.frameVertical, text="VERIFICAR SINAL", bg="#233237", command=self.telaSinal)
+        botaoTelaSinal = atk.Button3d(self.frameVertical, text="VERIFICAR SINAL", bg="#38576b", command=self.telaSinal)
         botaoTelaSinal.place(relx=0.13, rely=0.175, relwidth=0.73, relheight=0.1)
-        botaoTelaVlan = atk.Button3d(self.frameVertical, text="RELATÓRIOS", bg="#233237", command=self.telaRelatorios)
+        botaoTelaVlan = atk.Button3d(self.frameVertical, text="RELATÓRIOS", bg="#38576b", command=self.telaRelatorios)
         botaoTelaVlan.place(relx=0.13, rely=0.294, relwidth=0.73, relheight=0.1)
-        botaoTelaDeletarOnu = atk.Button3d(self.frameVertical, text="Deletar ONU", bg="#233237", command=self.telaDeletarOnu)
+        botaoTelaDeletarOnu = atk.Button3d(self.frameVertical, text="Deletar ONU", bg="#38576b", command=self.telaDeletarOnu)
         botaoTelaDeletarOnu.place(relx=0.13, rely=0.413, relwidth=0.73, relheight=0.1)
         botaoLog = Button(self.frameTela, text="Log", font="Ivy 8 bold", background="#fff", command=self.telaLog)
         botaoLog.place(relx=0.155, rely=0.37, relwidth=0.051, relheight=0.058)
         botaoWeb = Button(self.frameTela, text="Web", font="Ivy 8 bold", background="#fff", command=self.acessarGerWeb)
         botaoWeb.place(relx=0.218, rely=0.37, relwidth=0.051, relheight=0.058)
-        botaoTelaDadosOnu = atk.Button3d(self.frameVertical, text="PROVISIONADAS", bg="#233237", command=self.telaDadosClientes)
+        botaoTelaDadosOnu = atk.Button3d(self.frameVertical, text="PROVISIONADAS", bg="#38576b", command=self.telaDadosClientes)
         botaoTelaDadosOnu.place(relx=0.13, rely=0.535, relwidth=0.73, relheight=0.1)
         #Criação das entradas dos dados.
         #Balão de mensagem.
@@ -621,13 +629,13 @@ class Interface():
 
     def widgetsTelaRelatorios(self):
         #Criação de texto.
-        Label(self.relatoriosTela, text="Gerar relatório", font="verdana 14 bold", background="#9099A2").place(relx=0.384, rely=0.03)
-        Label(self.relatoriosTela, text="Defina a pasta que deseja salvar o arquivo", font="arial 9 bold", background="#9099A2").place(relx=0.281, rely=0.135)
-        Label(self.relatoriosTela, text="Escolha um modelo de relatório", font="arial 9 bold", background="#9099A2").place(relx=0.371, rely=0.31)
-        Label(self.relatoriosTela, text="0%", font="arial 6", background="#9099A2").place(relx=0.235, rely=0.942)
-        Label(self.relatoriosTela, text="100%", font="arial 6", background="#9099A2", foreground="green").place(relx=0.73, rely=0.942)
+        Label(self.relatoriosTela, text="Gerar relatório", font="Ivy 14 bold", background="#9099A2").place(relx=0.405, rely=0.03)
+        Label(self.relatoriosTela, text="Defina a pasta que deseja salvar o arquivo", font="Ivy 9 bold", background="#9099A2").place(relx=0.281, rely=0.135)
+        Label(self.relatoriosTela, text="Escolha um modelo de relatório", font="Ivy 9 bold", background="#9099A2").place(relx=0.371, rely=0.31)
+        Label(self.relatoriosTela, text="0%", font="Ivy 6", background="#9099A2").place(relx=0.235, rely=0.942)
+        Label(self.relatoriosTela, text="100%", font="Ivy 6", background="#9099A2", foreground="green").place(relx=0.73, rely=0.942)
         #Criação das entrada dos dados.
-        self.saidaDiretorio = Label(self.relatoriosTela, text="C:\\Users\\Public\\Desktop", font="arial 8", background="#E9C893")
+        self.saidaDiretorio = Label(self.relatoriosTela, text="C:\\Users\\Public\\Desktop", font="Ivy 8", background="#E9C893")
         self.saidaDiretorio.place(relx=0.285, rely=0.167, relwidth=0.37)
         #Criação dos botões.
         botaoDefinirDiretorio = atk.Button3d(self.relatoriosTela, text="Definir", command=self.selecionarDiretorio)
@@ -638,7 +646,7 @@ class Interface():
         atk.tooltip(botaoDefinirDiretorio, "Selecione o diretório que deseja salvar o arquivo")
         atk.tooltip(botaoGerarPdf, 'Gera um arquivo com nome padrão de "ONU Digistar.pdf"')
         #Criação de list box.
-        self.listBoxRelatorio = Listbox(self.relatoriosTela, justify=CENTER, width=25, height=10, bg="#9099A2", font="arial 10 bold", bd=2)
+        self.listBoxRelatorio = Listbox(self.relatoriosTela, justify=CENTER, width=25, height=10, bg="#9099A2", font="Ivy 10 bold", bd=2)
         self.listBoxRelatorio.place(relx=0.375, rely=0.35)
         #Barra de progresso.
         self.barraProgresso = ttk.Progressbar(self.relatoriosTela, orient=HORIZONTAL, length=380, mode='determinate')
@@ -738,8 +746,6 @@ class Interface():
         self.listBoxVlan.bind('<<ListboxSelect>>', self.verificarOpcaoVlan)
         self.listBoxMarcaOnu = Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=11, height=4)
         self.listBoxMarcaOnu.place(relx=0.746, rely=0.11)
-        #self.listBoxPortaCto = Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=5, height=4)
-        #self.listBoxPortaCto.place(relx=0.8, rely=0.211)
         #Criação de barra de rolagem.
         barraRolagemVlan = Scrollbar(self.dentroFrameProvisionarOnu, orient="vertical")
         self.listBoxVlan.configure(yscroll=barraRolagemVlan.set)
@@ -807,20 +813,13 @@ class Interface():
         self.logTela.transient(self.primeiraTela)
         self.logTela.focus_force()
         self.logTela.grab_set()
-        self.framesTelaLog()
         self.widgetsTelaLog()
         self.infoLog()
 
-    def framesTelaLog(self):
-        esquerdaFrameLog = Frame(self.logTela, borderwidth=0, relief="solid", bg='#233237')
-        esquerdaFrameLog.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        direitaFrameLog = Frame(self.logTela, borderwidth=0, relief="solid", bg='#233237')
-        direitaFrameLog.place(relx=0.8489, rely=0, relwidth=0.15, relheight=1.005)
-
     def widgetsTelaLog(self):
         #Saida de texto.
-        self.listBoxLog = Listbox(self.logTela, justify=CENTER, font="arial 10",width=72, height=50)
-        self.listBoxLog.place(relx=0.15, rely=0)
+        self.listBoxLog = Listbox(self.logTela, justify=CENTER, font="Ivy 10",width=104, height=50, background="#9099A2")
+        self.listBoxLog.place(relx=0, rely=0)
 
     def telaDeletarOnu(self):
         self.deletarOnuTela = Toplevel()
