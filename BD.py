@@ -1,6 +1,6 @@
 import psycopg2
 from credenciaisBd import *
-from tkinter import ttk, messagebox
+from tkinter import messagebox
 
 class BancoDeDados():
     def conectarBd(self):

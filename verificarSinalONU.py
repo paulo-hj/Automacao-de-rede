@@ -891,34 +891,36 @@ class Interface():
         self.dadosOnuCliente.transient(self.primeiraTela)
         self.dadosOnuCliente.focus_force()
         self.dadosOnuCliente.grab_set()
+        self.abasTelaDadosOnu()
         self.farmesTelaDadosOnu()
         self.widgetsTelaDadosOnu()
 
+    def abasTelaDadosOnu(self):
+        #Criação de abas.
+        self.abas = ttk.Notebook(self.dadosOnuCliente) #Chamando a função para criar as abas.
+        self.abas.place(relx=0.1499, rely=0, relwidth=0.71, relheight=1.005)
+        
+        self.abaProvisionadas = Frame(self.abas, borderwidth=0, relief="solid", bg='#9099A2') #Criando a primeira aba.
+        self.abas.add(self.abaProvisionadas, text="Provisionadas") #Dando um nome da primeira aba.
+
+        self.atualizarDadosOnu = Frame(self.abas)
+        self.abas.add(self.atualizarDadosOnu, text="Atualizar dados da ONU")
+
+        self.abaSinais = Frame(self.abas)
+        self.abas.add(self.abaSinais, text="Sinais")
+
     def farmesTelaDadosOnu(self):
-        meioFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#9099A2')
-        meioFrameDadosOnu.place(relx=0.1499, rely=0, relwidth=0.6989, relheight=1.005)
         esquerdaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#233237')
         esquerdaFrameDadosOnu.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
         direitaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#233237')
         direitaFrameDadosOnu.place(relx=0.8489, rely=0, relwidth=0.151, relheight=1.005)
         #linhaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=1, relief="solid", background="#9099A2")
         #linhaFrameDadosOnu.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
-        #Criação de abas.
-        self.abas = ttk.Notebook(meioFrameDadosOnu) #Chamando a função para criar as abas.
-        self.abaProvisionadas = Frame(self.abas) #Criando a primeira aba.
-        self.abaProvisionadas.configure(background="#9099A2")
-        self.abas.add(self.abaProvisionadas, text="Provisionadas") #Dando um nome da primeira aba.
-        self.abaSinais = Frame(self.abas)
-        self.abaSinais.configure(background="#9099A2")
-        self.abas.add(self.abaSinais, text="Sinais das ONU")
-        self.atualizarDadosOnu = Frame(self.abas)
-        self.atualizarDadosOnu.configure(background="#9099A2")
-        self.abas.add(self.atualizarDadosOnu, text="Atualizar dados da ONU")
-        self.abas.place(relx=0, rely=0, relwidth=101, relheight=1)
-    
-    def widgetsTelaDadosOnu(self):
-        pass
 
+    def widgetsTelaDadosOnu(self):
+        self.saidaInfoOnu = Label(self.abaProvisionadas, text="testando", background="#000")
+        self.saidaInfoOnu.pack()
+        
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados):
     def __init__(self):
         self.listaPortaCto = []
