@@ -339,7 +339,7 @@ class Comandos():
     
     def verificarLogCheio(self, cont, log):
         if cont > 50:
-            log = "'{"+"**Log** --"+"}'"
+            log = "'{"+"Resete - " + self.infoDataHora() + "--"+"}'"
             del(self.listaLog[1:51])
             self.bdAddLog(log)
         else:
@@ -366,8 +366,8 @@ class InformacoesOlt():
         self.saidaTemperatura["text"] = listaTemperaturaOlt[3] + "  ºC"
 
     def infoLog(self):
-        #listaReversa = list(reversed(self.listaLog))
-        for i in self.listaLog:
+        listaReversa = list(reversed(self.listaLog))
+        for i in listaReversa:
             self.listBoxLog.insert(END, i)
 
 class EntPlaceHold(Entry): #Deixa um texto dentro da entry, por enquanto só está sendo utilizado na tela de sinal.
