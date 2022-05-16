@@ -1,17 +1,21 @@
 import psycopg2
 from credenciaisBd import *
+from tkinter import ttk, messagebox
 
 class BancoDeDados():
     def conectarBd(self):
-        self.conn = psycopg2.connect(
-            host = a,
-            dbname = aa,
-            user = aaa,
-            password = aaaa,
-            port = aaaaa
-        )
-        self.cursor = self.conn.cursor()
-        print("Conectado ao BD")
+        try:
+            self.conn = psycopg2.connect(
+                host = a,
+                dbname = aa,
+                user = aaa,
+                password = aaaa,
+                port = aaaaa
+            )
+            self.cursor = self.conn.cursor()
+            print("Conectado ao BD")
+        except:
+            messagebox.showerror(title="Erro", message="É necessário primeiro procurar a ONU.")
 
     def adicionarOnuDb(self, login, porta_posicao_onu, vlan, porta_cto, ramal, splitter, 
         modo_onu, mac, marca, porta_olt, usuario, data_hora):
@@ -54,6 +58,10 @@ class BancoDeDados():
         comando = "UPDATE log SET listalog={} WHERE id_log=1;".format(listalog)
         self.cursor.execute(comando)
         self.conn.commit()
+
+    def bdListaLog(self):
+        self.cursor.execute("SELECT listalog FROM log WHERE id_log=%s ;",(1,))
+        return self.cursor.fetchall()
 
     def bdSair(self):
         self.conn.commit()

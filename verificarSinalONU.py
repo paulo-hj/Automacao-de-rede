@@ -141,9 +141,11 @@ class Comandos():
                     dataHora = str(self.infoDataHora())
                     modo = "Bridge"
                     self.listaLog.append("Provisionada ONU do login "+ login +" em modo bridge - Data/Hora: " + dataHora + " - Usuário: ")
+                    self.addLog()
                 elif self.radioButtonSelecionado.get() == 2:
-                    self.listaLog.append("Provisionada ONU do login "+ login +" em modo PPPoE - Data/Hora: " + self.infoDataHora() + " - Usuário: ")
+                    self.listaLog.append("Provisionada ONU do login "+ login +" em modo PPPoE - Data/Hora: " + dataHora + " - Usuário: ")
                     modo = "PPPoE"
+                    self.addLog()
                     print("PPPOE")
                 textoAguarde = "Aguarde"
                 ponto = ""
@@ -191,13 +193,13 @@ class Comandos():
 
     def verificarOpcaoVlan(self, event):
         indices = self.listBoxVlan.curselection()
-        #if len(indices) > 0 :
-        self.vlan = ",".join([self.listBoxVlan.get(i) for i in indices])
-        self.verificaOpcaoRamal()
-        self.verificarSplitter()
-        self.verificarPortaCto()
-        #else:
-        #    pass
+        if len(indices) > 0 :
+            self.vlan = ",".join([self.listBoxVlan.get(i) for i in indices])
+            self.verificaOpcaoRamal()
+            self.verificarSplitter()
+            self.verificarPortaCto()
+        else:
+            pass
         
     def verificaOpcaoRamal(self):
             vlan = self.vlan
@@ -294,6 +296,7 @@ class Comandos():
                   marca)
                 self.bdAddPortaCto(portaCto, int(vlan))
                 self.listaLog.append("Deletada ONU do login "+ loginDelete +" - Data/Hora: " + self.infoDataHora() + " - Usuário: ")
+                self.addLog()
             else:
                 self.entradaLoginDeletarOnu.delete(0, END)
                 self.entradaLoginDeletarOnu.focus()
@@ -312,19 +315,35 @@ class Comandos():
     def acessarGerWeb(self):
         self.listaLog.append("Acesso ao site - Data/Hora: " + self.infoDataHora() + " - Usuário: ")
         webbrowser.open("http://10.50.50.50/cgi-bin/p?logon.pt")
+        self.addLog()
     
     def addLog(self):
         cont = 0
         log = "'{"
         for x in self.listaLog:
-            if len(self.listaLog[cont]) > 0:
+            if len(self.listaLog[cont]) > 0: #Transforma a lista em string para poder add no BD.
                 log += self.listaLog[cont]
                 log += "--"
                 cont += 1
             else:
                 break
         log += "}'"
-        self.bdAddLog(log)
+        self.verificarLogCheio(cont, log)
+
+    def returnBdListaLog(self):
+        returnBdTuplaLog = self.bdListaLog()
+        returnBdListaLog = returnBdTuplaLog[0][0][0]
+        returnBdListaLog = returnBdListaLog.split("--")
+        del(returnBdListaLog[-1])
+        self.listaLog = returnBdListaLog
+    
+    def verificarLogCheio(self, cont, log):
+        if cont > 50:
+            log = "'{"+"**Log** --"+"}'"
+            del(self.listaLog[1:51])
+            self.bdAddLog(log)
+        else:
+            self.bdAddLog(log)
 
 class InformacoesOlt():
     def infoUptimeOlt(self):
@@ -347,6 +366,7 @@ class InformacoesOlt():
         self.saidaTemperatura["text"] = listaTemperaturaOlt[3] + "  ºC"
 
     def infoLog(self):
+        #listaReversa = list(reversed(self.listaLog))
         for i in self.listaLog:
             self.listBoxLog.insert(END, i)
 
@@ -426,6 +446,7 @@ class Relatorios():
         self.c.save()
         self.carregarBarraProgresso(6)
         self.listaLog.append("Gerado relatório de sinais  - Data/Hora: " + self.infoDataHora() + " - Usuário: ")
+        self.addLog()
         webbrowser.open(self.nomeDiretorio+"\\Sinais das ONU - OLT Digistar.pdf")
     
     def geraRelatVlan(self):
@@ -481,6 +502,7 @@ class Relatorios():
         self.c.showPage()
         self.c.save()
         self.listaLog.append("Gerado relatório de vlan's  - Data/Hora: " + self.infoDataHora() + " - Usuário: ")
+        self.addLog()
         webbrowser.open(self.nomeDiretorio+"\\Vlan's OLT Digistar.pdf")
 
 class Interface():
@@ -899,11 +921,11 @@ class Interface():
 
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados):
     def __init__(self):
-        self.listaLog = []
         self.listaPortaCto = []
         self.conectarOlt()
         self.loginOlt()
         self.conectarBd()
+        self.returnBdListaLog()
         self.telaPrincipal()
         self.bdSair()
 
