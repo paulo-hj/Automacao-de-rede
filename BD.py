@@ -63,6 +63,18 @@ class BancoDeDados():
         self.cursor.execute("SELECT listalog FROM log WHERE id_log=%s ;",(1,))
         return self.cursor.fetchall()
 
+    def bdListarTodasOnu(self):
+        self.cursor.execute("SELECT * FROM onu;")
+        return self.cursor.fetchall()
+
+    def bdTeste(self, id):
+        self.cursor.execute("SELECT login, porta_posicao_onu, vlan, porta_cto, ramal, splitter, modo_onu, mac, marca, porta_cto, usuario, data_hora FROM onu WHERE id_onu=%s ;",(id,))
+        return self.cursor.fetchall()
+    
+    def bdVerificarQuantOnuProv(self):
+        self.cursor.execute("SELECT id_onu FROM onu;")
+        return self.cursor.fetchall()
+
     def bdSair(self):
         self.conn.commit()
         self.cursor.close()

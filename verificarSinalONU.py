@@ -187,7 +187,7 @@ class Comandos():
         self.nintVar = tkinter.IntVar(value=self.listaVlan)
         
     def listaListBoxMarcaOnu(self):
-        listaMarcaOnu = ["Digistar" ,"Huawei" ,"Unne", "IntelBras", "Tp-link", "Cianet", "Shoreline", "Stavix"]
+        listaMarcaOnu = ["Digistar" ,"Huawei" ,"Unne", "IntelBras", "Tp-link", "Cianet", "Shoreline", "Stavix", "MaxPrint"]
         for i in listaMarcaOnu:
             self.listBoxMarcaOnu.insert(END, i)
 
@@ -921,17 +921,46 @@ class Interface():
         #Criação de label.
         #Criação de entrada de dados.
         #Criação de botões.
-        Button(self.abaProvisionadas, text="teste", command=self.teste).pack()
+        Button(self.abaProvisionadas, text="teste", command=self.listarTodasOnu).pack()
         #Criação de saída de textos.
         self.txtDadosOnu = scrolledtext.ScrolledText(self.abaProvisionadas, state="disabled", width=61, height=32)
         self.txtDadosOnu.place(relx=0, rely=0.105)
 
-    def teste(self):
+    def procurarOnuTelaDados(self):
         self.txtDadosOnu.configure(state="normal")
         self.txtDadosOnu.delete(1.0, END)
         self.txtDadosOnu.insert(INSERT, "Testando")
         self.txtDadosOnu.configure(state="disabled")
+    
+    def listarTodasOnu(self):
+        cont = 0
+        quantOnuProv = self.bdVerificarQuantOnuProv()
+        self.txtDadosOnu.configure(state="normal")
+        self.txtDadosOnu.delete(1.0, END)
+        infoOnu = self.bdListarTodasOnu()
+        infoOnu = list(reversed(infoOnu))
+        for i in quantOnuProv:
+            login = infoOnu[cont][1]
+            PortaPosicao = infoOnu[cont][2]
+            vlan = str(infoOnu[cont][3])
+            portaCto = str(infoOnu[cont][4])
+            ramal = infoOnu[cont][5]
+            splitter = infoOnu[cont][6]
+            modoOnu = infoOnu[cont][7]
+            mac = infoOnu[cont][8]
+            marca = infoOnu[cont][9]
+            portaOlt = str(infoOnu[cont][10])
+            usuario = infoOnu[cont][11]
+            dataHora = infoOnu[cont][12]
 
+            textoInfoOnu = "Login: "+login+"\nVlan: "+vlan+"       Modo da Onu: "+modoOnu
+
+            self.txtDadosOnu.insert(INSERT, textoInfoOnu)
+            self.txtDadosOnu.insert(INSERT, "\n\n_____________________________________________________________\n\n")
+
+            
+            cont += 1
+        self.txtDadosOnu.configure(state="disabled")
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados):
     def __init__(self):
         self.listaPortaCto = []
