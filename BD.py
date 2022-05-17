@@ -17,13 +17,13 @@ class BancoDeDados():
         except:
             messagebox.showerror(title="Erro", message="É necessário primeiro procurar a ONU.")
 
-    def adicionarOnuDb(self, login, porta_posicao_onu, vlan, porta_cto, ramal, splitter, 
+    def adicionarOnuDb(self, login, porta_posicao_onu, vlan, porta_cto, ramal, path, 
         modo_onu, mac, marca, porta_olt, usuario, data_hora):
         #Adiciona a tabela ONU.
         self.cursor.execute("INSERT INTO onu (login, porta_posicao_onu, vlan, porta_cto,"
-        " ramal, splitter, modo_onu, mac, marca, porta_olt, usuario, data_hora) VALUES" 
+        " ramal, path, modo_onu, mac, marca, porta_olt, usuario, data_hora) VALUES" 
         "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", (login, porta_posicao_onu, 
-        vlan, porta_cto, ramal, splitter, modo_onu, mac, marca, porta_olt, usuario, data_hora))
+        vlan, porta_cto, ramal, path, modo_onu, mac, marca, porta_olt, usuario, data_hora))
         self.conn.commit()
 
     def bdPortaPosicao(self, login):
@@ -31,7 +31,7 @@ class BancoDeDados():
         return self.cursor.fetchall()
 
     def dbComandoDeletarOnu(self, login):
-        self.cursor.execute("SELECT vlan, porta_posicao_onu, mac, splitter, porta_cto, marca, modo_onu FROM onu WHERE login=%s ;",(login,))
+        self.cursor.execute("SELECT vlan, porta_posicao_onu, mac, path, porta_cto, marca, modo_onu FROM onu WHERE login=%s ;",(login,))
         return self.cursor.fetchall()
     
     def dbDeletarOnu(self, login):
@@ -72,7 +72,7 @@ class BancoDeDados():
         return self.cursor.fetchall()
 
     def bdFiltrarLoginOnu(self, login):
-        self.cursor.execute("SELECT porta_posicao_onu, vlan, porta_cto, ramal, splitter, modo_onu, mac, marca, porta_cto, usuario, data_hora FROM onu WHERE login=%s ;",(login,))
+        self.cursor.execute("SELECT porta_posicao_onu, vlan, porta_cto, ramal, path, modo_onu, mac, marca, porta_cto, usuario, data_hora FROM onu WHERE login=%s ;",(login,))
         return self.cursor.fetchall()
 
     def bdSair(self):

@@ -170,7 +170,7 @@ class Comandos():
                     contCor += 1
                     time.sleep(1)
                 self.adicionarOnuDb(login, self.listaPorta[10], int(self.vlan), int(self.comboBoxPortaCto.get()), self.ramal, 
-                self.splitter, modo, self.listaMacOnu[0], self.listBoxMarcaOnu.get(ACTIVE), int(self.nporta[0]), "paulo", dataHora)
+                self.path, modo, self.listaMacOnu[0], self.listBoxMarcaOnu.get(ACTIVE), int(self.nporta[0]), "paulo", dataHora)
                 self.bdExclPortaCto(self.comboBoxPortaCto.get(), int(self.vlan))
                 time.sleep(1)
                 self.limparTelaProcurarOnu()
@@ -197,7 +197,7 @@ class Comandos():
         if len(indices) > 0 :
             self.vlan = ",".join([self.listBoxVlan.get(i) for i in indices])
             self.verificaOpcaoRamal()
-            self.verificarSplitter()
+            self.verificarPath()
             self.verificarPortaCto()
         else:
             pass
@@ -229,14 +229,14 @@ class Comandos():
                 self.ramal = "52"
                 self.saidaRamal["text"] = "52"
  
-    def verificarSplitter(self):
-        dicionarioSplitter = {"131":"0-1-P8-D24-T3-R13-C1", "132":"0-1-P8-D24-T3-R13-C2", "133":"0-1-P8-D24-T3-R13-C3", 
+    def verificarPath(self):
+        dicionarioPath = {"131":"0-1-P8-D24-T3-R13-C1", "132":"0-1-P8-D24-T3-R13-C2", "133":"0-1-P8-D24-T3-R13-C3", 
         "134":"0-1-P8-D24-T3-R13-C4", "135":"0-1-P8-D24-T3-R13-C5", "136":"0-1-P8-D24-T3-R13-C6", "137":"0-1-P8-D24-T3-R13-C7", 
         "138":"0-1-P8-D24-T3-R13-C8", "141":"0-1-P7-D17-T3-R14-C1", "142":"0-1-P7-D17-T3-R14-C2", "143":"0-1-P7-D17-T3-R14-C3", 
         "144":"0-1-P7-D17-T3-R14-C4", "145":"0-1-P7-D17-T3-R14-C5", "146":"0-1-P7-D17-T3-R14-C6", "147":"0-1-P7-D17-T3-R14-C7", 
         "148":"0-1-P7-D17-T3-R14-C8", "":"", "":"", "":"", "":"", "":"", "":"", "":"", "":"", "":""}
-        self.splitter = dicionarioSplitter[self.vlan]
-        self.saidaSplitter["text"] = self.splitter
+        self.path = dicionarioPath[self.vlan]
+        self.saidaPath["text"] = self.path
 
     def verificarPortaCto(self):
         cont = 0
@@ -271,7 +271,7 @@ class Comandos():
                 vlan = str(listaOnuVlanPortaposicaoMacPcto[0][0])
                 portaPosicao = listaOnuVlanPortaposicaoMacPcto[0][1]
                 mac = listaOnuVlanPortaposicaoMacPcto[0][2]
-                splitter = listaOnuVlanPortaposicaoMacPcto[0][3]
+                path = listaOnuVlanPortaposicaoMacPcto[0][3]
                 portaCto = str(listaOnuVlanPortaposicaoMacPcto[0][4])
                 marca = listaOnuVlanPortaposicaoMacPcto[0][5]
                 modoOnu = listaOnuVlanPortaposicaoMacPcto[0][6]
@@ -289,8 +289,8 @@ class Comandos():
                 self.saidaOnuDeletada["text"] = ("Status: Sucesso\n\n Informações\n--------------------------------------------------------------------------------------------------------------------------------\n Login: " +
                  loginDelete + "\n--------------------------------------------------------------------------------------------------------------------------------\n Vlan: " + vlan + 
                  "\n--------------------------------------------------------------------------------------------------------------------------------\n Mac: " +
-                  mac + "\n--------------------------------------------------------------------------------------------------------------------------------\n Splitter: " +
-                  splitter + "\n--------------------------------------------------------------------------------------------------------------------------------\n Porta/Posição: " + portaPosicao + 
+                  mac + "\n--------------------------------------------------------------------------------------------------------------------------------\n Path: " +
+                  path + "\n--------------------------------------------------------------------------------------------------------------------------------\n Porta/Posição: " + portaPosicao + 
                   "\n--------------------------------------------------------------------------------------------------------------------------------\n Porta da CTO: " + portaCto + 
                   "\n--------------------------------------------------------------------------------------------------------------------------------\n Modo da ONU: " +
                   modoOnu + "\n--------------------------------------------------------------------------------------------------------------------------------\n Marca: " +
@@ -520,14 +520,14 @@ class Func():
             vlan = str(infoOnu[cont][3])
             portaCto = str(infoOnu[cont][4])
             ramal = infoOnu[cont][5]
-            splitter = infoOnu[cont][6]
+            path = infoOnu[cont][6]
             modoOnu = infoOnu[cont][7]
             mac = infoOnu[cont][8]
             marca = infoOnu[cont][9]
             portaOlt = str(infoOnu[cont][10])
             usuario = infoOnu[cont][11]
             dataHora = infoOnu[cont][12]
-            textoInfoOnu = "\n\n                     Login: "+login+"\n\n Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"      Porta/Posição: "+portaPosicao+"\n Ramal: "+ramal+"           Path: "+splitter+"\n Porta da CTO: "+portaCto+"     MAC: "+mac+"     Marca: "+marca+"\n\n Usuário: "+usuario+"      Data/Hora: "+dataHora
+            textoInfoOnu = "\n\n                     Login: "+login+"\n\n Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"      Porta/Posição: "+portaPosicao+"\n Ramal: "+ramal+"           Path: "+path+"\n Porta da CTO: "+portaCto+"     MAC: "+mac+"     Marca: "+marca+"\n\n Usuário: "+usuario+"      Data/Hora: "+dataHora
             self.txtDadosOnu.insert(INSERT, textoInfoOnu)
             self.txtDadosOnu.insert(INSERT, "\n\n_____________________________________________________________\n")
             cont += 1
@@ -543,13 +543,13 @@ class Func():
             vlan = str(listaInfoOnu[0][1])
             portaCto = str(listaInfoOnu[0][2])
             ramal = listaInfoOnu[0][3]
-            splitter = listaInfoOnu[0][4]
+            path = listaInfoOnu[0][4]
             modoOnu = listaInfoOnu[0][5]
             mac = listaInfoOnu[0][6]
             marca = listaInfoOnu[0][7]
             usuario = listaInfoOnu[0][9]
             dataHora = listaInfoOnu[0][10]
-            textoInfoOnu = "\n\n                     Login: "+login+"\n\n Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"      Porta/Posição: "+portaPosicao+"\n Ramal: "+ramal+"           Path: "+splitter+"\n Porta da CTO: "+portaCto+"     MAC: "+mac+"     Marca: "+marca+"\n\n Usuário: "+usuario+"      Data/Hora: "+dataHora
+            textoInfoOnu = "\n\n                     Login: "+login+"\n\n Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"      Porta/Posição: "+portaPosicao+"\n Ramal: "+ramal+"           Path: "+path+"\n Porta da CTO: "+portaCto+"     MAC: "+mac+"     Marca: "+marca+"\n\n Usuário: "+usuario+"      Data/Hora: "+dataHora
             self.txtDadosOnu.insert(INSERT, textoInfoOnu)
             self.txtDadosOnu.insert(INSERT, "\n\n_____________________________________________________________\n")
             self.txtDadosOnu.configure(state="disabled")
@@ -796,7 +796,7 @@ class Interface():
         Label(self.dentroFrameProvisionarOnu, text="Vlan", font="arial 12 bold", background="#9099A2").place(relx=0.46, rely=0.09)
         Label(self.dentroFrameProvisionarOnu, text="Marca", font="arial 12 bold", background="#9099A2").place(relx=0.76, rely=0.09)
         Label(self.dentroFrameProvisionarOnu, text="Ramal", font="arial 12 bold", background="#9099A2").place(relx=0.117, rely=0.19)
-        Label(self.dentroFrameProvisionarOnu, text="Splitter", font="arial 12 bold", background="#9099A2").place(relx=0.45, rely=0.19)
+        Label(self.dentroFrameProvisionarOnu, text="Path", font="arial 12 bold", background="#9099A2").place(relx=0.45, rely=0.19)
         Label(self.dentroFrameProvisionarOnu, text="Porta da CTO", font="arial 12 bold", background="#9099A2").place(relx=0.73, rely=0.19)
         labelAstModoOnu = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
         labelAstModoOnu.place(relx=0.59, rely=0.031)
@@ -806,8 +806,8 @@ class Interface():
         labelAstVlan.place(relx=0.532, rely=0.09)
         #labelAstRamal = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
         #labelAstRamal.place(relx=0.216, rely=0.19)
-        #labelAstSplitter = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
-        #labelAstSplitter.place(relx=0.562, rely=0.19)
+        #labelAstPath = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
+        #labelAstPath.place(relx=0.562, rely=0.19)
         labelAstPortaCto = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
         labelAstPortaCto.place(relx=0.9344, rely=0.189)
         #Criação das entradas dos dados.
@@ -830,8 +830,8 @@ class Interface():
         #Criação das saídas dos dados.
         self.saidaRamal = Label(self.dentroFrameProvisionarOnu, text="", background="#fff", anchor=CENTER)
         self.saidaRamal.place(relx=0.135, rely=0.211, relwidth=0.07)
-        self.saidaSplitter = Label(self.dentroFrameProvisionarOnu, text="", background="#fff", anchor=CENTER)
-        self.saidaSplitter.place(relx=0.398, rely=0.211, relwidth=0.239)
+        self.saidaPath = Label(self.dentroFrameProvisionarOnu, text="", background="#fff", anchor=CENTER)
+        self.saidaPath.place(relx=0.398, rely=0.211, relwidth=0.239)
         self.saidaAguardandoBotao = Label(self.dentroFrameProvisionarOnu, text="", font="Ivy 10 bold", background="#9099A2", fg="red")
         self.saidaAguardandoBotao.place(relx=0.78, rely=0.27)
         #Criação de radio button.
