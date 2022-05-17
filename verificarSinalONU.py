@@ -1,6 +1,6 @@
 import telnetlib
 from tkinter import *
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, scrolledtext
 #from awesometkinter import *
 import awesometkinter as atk
 import tkinter.filedialog #Selecionar diretório.
@@ -918,9 +918,20 @@ class Interface():
         #linhaFrameDadosOnu.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
 
     def widgetsTelaDadosOnu(self):
-        self.saidaInfoOnu = Label(self.abaProvisionadas, text="testando", background="#000")
-        self.saidaInfoOnu.pack()
-        
+        #Criação de label.
+        #Criação de entrada de dados.
+        #Criação de botões.
+        Button(self.abaProvisionadas, text="teste", command=self.teste).pack()
+        #Criação de saída de textos.
+        self.txtDadosOnu = scrolledtext.ScrolledText(self.abaProvisionadas, state="disabled", width=61, height=32)
+        self.txtDadosOnu.place(relx=0, rely=0.105)
+
+    def teste(self):
+        self.txtDadosOnu.configure(state="normal")
+        self.txtDadosOnu.delete(1.0, END)
+        self.txtDadosOnu.insert(INSERT, "Testando")
+        self.txtDadosOnu.configure(state="disabled")
+
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados):
     def __init__(self):
         self.listaPortaCto = []
