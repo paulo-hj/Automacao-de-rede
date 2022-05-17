@@ -534,27 +534,30 @@ class Func():
         self.txtDadosOnu.configure(state="disabled")
 
     def filtrarOnu(self):
-        try:
-            login = self.entradaProcuraOnu.get()
-            listaInfoOnu = self.bdFiltrarLoginOnu(login)
-            self.txtDadosOnu.configure(state="normal")
-            self.txtDadosOnu.delete(1.0, END)
-            portaPosicao = listaInfoOnu[0][0]
-            vlan = str(listaInfoOnu[0][1])
-            portaCto = str(listaInfoOnu[0][2])
-            ramal = listaInfoOnu[0][3]
-            path = listaInfoOnu[0][4]
-            modoOnu = listaInfoOnu[0][5]
-            mac = listaInfoOnu[0][6]
-            marca = listaInfoOnu[0][7]
-            usuario = listaInfoOnu[0][9]
-            dataHora = listaInfoOnu[0][10]
-            textoInfoOnu = "\n\n                     Login: "+login+"\n\n Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"      Porta/Posição: "+portaPosicao+"\n Ramal: "+ramal+"           Path: "+path+"\n Porta da CTO: "+portaCto+"     MAC: "+mac+"     Marca: "+marca+"\n\n Usuário: "+usuario+"      Data/Hora: "+dataHora
-            self.txtDadosOnu.insert(INSERT, textoInfoOnu)
-            self.txtDadosOnu.insert(INSERT, "\n\n_____________________________________________________________\n")
-            self.txtDadosOnu.configure(state="disabled")
-        except:
-            messagebox.showerror(title="Erro", message="Informe um login válido")
+        login = self.entradaProcuraOnu.get()
+        if login == "           LOGIN":
+            self.listarTodasOnuTelaDados()
+        else:
+            try:
+                listaInfoOnu = self.bdFiltrarLoginOnu(login)
+                self.txtDadosOnu.configure(state="normal")
+                self.txtDadosOnu.delete(1.0, END)
+                portaPosicao = listaInfoOnu[0][0]
+                vlan = str(listaInfoOnu[0][1])
+                portaCto = str(listaInfoOnu[0][2])
+                ramal = listaInfoOnu[0][3]
+                path = listaInfoOnu[0][4]
+                modoOnu = listaInfoOnu[0][5]
+                mac = listaInfoOnu[0][6]
+                marca = listaInfoOnu[0][7]
+                usuario = listaInfoOnu[0][9]
+                dataHora = listaInfoOnu[0][10]
+                textoInfoOnu = "\n\n                     Login: "+login+"\n\n Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"      Porta/Posição: "+portaPosicao+"\n Ramal: "+ramal+"           Path: "+path+"\n Porta da CTO: "+portaCto+"     MAC: "+mac+"     Marca: "+marca+"\n\n Usuário: "+usuario+"      Data/Hora: "+dataHora
+                self.txtDadosOnu.insert(INSERT, textoInfoOnu)
+                self.txtDadosOnu.insert(INSERT, "\n\n_____________________________________________________________\n")
+                self.txtDadosOnu.configure(state="disabled")
+            except:
+                messagebox.showerror(title="Erro", message="Informe um login válido.")
 
 class Interface():
     def telaPrincipal(self):
