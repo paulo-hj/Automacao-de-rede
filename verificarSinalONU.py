@@ -1,6 +1,7 @@
 import telnetlib
 from tkinter import *
 from tkinter import ttk, messagebox, scrolledtext
+from tkinter import font
 #from awesometkinter import *
 import awesometkinter as atk
 import tkinter.filedialog #Selecionar diretório.
@@ -505,6 +506,33 @@ class Relatorios():
         self.addLog()
         webbrowser.open(self.nomeDiretorio+"\\Vlan's OLT Digistar.pdf")
 
+class Func():
+    def listarTodasOnuTelaDados(self):
+        cont = 0
+        quantOnuProv = self.bdVerificarQuantOnuProv()
+        self.txtDadosOnu.configure(state="normal")
+        self.txtDadosOnu.delete(1.0, END)
+        infoOnu = self.bdListarTodasOnu()
+        infoOnu = list(reversed(infoOnu))
+        for i in quantOnuProv:
+            login = infoOnu[cont][1]
+            portaPosicao = infoOnu[cont][2]
+            vlan = str(infoOnu[cont][3])
+            portaCto = str(infoOnu[cont][4])
+            ramal = infoOnu[cont][5]
+            splitter = infoOnu[cont][6]
+            modoOnu = infoOnu[cont][7]
+            mac = infoOnu[cont][8]
+            marca = infoOnu[cont][9]
+            portaOlt = str(infoOnu[cont][10])
+            usuario = infoOnu[cont][11]
+            dataHora = infoOnu[cont][12]
+            textoInfoOnu = "\n\n                     Login: "+login+"\n\n Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"      Porta/Posição: "+portaPosicao+"\n Ramal: "+ramal+"           Path: "+splitter+"\n Porta da CTO: "+portaCto+"     MAC: "+mac+"     Marca: "+marca+"\n\n Usuário: "+usuario+"      Data/Hora: "+dataHora
+            self.txtDadosOnu.insert(INSERT, textoInfoOnu)
+            self.txtDadosOnu.insert(INSERT, "\n\n_____________________________________________________________\n")
+            cont += 1
+        self.txtDadosOnu.configure(state="disabled")
+
 class Interface():
     def telaPrincipal(self):
         primeiraTela = Tk()
@@ -894,6 +922,7 @@ class Interface():
         self.abasTelaDadosOnu()
         self.farmesTelaDadosOnu()
         self.widgetsTelaDadosOnu()
+        self.listarTodasOnuTelaDados()
 
     def abasTelaDadosOnu(self):
         #Criação de abas.
@@ -905,9 +934,6 @@ class Interface():
 
         self.atualizarDadosOnu = Frame(self.abas)
         self.abas.add(self.atualizarDadosOnu, text="Atualizar dados da ONU")
-
-        self.abaSinais = Frame(self.abas)
-        self.abas.add(self.abaSinais, text="Sinais")
 
     def farmesTelaDadosOnu(self):
         esquerdaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#233237')
@@ -921,9 +947,8 @@ class Interface():
         #Criação de label.
         #Criação de entrada de dados.
         #Criação de botões.
-        Button(self.abaProvisionadas, text="teste", command=self.listarTodasOnu).pack()
         #Criação de saída de textos.
-        self.txtDadosOnu = scrolledtext.ScrolledText(self.abaProvisionadas, state="disabled", width=61, height=32)
+        self.txtDadosOnu = scrolledtext.ScrolledText(self.abaProvisionadas, state="disabled", width=61, height=32, bg="#9099A2")
         self.txtDadosOnu.place(relx=0, rely=0.105)
 
     def procurarOnuTelaDados(self):
@@ -931,37 +956,8 @@ class Interface():
         self.txtDadosOnu.delete(1.0, END)
         self.txtDadosOnu.insert(INSERT, "Testando")
         self.txtDadosOnu.configure(state="disabled")
-    
-    def listarTodasOnu(self):
-        cont = 0
-        quantOnuProv = self.bdVerificarQuantOnuProv()
-        self.txtDadosOnu.configure(state="normal")
-        self.txtDadosOnu.delete(1.0, END)
-        infoOnu = self.bdListarTodasOnu()
-        infoOnu = list(reversed(infoOnu))
-        for i in quantOnuProv:
-            login = infoOnu[cont][1]
-            PortaPosicao = infoOnu[cont][2]
-            vlan = str(infoOnu[cont][3])
-            portaCto = str(infoOnu[cont][4])
-            ramal = infoOnu[cont][5]
-            splitter = infoOnu[cont][6]
-            modoOnu = infoOnu[cont][7]
-            mac = infoOnu[cont][8]
-            marca = infoOnu[cont][9]
-            portaOlt = str(infoOnu[cont][10])
-            usuario = infoOnu[cont][11]
-            dataHora = infoOnu[cont][12]
 
-            textoInfoOnu = "Login: "+login+"\nVlan: "+vlan+"       Modo da Onu: "+modoOnu
-
-            self.txtDadosOnu.insert(INSERT, textoInfoOnu)
-            self.txtDadosOnu.insert(INSERT, "\n\n_____________________________________________________________\n\n")
-
-            
-            cont += 1
-        self.txtDadosOnu.configure(state="disabled")
-class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados):
+class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados, Func):
     def __init__(self):
         self.listaPortaCto = []
         self.conectarOlt()
