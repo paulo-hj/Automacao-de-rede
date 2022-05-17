@@ -533,6 +533,29 @@ class Func():
             cont += 1
         self.txtDadosOnu.configure(state="disabled")
 
+    def filtrarOnu(self):
+        try:
+            login = self.entradaProcuraOnu.get()
+            listaInfoOnu = self.bdFiltrarLoginOnu(login)
+            self.txtDadosOnu.configure(state="normal")
+            self.txtDadosOnu.delete(1.0, END)
+            portaPosicao = listaInfoOnu[0][0]
+            vlan = str(listaInfoOnu[0][1])
+            portaCto = str(listaInfoOnu[0][2])
+            ramal = listaInfoOnu[0][3]
+            splitter = listaInfoOnu[0][4]
+            modoOnu = listaInfoOnu[0][5]
+            mac = listaInfoOnu[0][6]
+            marca = listaInfoOnu[0][7]
+            usuario = listaInfoOnu[0][9]
+            dataHora = listaInfoOnu[0][10]
+            textoInfoOnu = "\n\n                     Login: "+login+"\n\n Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"      Porta/Posição: "+portaPosicao+"\n Ramal: "+ramal+"           Path: "+splitter+"\n Porta da CTO: "+portaCto+"     MAC: "+mac+"     Marca: "+marca+"\n\n Usuário: "+usuario+"      Data/Hora: "+dataHora
+            self.txtDadosOnu.insert(INSERT, textoInfoOnu)
+            self.txtDadosOnu.insert(INSERT, "\n\n_____________________________________________________________\n")
+            self.txtDadosOnu.configure(state="disabled")
+        except:
+            messagebox.showerror(title="Erro", message="Informe um login válido")
+
 class Interface():
     def telaPrincipal(self):
         primeiraTela = Tk()
@@ -946,10 +969,14 @@ class Interface():
     def widgetsTelaDadosOnu(self):
         #Criação de label.
         #Criação de entrada de dados.
+        self.entradaProcuraOnu = EntPlaceHold(self.abaProvisionadas, "           LOGIN")
+        self.entradaProcuraOnu.place(relx=0.01, rely=0.008, relwidth=0.2)
         #Criação de botões.
+        botaoProcurarOnu = atk.Button3d(self.abaProvisionadas, text="Procurar", bg="#fff", command=self.filtrarOnu)
+        botaoProcurarOnu.place(relx=0.19, rely=0, relwidth=0.136, relheight=0.062)
         #Criação de saída de textos.
-        self.txtDadosOnu = scrolledtext.ScrolledText(self.abaProvisionadas, state="disabled", width=61, height=32, bg="#9099A2")
-        self.txtDadosOnu.place(relx=0, rely=0.105)
+        self.txtDadosOnu = scrolledtext.ScrolledText(self.abaProvisionadas, state="disabled", width=61, height=33, bg="#9099A2")
+        self.txtDadosOnu.place(relx=0, rely=0.08)
 
     def procurarOnuTelaDados(self):
         self.txtDadosOnu.configure(state="normal")
