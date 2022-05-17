@@ -2,6 +2,7 @@ import telnetlib
 from tkinter import *
 from tkinter import ttk, messagebox, scrolledtext
 from tkinter import font
+from unittest import TestResult
 #from awesometkinter import *
 import awesometkinter as atk
 import tkinter.filedialog #Selecionar diretório.
@@ -559,6 +560,28 @@ class Func():
             except:
                 messagebox.showerror(title="Erro", message="Informe um login válido.")
 
+    def filtrarPorVlan(self, event):
+        indices = self.comboBoxVlanTelaDados.curselection()
+        if len(indices) > 0 :
+            vlan = ",".join([self.comboBoxVlanTelaDados.get(i) for i in indices])
+            listaInfoOnu = self.bdFiltrarVlanOnu(vlan)
+            self.txtDadosOnu.configure(state="normal")
+            self.txtDadosOnu.delete(1.0, END)
+            login = listaInfoOnu[0][0]
+            portaPosicao = listaInfoOnu[0][1]
+            portaCto = str(listaInfoOnu[0][2])
+            ramal = listaInfoOnu[0][3]
+            path = listaInfoOnu[0][4]
+            modoOnu = listaInfoOnu[0][5]
+            mac = listaInfoOnu[0][6]
+            marca = listaInfoOnu[0][7]
+            usuario = listaInfoOnu[0][9]
+            dataHora = listaInfoOnu[0][10]
+            textoInfoOnu = "\n\n                     Login: "+login+"\n\n Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"      Porta/Posição: "+portaPosicao+"\n Ramal: "+ramal+"           Path: "+path+"\n Porta da CTO: "+portaCto+"     MAC: "+mac+"     Marca: "+marca+"\n\n Usuário: "+usuario+"      Data/Hora: "+dataHora
+            self.txtDadosOnu.insert(INSERT, textoInfoOnu)
+            self.txtDadosOnu.insert(INSERT, "\n\n_____________________________________________________________\n")
+            self.txtDadosOnu.configure(state="disabled")
+
 class Interface():
     def telaPrincipal(self):
         primeiraTela = Tk()
@@ -945,6 +968,8 @@ class Interface():
         self.dadosOnuCliente.transient(self.primeiraTela)
         self.dadosOnuCliente.focus_force()
         self.dadosOnuCliente.grab_set()
+        listaVlanTelaDados = ["131", "132", "133", "134", "135", "136", "137", "138", "141", "142", "143", "144", "145", "146", "147", "148"]
+        self.vlanIntVar = tkinter.IntVar(value=listaVlanTelaDados)
         self.abasTelaDadosOnu()
         self.farmesTelaDadosOnu()
         self.widgetsTelaDadosOnu()
@@ -980,12 +1005,13 @@ class Interface():
         #Criação de saída de textos.
         self.txtDadosOnu = scrolledtext.ScrolledText(self.abaProvisionadas, state="disabled", width=61, height=33, bg="#9099A2")
         self.txtDadosOnu.place(relx=0, rely=0.08)
+        #Criação de combo box.
+        self.comboBoxVlanTelaDados = tkinter.Listbox(self.abaProvisionadas, justify=CENTER, width=6, height=4, listvariable=self.vlanIntVar)
+        #self.comboBoxVlanTelaDados.set("0")
+        self.comboBoxVlanTelaDados.place(relx=0.4, rely=0)
+        self.comboBoxVlanTelaDados.bind('<<ListboxSelect>>', self.filtrarPorVlan)
 
-    def procurarOnuTelaDados(self):
-        self.txtDadosOnu.configure(state="normal")
-        self.txtDadosOnu.delete(1.0, END)
-        self.txtDadosOnu.insert(INSERT, "Testando")
-        self.txtDadosOnu.configure(state="disabled")
+
 
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados, Func):
     def __init__(self):
