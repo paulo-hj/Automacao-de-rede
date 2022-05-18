@@ -558,30 +558,35 @@ class Func():
                 self.txtDadosOnu.insert(INSERT, "\n\n________________________________________________________________\n")
                 self.txtDadosOnu.configure(state="disabled")
             except:
-                messagebox.showerror(title="Erro", message="Informe um login válido.")
+                messagebox.showerror(title="Erro", message="ONU não encontrada!\nVerifique o login!")
 
     def filtrarPorVlan(self, event):
         vlan = self.vlanSelecionada.get()
-        try:
-            listaInfoOnu = self.bdFiltrarVlanOnu(vlan)
-            self.txtDadosOnu.configure(state="normal")
-            self.txtDadosOnu.delete(1.0, END)
-            login = listaInfoOnu[0][0]
-            portaPosicao = listaInfoOnu[0][1]
-            portaCto = str(listaInfoOnu[0][2])
-            ramal = listaInfoOnu[0][3]
-            path = listaInfoOnu[0][4]
-            modoOnu = listaInfoOnu[0][5]
-            mac = listaInfoOnu[0][6]
-            marca = listaInfoOnu[0][7]
-            usuario = listaInfoOnu[0][9]
-            dataHora = listaInfoOnu[0][10]
-            textoInfoOnu = "\n\n                       Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"            Path: "+path+"\n  Porta da CTO: "+portaCto+"      MAC: "+mac+"     Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
-            self.txtDadosOnu.insert(INSERT, textoInfoOnu)
-            self.txtDadosOnu.insert(INSERT, "\n\n________________________________________________________________\n")
-            self.txtDadosOnu.configure(state="disabled")
-        except:
-            pass
+        if vlan == "VLAN":
+            self.listarTodasOnuTelaDados()
+        else:
+            try:
+                listaInfoOnu = self.bdFiltrarVlanOnu(vlan)
+                login = listaInfoOnu[0][0]
+                portaPosicao = listaInfoOnu[0][1]
+                portaCto = str(listaInfoOnu[0][2])
+                ramal = listaInfoOnu[0][3]
+                path = listaInfoOnu[0][4]
+                modoOnu = listaInfoOnu[0][5]
+                mac = listaInfoOnu[0][6]
+                marca = listaInfoOnu[0][7]
+                usuario = listaInfoOnu[0][9]
+                dataHora = listaInfoOnu[0][10]
+                self.txtDadosOnu.configure(state="normal")
+                self.txtDadosOnu.delete(1.0, END)
+                textoInfoOnu = "\n\n                       Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"            Path: "+path+"\n  Porta da CTO: "+portaCto+"      MAC: "+mac+"     Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
+                self.txtDadosOnu.insert(INSERT, textoInfoOnu)
+                self.txtDadosOnu.insert(INSERT, "\n\n________________________________________________________________\n")
+                self.txtDadosOnu.configure(state="disabled")
+            except:
+                self.txtDadosOnu.configure(state="normal")
+                self.txtDadosOnu.delete(1.0, END)
+                self.txtDadosOnu.configure(state="disabled")
 
 class Interface():
     def telaPrincipal(self):
@@ -821,7 +826,7 @@ class Interface():
         #Criação dos texto.
         Label(self.quartaTela, text="Provisionar ONU", font="Ivy 14 bold", background="#9099A2").place(relx=0.39, rely=0.325)
         Label(self.dentroFrameProvisionarOnu, text="Modo da ONU", font="arial 11 bold", background="#9099A2").place(relx=0.391, rely=0.032)
-        Label(self.dentroFrameProvisionarOnu, text="Login", font="arial 12 bold", background="#9099A2").place(relx=0.12, rely=0.09)
+        Label(self.dentroFrameProvisionarOnu, text="Login", font="arial 12 bold", background="#9099A2").place(relx=0.133, rely=0.09)
         Label(self.dentroFrameProvisionarOnu, text="Vlan", font="arial 12 bold", background="#9099A2").place(relx=0.46, rely=0.09)
         Label(self.dentroFrameProvisionarOnu, text="Marca", font="arial 12 bold", background="#9099A2").place(relx=0.76, rely=0.09)
         Label(self.dentroFrameProvisionarOnu, text="Ramal", font="arial 12 bold", background="#9099A2").place(relx=0.117, rely=0.19)
@@ -830,7 +835,7 @@ class Interface():
         labelAstModoOnu = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
         labelAstModoOnu.place(relx=0.59, rely=0.031)
         labelAstLogin = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
-        labelAstLogin.place(relx=0.21, rely=0.09)
+        labelAstLogin.place(relx=0.223, rely=0.09)
         labelAstVlan = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
         labelAstVlan.place(relx=0.532, rely=0.09)
         #labelAstRamal = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
@@ -966,7 +971,7 @@ class Interface():
         self.dadosOnuCliente.geometry("730x599+430+60")
         #self.logTela.iconbitmap(default="icone\\logo.ico")
         self.dadosOnuCliente.title("Provisionadas")
-        self.dadosOnuCliente.configure(background="#9099A2")
+        self.dadosOnuCliente.configure(background="#062F4F")
         self.dadosOnuCliente.resizable(width=False, height=False)
         self.dadosOnuCliente.transient(self.primeiraTela)
         self.dadosOnuCliente.focus_force()
@@ -974,7 +979,7 @@ class Interface():
         self.abasTelaDadosOnu()
         self.farmesTelaDadosOnu()
         self.widgetsTelaDadosOnu()
-        self.comboBoxVlanTelaDados['values'] =  ["131", "132", "133", "134", "135", "136", "137", "138", "141", "142", "143", "144", "145", "146", "147", "148"]
+        self.comboBoxVlanTelaDados['values'] =  ["VLAN", "131", "132", "133", "134", "135", "136", "137", "138", "141", "142", "143", "144", "145", "146", "147", "148"]
         self.listarTodasOnuTelaDados()
 
     def abasTelaDadosOnu(self):
@@ -982,7 +987,7 @@ class Interface():
         self.abas = ttk.Notebook(self.dadosOnuCliente) #Chamando a função para criar as abas.
         self.abas.place(relx=0.1499, rely=0, relwidth=0.71, relheight=1.005)
         
-        self.abaProvisionadas = Frame(self.abas, borderwidth=0, relief="solid", bg='#9099A2') #Criando a primeira aba.
+        self.abaProvisionadas = Frame(self.abas, borderwidth=0, relief="solid", bg='#062F4F') #Criando a primeira aba.
         self.abas.add(self.abaProvisionadas, text="Provisionadas") #Dando um nome da primeira aba.
 
         self.atualizarDadosOnu = Frame(self.abas)
@@ -993,25 +998,25 @@ class Interface():
         esquerdaFrameDadosOnu.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
         direitaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#233237')
         direitaFrameDadosOnu.place(relx=0.8489, rely=0, relwidth=0.151, relheight=1.005)
-        #linhaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=1, relief="solid", background="#9099A2")
-        #linhaFrameDadosOnu.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
+        linhaSeparaFiltrosFrameDadosOnu = Frame(self.abaProvisionadas, borderwidth=1, relief="solid", background="#9099A2")
+        linhaSeparaFiltrosFrameDadosOnu.place(relx=0.367, rely=0, relwidth=0.002, relheight=0.0791)
 
     def widgetsTelaDadosOnu(self):
         #Criação de label.
         #Criação de entrada de dados.
         self.entradaProcuraOnu = EntPlaceHold(self.abaProvisionadas, "           LOGIN")
-        self.entradaProcuraOnu.place(relx=0.01, rely=0.03, relwidth=0.2)
+        self.entradaProcuraOnu.place(relx=0.01, rely=0.024, relwidth=0.2)
         #Criação de botões.
-        botaoProcurarOnu = atk.Button3d(self.abaProvisionadas, text="Procurar", bg="#fff", command=self.filtrarOnu)
-        botaoProcurarOnu.place(relx=0.22, rely=0.015, relwidth=0.136, relheight=0.064)
+        botaoProcurarOnu = atk.Button3d(self.abaProvisionadas, text="Procurar", bg="#38576b", command=self.filtrarOnu)
+        botaoProcurarOnu.place(relx=0.22, rely=0.009, relwidth=0.136, relheight=0.0645)
         #Criação de saída de textos.
         self.txtDadosOnu = Text(self.abaProvisionadas, state="disabled", width=64, height=33, bg="#9099A2")
         self.txtDadosOnu.place(relx=0, rely=0.08)
         #Criação de combo box.
         self.vlanSelecionada = tkinter.StringVar()
-        self.comboBoxVlanTelaDados = ttk.Combobox(self.abaProvisionadas, justify=CENTER, width=6, height=3, textvariable=self.vlanSelecionada)
-        #self.comboBoxVlanTelaDados.set("0")
-        self.comboBoxVlanTelaDados.place(relx=0.4, rely=0.005)
+        self.comboBoxVlanTelaDados = ttk.Combobox(self.abaProvisionadas, justify=CENTER, width=5, height=3, textvariable=self.vlanSelecionada)
+        self.comboBoxVlanTelaDados.set("VLAN")
+        self.comboBoxVlanTelaDados.place(relx=0.4, rely=0.021)
         self.comboBoxVlanTelaDados.bind('<<ComboboxSelected>>', self.filtrarPorVlan)
 
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados, Func):
