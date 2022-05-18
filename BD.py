@@ -2,7 +2,31 @@ import psycopg2
 from credenciaisBd import *
 from tkinter import messagebox
 
-class BancoDeDados():
+class BdFiltroOnu():
+    def bdListarTodasOnu(self):
+        self.cursor.execute("SELECT * FROM onu;")
+        return self.cursor.fetchall()
+    
+    def bdVerificarQuantOnuProv(self):
+        self.cursor.execute("SELECT id_onu FROM onu;")
+        return self.cursor.fetchall()
+
+    def bdFiltrarLoginOnu(self, login):
+        self.cursor.execute("SELECT porta_posicao_onu, vlan, porta_cto, ramal, path, modo_onu, mac, marca, usuario, data_hora FROM onu WHERE login=%s ;",(login,))
+        return self.cursor.fetchall()
+
+    def bdFiltrarVlanOnu(self, vlan):
+        self.cursor.execute("SELECT login, porta_posicao_onu, porta_cto, ramal, path, modo_onu, mac, marca, usuario, data_hora FROM onu WHERE vlan=%s ;",(vlan,))
+        return self.cursor.fetchall()
+    
+    def bdFiltrarRamalOnu(self, ramal):
+        self.cursor.execute("SELECT login, porta_posicao_onu, vlan, porta_cto, path, modo_onu, mac, marca, usuario, data_hora FROM onu WHERE ramal=%s ;",(ramal,))
+        return self.cursor.fetchall()
+    
+    def bdFiltrarMarcaOnu(self, marca):
+        pass
+
+class BancoDeDados(BdFiltroOnu):
     def conectarBd(self):
         try:
             self.conn = psycopg2.connect(
@@ -61,26 +85,6 @@ class BancoDeDados():
 
     def bdListaLog(self):
         self.cursor.execute("SELECT listalog FROM log WHERE id_log=%s ;",(1,))
-        return self.cursor.fetchall()
-
-    def bdListarTodasOnu(self):
-        self.cursor.execute("SELECT * FROM onu;")
-        return self.cursor.fetchall()
-    
-    def bdVerificarQuantOnuProv(self):
-        self.cursor.execute("SELECT id_onu FROM onu;")
-        return self.cursor.fetchall()
-
-    def bdFiltrarLoginOnu(self, login):
-        self.cursor.execute("SELECT porta_posicao_onu, vlan, porta_cto, ramal, path, modo_onu, mac, marca, usuario, data_hora FROM onu WHERE login=%s ;",(login,))
-        return self.cursor.fetchall()
-
-    def bdFiltrarVlanOnu(self, vlan):
-        self.cursor.execute("SELECT login, porta_posicao_onu, porta_cto, ramal, path, modo_onu, mac, marca, usuario, data_hora FROM onu WHERE vlan=%s ;",(vlan,))
-        return self.cursor.fetchall()
-    
-    def bdFiltrarRamalOnu(self, ramal):
-        self.cursor.execute("SELECT login, porta_posicao_onu, vlan, porta_cto, path, modo_onu, mac, marca, usuario, data_hora FROM onu WHERE ramal=%s ;",(ramal,))
         return self.cursor.fetchall()
 
     def bdSair(self):

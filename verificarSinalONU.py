@@ -189,6 +189,9 @@ class Comandos():
         
     def listaListBoxMarcaOnu(self):
         listaMarcaOnu = ["Digistar" ,"Huawei", "ZTE" ,"Unne", "IntelBras", "Tp-link", "Cianet", "Shoreline", "Stavix", "MaxPrint"]
+        return listaMarcaOnu
+    
+    def preencherListaMarca(self, listaMarcaOnu):
         for i in listaMarcaOnu:
             self.listBoxMarcaOnu.insert(END, i)
 
@@ -637,6 +640,42 @@ class Func():
                 self.comboBoxVlanTelaDados.set("VLAN")
                 self.widgetsEntradaTelaDados()
 
+    def filtrarPorMarca(self, event):
+        cont = 0
+        marca = self.marcaSelecionada.get()
+        if marca == "Marca":
+            self.listarTodasOnuTelaDados()
+        else:
+            try:
+                infoOnu = self.bdFiltrarMarcaOnu(marca)
+                self.txtDadosOnu.configure(state="normal")
+                self.txtDadosOnu.delete(1.0, END)
+                infoOnu = list(reversed(infoOnu))
+                for i in self.quantOnuProv:
+                    login = infoOnu[cont][0]
+                    portaPosicao = infoOnu[cont][1]
+                    vlan = str(infoOnu[cont][2])
+                    portaCto = str(infoOnu[cont][3])
+                    ramal = infoOnu[cont][4]
+                    path = infoOnu[cont][5]
+                    modoOnu = infoOnu[cont][6]
+                    mac = infoOnu[cont][7]
+                    usuario = infoOnu[cont][8]
+                    dataHora = infoOnu[cont][9]
+                    textoInfoOnu = "\n\n                       Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"            Path: "+path+"\n  Porta da CTO: "+portaCto+"      MAC: "+mac+"     Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
+                    self.txtDadosOnu.insert(INSERT, textoInfoOnu)
+                    self.txtDadosOnu.insert(INSERT, "\n\n________________________________________________________________\n")
+                    cont += 1
+                self.txtDadosOnu.configure(state="disabled")
+                self.comboBoxVlanTelaDados.set("VLAN")
+                self.widgetsEntradaTelaDados()
+            except:
+                self.txtDadosOnu.configure(state="normal")
+                self.txtDadosOnu.delete(1.0, END)
+                self.txtDadosOnu.configure(state="disabled")
+                self.comboBoxVlanTelaDados.set("VLAN")
+                self.widgetsEntradaTelaDados()
+
 class Interface():
     def telaPrincipal(self):
         primeiraTela = Tk()
@@ -825,7 +864,7 @@ class Interface():
         self.widgetsTelaProvisionarOnu()
         self.widgetsTelaProvisionarFrameDentro() #Função criada para poder limpar campos específicos.
         self.widgetsTelaProvisionarComboBox()
-        self.listaListBoxMarcaOnu()
+        self.preencherListaMarca(self.listaListBoxMarcaOnu())
 
     def framesTelaProvisionar(self):
         esquerdaFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=0, relief="solid", bg='#233237')
@@ -1026,21 +1065,20 @@ class Interface():
         self.farmesTelaDadosOnu()
         self.widgetsEntradaTelaDados()
         self.widgetsTelaDadosOnu()
-        #self.widgetsComboBoxVlan()
-        #self.widgetsComboBoxRamal()
-        self.comboBoxRamalTelaDados['values'] =  ["Ramal", "13", "14", "15", "16", "34", "35", "36", "52"]
+        self.comboBoxRamalTelaDados["values"] =  ["Ramal", "13", "14", "15", "16", "34", "35", "36", "52"]
         self.listaListBoxVlan()
-        self.comboBoxVlanTelaDados['values'] =  self.listaVlan
+        self.comboBoxVlanTelaDados["values"] =  self.listaVlan
+        self.comboBoxMarcaTelaDados["values"] = self.listaListBoxMarcaOnu()
         self.listarTodasOnuTelaDados()
 
     def abasTelaDadosOnu(self):
         #Criação de abas.
         self.abas = ttk.Notebook(self.dadosOnuCliente) #Chamando a função para criar as abas.
         self.abas.place(relx=0.1499, rely=0, relwidth=0.71, relheight=1.005)
-        
+        #1º aba
         self.abaProvisionadas = Frame(self.abas, borderwidth=0, relief="solid", bg='#062F4F') #Criando a primeira aba.
         self.abas.add(self.abaProvisionadas, text="Provisionadas") #Dando um nome da primeira aba.
-
+        #2º aba
         self.atualizarDadosOnu = Frame(self.abas)
         self.abas.add(self.atualizarDadosOnu, text="Atualizar dados da ONU")
 
@@ -1050,7 +1088,7 @@ class Interface():
         direitaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#233237')
         direitaFrameDadosOnu.place(relx=0.8489, rely=0, relwidth=0.151, relheight=1.005)
         linhaSeparaFiltrosFrameDadosOnu = Frame(self.abaProvisionadas, borderwidth=1, relief="solid", background="#9099A2")
-        linhaSeparaFiltrosFrameDadosOnu.place(relx=0.367, rely=0, relwidth=0.002, relheight=0.0791)
+        linhaSeparaFiltrosFrameDadosOnu.place(relx=0.372, rely=0, relwidth=0.002, relheight=0.0791)
     
     def widgetsEntradaTelaDados(self):
         self.entradaProcuraOnu = EntPlaceHold(self.abaProvisionadas, "           LOGIN")
@@ -1059,31 +1097,33 @@ class Interface():
     def widgetsTelaDadosOnu(self):
         #Criação de label.
         #Criação de entrada de dados.
-        
         #Criação de botões.
         botaoProcurarOnu = atk.Button3d(self.abaProvisionadas, text="Procurar", bg="#38576b", command=self.filtrarOnu)
         botaoProcurarOnu.place(relx=0.22, rely=0.009, relwidth=0.136, relheight=0.0645)
         #Criação de saída de textos.
         self.txtDadosOnu = Text(self.abaProvisionadas, state="disabled", width=64, height=33, bg="#9099A2")
         self.txtDadosOnu.place(relx=0, rely=0.08)
-
-    #def widgetsComboBoxVlan(self):
         #Criação de combo box VLAN.
         self.vlanSelecionada = tkinter.StringVar()
         self.comboBoxVlanTelaDados = ttk.Combobox(self.abaProvisionadas, justify=CENTER, width=5, height=3, textvariable=self.vlanSelecionada)
         self.comboBoxVlanTelaDados.set("VLAN")
-        self.comboBoxVlanTelaDados.place(relx=0.8, rely=0.021)
+        self.comboBoxVlanTelaDados.place(relx=0.6, rely=0.021)
         self.comboBoxVlanTelaDados.bind('<<ComboboxSelected>>', self.filtrarPorVlan)
-            
-    #def widgetsComboBoxRamal(self):
         #Criação de combo box ramal.
         self.ramalSelecionado = tkinter.StringVar()
-        self.comboBoxRamalTelaDados = ttk.Combobox(self.abaProvisionadas, justify=CENTER, width=5, height=3, textvariable=self.ramalSelecionado)
+        self.comboBoxRamalTelaDados = ttk.Combobox(self.abaProvisionadas, justify=CENTER, width=6, height=3, textvariable=self.ramalSelecionado)
         self.comboBoxRamalTelaDados.set("Ramal")
-        self.comboBoxRamalTelaDados.place(relx=0.4, rely=0.021)
+        self.comboBoxRamalTelaDados.place(relx=0.395, rely=0.021)
         self.comboBoxRamalTelaDados.bind('<<ComboboxSelected>>', self.filtrarPorRamal)
+        #Criação de combo box marca.
+        self.marcaSelecionada = tkinter.StringVar()
+        self.comboBoxMarcaTelaDados = ttk.Combobox(self.abaProvisionadas, justify=CENTER, width=10, height=3, textvariable=self.marcaSelecionada)
+        self.comboBoxMarcaTelaDados.set("Marca")
+        self.comboBoxMarcaTelaDados['state'] = 'readonly' #Proibi a mudança de valor escrevendo.
+        self.comboBoxMarcaTelaDados.place(relx=0.795, rely=0.021)
+        self.comboBoxMarcaTelaDados.bind('<<ComboboxSelected>>', self.filtrarPorMarca)
 
-class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados, Func):
+class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados, BdFiltroOnu, Func):
     def __init__(self):
         self.listaPortaCto = []
         self.conectarOlt()
