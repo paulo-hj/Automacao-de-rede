@@ -24,7 +24,8 @@ class BdFiltroOnu():
         return self.cursor.fetchall()
     
     def bdFiltrarMarcaOnu(self, marca):
-        pass
+        self.cursor.execute("SELECT login, porta_posicao_onu, vlan, ramal, porta_cto, path, modo_onu, mac, usuario, data_hora FROM onu WHERE marca=%s ;",(marca,))
+        return self.cursor.fetchall()
 
 class BancoDeDados(BdFiltroOnu):
     def conectarBd(self):

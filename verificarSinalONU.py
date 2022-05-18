@@ -648,6 +648,7 @@ class Func():
         else:
             try:
                 infoOnu = self.bdFiltrarMarcaOnu(marca)
+                print(infoOnu)
                 self.txtDadosOnu.configure(state="normal")
                 self.txtDadosOnu.delete(1.0, END)
                 infoOnu = list(reversed(infoOnu))
