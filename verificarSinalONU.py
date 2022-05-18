@@ -185,8 +185,7 @@ class Comandos():
         self.listaVlan = ["131", "132", "133", "134", "135", "136", "137", "138","141", "142", "143", "144", "145", "146", "147", "148",
          "151", "152", "153", "154", "155", "156", "157", "158", "161", "162", "163", "164", "165", "166", "167", "168", 
          "341", "342", "343", "344", "345", "346", "347", "348", "351", "352", "353", "354", "355", "356", "357", "358",
-          "361", "362", "363", "364", "365", "366", "367", "368", "521", "522", "523", "524", "525", "526", "527", "528"]
-        self.nintVar = tkinter.IntVar(value=self.listaVlan)
+          "361", "362", "363", "364", "365", "366", "367", "368", "521", "522", "523", "524", "525", "526", "527", "528"] 
         
     def listaListBoxMarcaOnu(self):
         listaMarcaOnu = ["Digistar" ,"Huawei", "ZTE" ,"Unne", "IntelBras", "Tp-link", "Cianet", "Shoreline", "Stavix", "MaxPrint"]
@@ -229,9 +228,9 @@ class Comandos():
             elif int(vlan) >= 521 and int(vlan) <= 528:
                 self.ramal = "52"
                 self.saidaRamal["text"] = "52"
- 
+  
     def verificarPath(self):
-        dicionarioPath = {"131":"0-1-P8-D24-T3-R13-C1", "132":"0-1-P8-D24-T3-R13-C2", "133":"0-1-P8-D24-T3-R13-C3", 
+        dicionarioPath = {"131":"0-1-P8-D24-T3-R13-C1", "132":"0-1-P8-D24-T3-R13-C2", "133":"0-1-P8-D24-T3-R13-C3",
         "134":"0-1-P8-D24-T3-R13-C4", "135":"0-1-P8-D24-T3-R13-C5", "136":"0-1-P8-D24-T3-R13-C6", "137":"0-1-P8-D24-T3-R13-C7", 
         "138":"0-1-P8-D24-T3-R13-C8", "141":"0-1-P7-D17-T3-R14-C1", "142":"0-1-P7-D17-T3-R14-C2", "143":"0-1-P7-D17-T3-R14-C3", 
         "144":"0-1-P7-D17-T3-R14-C4", "145":"0-1-P7-D17-T3-R14-C5", "146":"0-1-P7-D17-T3-R14-C6", "147":"0-1-P7-D17-T3-R14-C7", 
@@ -888,16 +887,13 @@ class Interface():
         labelAstLogin.place(relx=0.223, rely=0.09)
         labelAstVlan = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
         labelAstVlan.place(relx=0.532, rely=0.09)
-        #labelAstRamal = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
-        #labelAstRamal.place(relx=0.216, rely=0.19)
-        #labelAstPath = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
-        #labelAstPath.place(relx=0.562, rely=0.19)
         labelAstPortaCto = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
         labelAstPortaCto.place(relx=0.9344, rely=0.189)
         #Criação das entradas dos dados.
         self.entradaLoginOnu = Entry(self.dentroFrameProvisionarOnu, bd=3, justify=CENTER, font="Ivy 10")
         self.entradaLoginOnu.place(relx=0.043, rely=0.11, relheight=0.02)
         #Criação de listbox.
+        self.nintVar = tkinter.IntVar(value=self.listaVlan)
         self.listBoxVlan = tkinter.Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=6, height=4, listvariable=self.nintVar)
         self.listBoxVlan.place(relx=0.461, rely=0.11)
         self.listBoxVlan.bind('<<ListboxSelect>>', self.verificarOpcaoVlan)
@@ -1033,11 +1029,8 @@ class Interface():
         #self.widgetsComboBoxVlan()
         #self.widgetsComboBoxRamal()
         self.comboBoxRamalTelaDados['values'] =  ["Ramal", "13", "14", "15", "16", "34", "35", "36", "52"]
-        self.comboBoxVlanTelaDados['values'] =  ["VLAN", "131", "132", "133", "134", "135", "136", "137", "138", 
-        "141", "142", "143", "144", "145", "146", "147", "148", "151", "152", "153", "154", "155", "156", "157", "158", 
-        "161", "162", "163", "164", "165", "166", "167", "168", "341", "342", "343", "344", "345", "346", "347", "348", 
-        "351", "352", "353", "354", "355", "356", "357", "358", "361", "362", "363", "364", "365", "366", "367", "368", 
-        "521", "522", "523", "524", "525", "526", "527", "528"]
+        self.listaListBoxVlan()
+        self.comboBoxVlanTelaDados['values'] =  self.listaVlan
         self.listarTodasOnuTelaDados()
 
     def abasTelaDadosOnu(self):
