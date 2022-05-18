@@ -528,9 +528,9 @@ class Func():
             portaOlt = str(infoOnu[cont][10])
             usuario = infoOnu[cont][11]
             dataHora = infoOnu[cont][12]
-            textoInfoOnu = "\n\n                     Login: "+login+"\n\n Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"      Porta/Posição: "+portaPosicao+"\n Ramal: "+ramal+"           Path: "+path+"\n Porta da CTO: "+portaCto+"     MAC: "+mac+"     Marca: "+marca+"\n\n Usuário: "+usuario+"      Data/Hora: "+dataHora
+            textoInfoOnu = "\n\n                       Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"            Path: "+path+"\n  Porta da CTO: "+portaCto+"      MAC: "+mac+"     Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
             self.txtDadosOnu.insert(INSERT, textoInfoOnu)
-            self.txtDadosOnu.insert(INSERT, "\n\n_____________________________________________________________\n")
+            self.txtDadosOnu.insert(INSERT, "\n\n________________________________________________________________\n")
             cont += 1
         self.txtDadosOnu.configure(state="disabled")
 
@@ -553,9 +553,9 @@ class Func():
                 marca = listaInfoOnu[0][7]
                 usuario = listaInfoOnu[0][9]
                 dataHora = listaInfoOnu[0][10]
-                textoInfoOnu = "\n\n                     Login: "+login+"\n\n Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"      Porta/Posição: "+portaPosicao+"\n Ramal: "+ramal+"           Path: "+path+"\n Porta da CTO: "+portaCto+"     MAC: "+mac+"     Marca: "+marca+"\n\n Usuário: "+usuario+"      Data/Hora: "+dataHora
+                textoInfoOnu = "\n\n                       Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"            Path: "+path+"\n  Porta da CTO: "+portaCto+"      MAC: "+mac+"     Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
                 self.txtDadosOnu.insert(INSERT, textoInfoOnu)
-                self.txtDadosOnu.insert(INSERT, "\n\n_____________________________________________________________\n")
+                self.txtDadosOnu.insert(INSERT, "\n\n________________________________________________________________\n")
                 self.txtDadosOnu.configure(state="disabled")
             except:
                 messagebox.showerror(title="Erro", message="Informe um login válido.")
@@ -578,9 +578,9 @@ class Func():
                 marca = listaInfoOnu[0][7]
                 usuario = listaInfoOnu[0][9]
                 dataHora = listaInfoOnu[0][10]
-                textoInfoOnu = "\n\n                     Login: "+login+"\n\n Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"      Porta/Posição: "+portaPosicao+"\n Ramal: "+ramal+"           Path: "+path+"\n Porta da CTO: "+portaCto+"     MAC: "+mac+"     Marca: "+marca+"\n\n Usuário: "+usuario+"      Data/Hora: "+dataHora
+                textoInfoOnu = "\n\n                       Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"            Path: "+path+"\n  Porta da CTO: "+portaCto+"      MAC: "+mac+"     Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
                 self.txtDadosOnu.insert(INSERT, textoInfoOnu)
-                self.txtDadosOnu.insert(INSERT, "\n\n_____________________________________________________________\n")
+                self.txtDadosOnu.insert(INSERT, "\n\n________________________________________________________________\n")
                 self.txtDadosOnu.configure(state="disabled")
             except:
                 pass
@@ -624,25 +624,27 @@ class Interface():
         self.saidaMemoria = Label(self.frameTela, text="", background="#9099A2", anchor=N, font="Ivy 9")
         self.saidaMemoria.place(relx=0.602, rely=0.226, relwidth=0.235, relheight=0.1)
         #Criação dos botões.
+        botaoTelaDadosOnu = atk.Button3d(self.frameVertical, text="PROVISIONADAS", bg="#38576b", command=self.telaDadosClientes)
+        botaoTelaDadosOnu.place(relx=0.13, rely=0.055, relwidth=0.73, relheight=0.1)
         botaoTelaProvisionarOnu = atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#38576b", command=self.telaProvisionar)
-        botaoTelaProvisionarOnu.place(relx=0.13, rely=0.055, relwidth=0.73, relheight=0.1)
+        botaoTelaProvisionarOnu.place(relx=0.13, rely=0.175, relwidth=0.73, relheight=0.1)
         botaoTelaSinal = atk.Button3d(self.frameVertical, text="VERIFICAR SINAL", bg="#38576b", command=self.telaSinal)
-        botaoTelaSinal.place(relx=0.13, rely=0.175, relwidth=0.73, relheight=0.1)
-        botaoTelaVlan = atk.Button3d(self.frameVertical, text="RELATÓRIOS", bg="#38576b", command=self.telaRelatorios)
-        botaoTelaVlan.place(relx=0.13, rely=0.294, relwidth=0.73, relheight=0.1)
+        botaoTelaSinal.place(relx=0.13, rely=0.294, relwidth=0.73, relheight=0.1)
         botaoTelaDeletarOnu = atk.Button3d(self.frameVertical, text="Deletar ONU", bg="#38576b", command=self.telaDeletarOnu)
         botaoTelaDeletarOnu.place(relx=0.13, rely=0.413, relwidth=0.73, relheight=0.1)
         botaoLog = Button(self.frameTela, text="Log", font="Ivy 8 bold", background="#fff", command=self.telaLog)
         botaoLog.place(relx=0.155, rely=0.37, relwidth=0.051, relheight=0.058)
         botaoWeb = Button(self.frameTela, text="Web", font="Ivy 8 bold", background="#fff", command=self.acessarGerWeb)
         botaoWeb.place(relx=0.218, rely=0.37, relwidth=0.051, relheight=0.058)
-        botaoTelaDadosOnu = atk.Button3d(self.frameVertical, text="PROVISIONADAS", bg="#38576b", command=self.telaDadosClientes)
-        botaoTelaDadosOnu.place(relx=0.13, rely=0.535, relwidth=0.73, relheight=0.1)
+        botaoTelaRelatorios = atk.Button3d(self.frameVertical, text="RELATÓRIOS", bg="#38576b", command=self.telaRelatorios)
+        botaoTelaRelatorios.place(relx=0.13, rely=0.535, relwidth=0.73, relheight=0.1)
         #Criação das entradas dos dados.
         #Balão de mensagem.
-        atk.tooltip(botaoTelaProvisionarOnu, "Autoriza ONU em modo bridge")
-        atk.tooltip(botaoTelaSinal, "Verifica os sinais das onu")
-        atk.tooltip(botaoTelaVlan, "Verifica todas as vlan criadas")
+        atk.tooltip(botaoTelaDadosOnu, "Verificar todas as onu's provisionadas")
+        atk.tooltip(botaoTelaProvisionarOnu, "Autorizar onu em modo Bridge ou PPPoE")
+        atk.tooltip(botaoTelaSinal, "Verificar os sinais das onu's")
+        atk.tooltip(botaoTelaDeletarOnu, "Deletar onu")
+        atk.tooltip(botaoTelaRelatorios, "Gerar relatórios em PDF")
         #Imagens
         #imagemOltDigistar = Label(self.frameTela, image=self.imgOlt)
         #imagemOltDigistar.place(relx=0.105, rely=0.05)
@@ -1006,15 +1008,13 @@ class Interface():
         botaoProcurarOnu = atk.Button3d(self.abaProvisionadas, text="Procurar", bg="#fff", command=self.filtrarOnu)
         botaoProcurarOnu.place(relx=0.19, rely=0, relwidth=0.136, relheight=0.062)
         #Criação de saída de textos.
-        self.txtDadosOnu = scrolledtext.ScrolledText(self.abaProvisionadas, state="disabled", width=61, height=33, bg="#9099A2")
+        self.txtDadosOnu = Text(self.abaProvisionadas, state="disabled", width=64, height=33, bg="#9099A2")
         self.txtDadosOnu.place(relx=0, rely=0.08)
         #Criação de combo box.
         self.comboBoxVlanTelaDados = tkinter.Listbox(self.abaProvisionadas, justify=CENTER, width=6, height=4, listvariable=self.vlanIntVar)
         #self.comboBoxVlanTelaDados.set("0")
         self.comboBoxVlanTelaDados.place(relx=0.4, rely=0)
         self.comboBoxVlanTelaDados.bind('<<ListboxSelect>>', self.filtrarPorVlan)
-
-
 
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados, Func):
     def __init__(self):
