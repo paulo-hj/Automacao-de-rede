@@ -78,6 +78,9 @@ class BancoDeDados():
     def bdFiltrarVlanOnu(self, vlan):
         self.cursor.execute("SELECT login, porta_posicao_onu, porta_cto, ramal, path, modo_onu, mac, marca, porta_cto, usuario, data_hora FROM onu WHERE vlan=%s ;",(vlan,))
         return self.cursor.fetchall()
+    
+    def bdFiltrarRamalOnu(self, vlan):
+        pass
 
     def bdSair(self):
         self.conn.commit()

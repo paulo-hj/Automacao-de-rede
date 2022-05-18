@@ -588,6 +588,34 @@ class Func():
                 self.txtDadosOnu.delete(1.0, END)
                 self.txtDadosOnu.configure(state="disabled")
 
+    def filtrarPorRamal(self, event):
+        ramal = self.ramalSelecionado.get()
+        if ramal == "Ramal":
+            self.listarTodasOnuTelaDados()
+        else:
+            try:
+                listaInfoOnu = self.bdFiltrarRamalOnu(ramal)
+                login = listaInfoOnu[0][0]
+                portaPosicao = listaInfoOnu[0][1]
+                portaCto = str(listaInfoOnu[0][2])
+                ramal = listaInfoOnu[0][3]
+                path = listaInfoOnu[0][4]
+                modoOnu = listaInfoOnu[0][5]
+                mac = listaInfoOnu[0][6]
+                marca = listaInfoOnu[0][7]
+                usuario = listaInfoOnu[0][9]
+                dataHora = listaInfoOnu[0][10]
+                self.txtDadosOnu.configure(state="normal")
+                self.txtDadosOnu.delete(1.0, END)
+                textoInfoOnu = "\n\n                       Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"            Path: "+path+"\n  Porta da CTO: "+portaCto+"      MAC: "+mac+"     Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
+                self.txtDadosOnu.insert(INSERT, textoInfoOnu)
+                self.txtDadosOnu.insert(INSERT, "\n\n________________________________________________________________\n")
+                self.txtDadosOnu.configure(state="disabled")
+            except:
+                self.txtDadosOnu.configure(state="normal")
+                self.txtDadosOnu.delete(1.0, END)
+                self.txtDadosOnu.configure(state="disabled")
+
 class Interface():
     def telaPrincipal(self):
         primeiraTela = Tk()
@@ -979,7 +1007,12 @@ class Interface():
         self.abasTelaDadosOnu()
         self.farmesTelaDadosOnu()
         self.widgetsTelaDadosOnu()
-        self.comboBoxVlanTelaDados['values'] =  ["VLAN", "131", "132", "133", "134", "135", "136", "137", "138", "141", "142", "143", "144", "145", "146", "147", "148"]
+        self.comboBoxRamalTelaDados['values'] =  ["Ramal", "13", "14", "15", "16", "34", "35", "36", "52"]
+        self.comboBoxVlanTelaDados['values'] =  ["VLAN", "131", "132", "133", "134", "135", "136", "137", "138", 
+        "141", "142", "143", "144", "145", "146", "147", "148", "151", "152", "153", "154", "155", "156", "157", "158", 
+        "161", "162", "163", "164", "165", "166", "167", "168", "341", "342", "343", "344", "345", "346", "347", "348", 
+        "351", "352", "353", "354", "355", "356", "357", "358", "361", "362", "363", "364", "365", "366", "367", "368", 
+        "521", "522", "523", "524", "525", "526", "527", "528"]
         self.listarTodasOnuTelaDados()
 
     def abasTelaDadosOnu(self):
@@ -1012,12 +1045,18 @@ class Interface():
         #Criação de saída de textos.
         self.txtDadosOnu = Text(self.abaProvisionadas, state="disabled", width=64, height=33, bg="#9099A2")
         self.txtDadosOnu.place(relx=0, rely=0.08)
-        #Criação de combo box.
+        #Criação de combo box VLAN.
         self.vlanSelecionada = tkinter.StringVar()
         self.comboBoxVlanTelaDados = ttk.Combobox(self.abaProvisionadas, justify=CENTER, width=5, height=3, textvariable=self.vlanSelecionada)
         self.comboBoxVlanTelaDados.set("VLAN")
-        self.comboBoxVlanTelaDados.place(relx=0.4, rely=0.021)
+        self.comboBoxVlanTelaDados.place(relx=0.8, rely=0.021)
         self.comboBoxVlanTelaDados.bind('<<ComboboxSelected>>', self.filtrarPorVlan)
+        #Criação de combo box ramal.
+        self.ramalSelecionado = tkinter.StringVar()
+        self.comboBoxRamalTelaDados = ttk.Combobox(self.abaProvisionadas, justify=CENTER, width=5, height=3, textvariable=self.ramalSelecionado)
+        self.comboBoxRamalTelaDados.set("Ramal")
+        self.comboBoxRamalTelaDados.place(relx=0.4, rely=0.021)
+        self.comboBoxRamalTelaDados.bind('<<ComboboxSelected>>', self.filtrarPorRamal)
 
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados, Func):
     def __init__(self):
