@@ -512,12 +512,12 @@ class Relatorios():
 class Func():
     def listarTodasOnuTelaDados(self):
         cont = 0
-        self.quantOnuProv = self.bdVerificarQuantOnuProv()
+        quantOnuProv = self.bdVerificarQuantOnuProv()
         self.txtDadosOnu.configure(state="normal")
         self.txtDadosOnu.delete(1.0, END)
         infoOnu = self.bdListarTodasOnu()
         infoOnu = list(reversed(infoOnu))
-        for i in self.quantOnuProv:
+        for i in quantOnuProv:
             login = infoOnu[cont][1]
             portaPosicao = infoOnu[cont][2]
             vlan = str(infoOnu[cont][3])
@@ -607,6 +607,7 @@ class Func():
     def filtrarPorRamal(self, event):
         cont = 0
         ramal = self.ramalSelecionado.get()
+        quantOnuProv = self.bdVerificarQuantOnuRamal(ramal)
         if ramal == "Ramal":
             self.listarTodasOnuTelaDados()
         else:
@@ -615,7 +616,7 @@ class Func():
                 self.txtDadosOnu.configure(state="normal")
                 self.txtDadosOnu.delete(1.0, END)
                 infoOnu = list(reversed(infoOnu))
-                for i in self.quantOnuProv:
+                for i in quantOnuProv:
                     login = infoOnu[cont][0]
                     portaPosicao = infoOnu[cont][1]
                     vlan = str(infoOnu[cont][2])

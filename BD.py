@@ -12,7 +12,7 @@ class BdFiltroOnu():
         return self.cursor.fetchall()
 
     def bdVerificarQuantOnuRamal(self, ramal):
-        self.cursor.execute("SELECT id_onu FROM onu WHERE login=%s ;",(ramal,)))
+        self.cursor.execute("SELECT id_onu FROM onu WHERE ramal=%s ;",(ramal,))
         return self.cursor.fetchall()
 
     def bdFiltrarLoginOnu(self, login):
