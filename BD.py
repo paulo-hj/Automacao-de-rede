@@ -72,15 +72,16 @@ class BancoDeDados():
         return self.cursor.fetchall()
 
     def bdFiltrarLoginOnu(self, login):
-        self.cursor.execute("SELECT porta_posicao_onu, vlan, porta_cto, ramal, path, modo_onu, mac, marca, porta_cto, usuario, data_hora FROM onu WHERE login=%s ;",(login,))
+        self.cursor.execute("SELECT porta_posicao_onu, vlan, porta_cto, ramal, path, modo_onu, mac, marca, usuario, data_hora FROM onu WHERE login=%s ;",(login,))
         return self.cursor.fetchall()
 
     def bdFiltrarVlanOnu(self, vlan):
-        self.cursor.execute("SELECT login, porta_posicao_onu, porta_cto, ramal, path, modo_onu, mac, marca, porta_cto, usuario, data_hora FROM onu WHERE vlan=%s ;",(vlan,))
+        self.cursor.execute("SELECT login, porta_posicao_onu, porta_cto, ramal, path, modo_onu, mac, marca, usuario, data_hora FROM onu WHERE vlan=%s ;",(vlan,))
         return self.cursor.fetchall()
     
-    def bdFiltrarRamalOnu(self, vlan):
-        pass
+    def bdFiltrarRamalOnu(self, ramal):
+        self.cursor.execute("SELECT login, porta_posicao_onu, vlan, porta_cto, path, modo_onu, mac, marca, usuario, data_hora FROM onu WHERE ramal=%s ;",(ramal,))
+        return self.cursor.fetchall()
 
     def bdSair(self):
         self.conn.commit()
