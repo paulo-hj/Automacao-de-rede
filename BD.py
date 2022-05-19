@@ -19,6 +19,10 @@ class BdFiltroOnu():
         self.cursor.execute("SELECT id_onu FROM onu WHERE ramal=%s ;",(ramal,))
         return self.cursor.fetchall()
 
+    def bdVerificarQuantOnuMarca(self, marca):
+        self.cursor.execute("SELECT id_onu FROM onu WHERE marca=%s ;",(marca,))
+        return self.cursor.fetchall()
+
     def bdFiltrarLoginOnu(self, login):
         self.cursor.execute("SELECT porta_posicao_onu, vlan, porta_cto, ramal, path, modo_onu, mac, marca, usuario, data_hora FROM onu WHERE login=%s ;",(login,))
         return self.cursor.fetchall()
@@ -32,7 +36,7 @@ class BdFiltroOnu():
         return self.cursor.fetchall()
     
     def bdFiltrarMarcaOnu(self, marca):
-        self.cursor.execute("SELECT login, porta_posicao_onu, vlan, ramal, porta_cto, path, modo_onu, mac, usuario, data_hora FROM onu WHERE marca=%s ;",(marca,))
+        self.cursor.execute("SELECT login, porta_posicao_onu, vlan, porta_cto, ramal, path, modo_onu, mac, usuario, data_hora FROM onu WHERE marca=%s ;",(marca,))
         return self.cursor.fetchall()
 
 class BancoDeDados(BdFiltroOnu):

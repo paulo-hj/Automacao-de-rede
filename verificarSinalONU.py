@@ -541,6 +541,7 @@ class Func():
         if login == "           LOGIN":
             self.comboBoxRamalTelaDados.set("Ramal")
             self.comboBoxVlanTelaDados.set("VLAN")
+            self.comboBoxMarcaTelaDados.set("Marca")
             self.listarTodasOnuTelaDados()
         else:
             try:
@@ -563,10 +564,12 @@ class Func():
                 self.txtDadosOnu.configure(state="disabled")
                 self.comboBoxRamalTelaDados.set("Ramal")
                 self.comboBoxVlanTelaDados.set("VLAN")
+                self.comboBoxMarcaTelaDados.set("Marca")
                 self.widgetsEntradaTelaDados()
             except:
                 self.comboBoxRamalTelaDados.set("Ramal")
                 self.comboBoxVlanTelaDados.set("VLAN")
+                self.comboBoxMarcaTelaDados.set("Marca")
                 self.widgetsEntradaTelaDados()
                 messagebox.showerror(title="Erro", message="ONU não encontrada!\nVerifique o login!")
                 self.listarTodasOnuTelaDados()
@@ -600,12 +603,14 @@ class Func():
                     cont += 1
                 self.txtDadosOnu.configure(state="disabled")
                 self.comboBoxRamalTelaDados.set("Ramal")
+                self.comboBoxMarcaTelaDados.set("Marca")
                 self.widgetsEntradaTelaDados()
             except:
                 self.txtDadosOnu.configure(state="normal")
                 self.txtDadosOnu.delete(1.0, END)
                 self.txtDadosOnu.configure(state="disabled")
                 self.comboBoxRamalTelaDados.set("Ramal")
+                self.comboBoxMarcaTelaDados.set("Marca")
                 self.widgetsEntradaTelaDados()
 
     def filtrarPorRamal(self, event):
@@ -637,49 +642,53 @@ class Func():
                     cont += 1
                 self.txtDadosOnu.configure(state="disabled")
                 self.comboBoxVlanTelaDados.set("VLAN")
+                self.comboBoxMarcaTelaDados.set("Marca")
                 self.widgetsEntradaTelaDados()
             except:
                 self.txtDadosOnu.configure(state="normal")
                 self.txtDadosOnu.delete(1.0, END)
                 self.txtDadosOnu.configure(state="disabled")
                 self.comboBoxVlanTelaDados.set("VLAN")
+                self.comboBoxMarcaTelaDados.set("Marca")
                 self.widgetsEntradaTelaDados()
 
     def filtrarPorMarca(self, event):
         cont = 0
         marca = self.marcaSelecionada.get()
+        quantOnuProv = self.bdVerificarQuantOnuMarca(marca)
         if marca == "Marca":
             self.listarTodasOnuTelaDados()
         else:
             try:
-                infoOnu = self.bdFiltrarMarcaOnu(marca)
-                print(infoOnu)
+                infoOnuMarca = self.bdFiltrarMarcaOnu(marca)
                 self.txtDadosOnu.configure(state="normal")
                 self.txtDadosOnu.delete(1.0, END)
-                infoOnu = list(reversed(infoOnu))
-                for i in self.quantOnuProv:
-                    login = infoOnu[cont][0]
-                    portaPosicao = infoOnu[cont][1]
-                    vlan = str(infoOnu[cont][2])
-                    portaCto = str(infoOnu[cont][3])
-                    ramal = infoOnu[cont][4]
-                    path = infoOnu[cont][5]
-                    modoOnu = infoOnu[cont][6]
-                    mac = infoOnu[cont][7]
-                    usuario = infoOnu[cont][8]
-                    dataHora = infoOnu[cont][9]
+                infoOnuMarca = list(reversed(infoOnuMarca))
+                for i in quantOnuProv:
+                    login = infoOnuMarca[cont][0]
+                    portaPosicao = infoOnuMarca[cont][1]
+                    vlan = str(infoOnuMarca[cont][2])
+                    portaCto = str(infoOnuMarca[cont][3])
+                    ramal = infoOnuMarca[cont][4]
+                    path = infoOnuMarca[cont][5]
+                    modoOnu = infoOnuMarca[cont][6]
+                    mac = infoOnuMarca[cont][7]
+                    usuario = infoOnuMarca[cont][8]
+                    dataHora = infoOnuMarca[cont][9]
                     textoInfoOnu = "\n\n                       Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"            Path: "+path+"\n  Porta da CTO: "+portaCto+"      MAC: "+mac+"     Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
                     self.txtDadosOnu.insert(INSERT, textoInfoOnu)
                     self.txtDadosOnu.insert(INSERT, "\n\n________________________________________________________________\n")
                     cont += 1
                 self.txtDadosOnu.configure(state="disabled")
                 self.comboBoxVlanTelaDados.set("VLAN")
+                self.comboBoxRamalTelaDados.set("Ramal")
                 self.widgetsEntradaTelaDados()
             except:
                 self.txtDadosOnu.configure(state="normal")
                 self.txtDadosOnu.delete(1.0, END)
                 self.txtDadosOnu.configure(state="disabled")
                 self.comboBoxVlanTelaDados.set("VLAN")
+                self.comboBoxRamalTelaDados.set("Ramal")
                 self.widgetsEntradaTelaDados()
 
 class Interface():
@@ -1074,8 +1083,9 @@ class Interface():
         self.comboBoxRamalTelaDados["values"] =  ["Ramal", "13", "14", "15", "16", "34", "35", "36", "52"]
         self.listaListBoxVlan()
         listaStringVlan = ["VLAN"]
-        self.comboBoxVlanTelaDados["values"] =  listaStringVlan + self.listaVlan
-        self.comboBoxMarcaTelaDados["values"] = self.listaListBoxMarcaOnu()
+        listaStringMarca = ["Marca"]
+        self.comboBoxVlanTelaDados["values"] = listaStringVlan + self.listaVlan
+        self.comboBoxMarcaTelaDados["values"] = listaStringMarca + self.listaListBoxMarcaOnu()
         self.listarTodasOnuTelaDados()
 
     def abasTelaDadosOnu(self):
