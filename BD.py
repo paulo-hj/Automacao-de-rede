@@ -11,6 +11,10 @@ class BdFiltroOnu():
         self.cursor.execute("SELECT id_onu FROM onu;")
         return self.cursor.fetchall()
 
+    def bdVerificarQuantOnuVlan(self, vlan):
+        self.cursor.execute("SELECT id_onu FROM onu WHERE vlan=%s ;",(vlan,))
+        return self.cursor.fetchall()
+
     def bdVerificarQuantOnuRamal(self, ramal):
         self.cursor.execute("SELECT id_onu FROM onu WHERE ramal=%s ;",(ramal,))
         return self.cursor.fetchall()

@@ -572,28 +572,32 @@ class Func():
                 self.listarTodasOnuTelaDados()
 
     def filtrarPorVlan(self, event):
+        cont = 0
         vlan = self.vlanSelecionada.get()
         if vlan == "VLAN":
             self.listarTodasOnuTelaDados()
         else:
             try:
+                quantOnuProv = self.bdVerificarQuantOnuVlan(vlan)
                 listaInfoOnu = self.bdFiltrarVlanOnu(vlan)
-                listaInfoOnu = list(reversed(listaInfoOnu))
-                login = listaInfoOnu[0][0]
-                portaPosicao = listaInfoOnu[0][1]
-                portaCto = str(listaInfoOnu[0][2])
-                ramal = listaInfoOnu[0][3]
-                path = listaInfoOnu[0][4]
-                modoOnu = listaInfoOnu[0][5]
-                mac = listaInfoOnu[0][6]
-                marca = listaInfoOnu[0][7]
-                usuario = listaInfoOnu[0][8]
-                dataHora = listaInfoOnu[0][9]
                 self.txtDadosOnu.configure(state="normal")
                 self.txtDadosOnu.delete(1.0, END)
-                textoInfoOnu = "\n\n                       Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"            Path: "+path+"\n  Porta da CTO: "+portaCto+"      MAC: "+mac+"     Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
-                self.txtDadosOnu.insert(INSERT, textoInfoOnu)
-                self.txtDadosOnu.insert(INSERT, "\n\n________________________________________________________________\n")
+                listaInfoOnu = list(reversed(listaInfoOnu))
+                for i in quantOnuProv:
+                    login = listaInfoOnu[cont][0]
+                    portaPosicao = listaInfoOnu[cont][1]
+                    portaCto = str(listaInfoOnu[cont][2])
+                    ramal = listaInfoOnu[cont][3]
+                    path = listaInfoOnu[cont][4]
+                    modoOnu = listaInfoOnu[cont][5]
+                    mac = listaInfoOnu[cont][6]
+                    marca = listaInfoOnu[cont][7]
+                    usuario = listaInfoOnu[cont][8]
+                    dataHora = listaInfoOnu[cont][9]
+                    textoInfoOnu = "\n\n                       Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"            Path: "+path+"\n  Porta da CTO: "+portaCto+"      MAC: "+mac+"     Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
+                    self.txtDadosOnu.insert(INSERT, textoInfoOnu)
+                    self.txtDadosOnu.insert(INSERT, "\n\n________________________________________________________________\n")
+                    cont += 1
                 self.txtDadosOnu.configure(state="disabled")
                 self.comboBoxRamalTelaDados.set("Ramal")
                 self.widgetsEntradaTelaDados()
@@ -1069,7 +1073,8 @@ class Interface():
         self.widgetsTelaDadosOnu()
         self.comboBoxRamalTelaDados["values"] =  ["Ramal", "13", "14", "15", "16", "34", "35", "36", "52"]
         self.listaListBoxVlan()
-        self.comboBoxVlanTelaDados["values"] =  self.listaVlan
+        listaStringVlan = ["VLAN"]
+        self.comboBoxVlanTelaDados["values"] =  listaStringVlan + self.listaVlan
         self.comboBoxMarcaTelaDados["values"] = self.listaListBoxMarcaOnu()
         self.listarTodasOnuTelaDados()
 
