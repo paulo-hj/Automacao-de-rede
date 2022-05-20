@@ -1087,6 +1087,7 @@ class Interface():
         self.comboBoxVlanTelaDados["values"] = listaStringVlan + self.listaVlan
         self.comboBoxMarcaTelaDados["values"] = listaStringMarca + self.listaListBoxMarcaOnu()
         self.listarTodasOnuTelaDados()
+        self.widgetsAtualizardadosOnu()
 
     def abasTelaDadosOnu(self):
         #Criação de abas.
@@ -1096,8 +1097,8 @@ class Interface():
         self.abaProvisionadas = Frame(self.abas, borderwidth=0, relief="solid", bg='#062F4F') #Criando a primeira aba.
         self.abas.add(self.abaProvisionadas, text="Provisionadas") #Dando um nome da primeira aba.
         #2º aba
-        self.atualizarDadosOnu = Frame(self.abas)
-        self.abas.add(self.atualizarDadosOnu, text="Atualizar dados da ONU")
+        self.atualizarDadosOnu = Frame(self.abas, borderwidth=0, relief="solid", bg='#9099A2')
+        self.abas.add(self.atualizarDadosOnu, text="Atualizar dados")
 
     def farmesTelaDadosOnu(self):
         esquerdaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#233237')
@@ -1139,6 +1140,21 @@ class Interface():
         self.comboBoxMarcaTelaDados['state'] = 'readonly' #Proibi a mudança de valor escrevendo.
         self.comboBoxMarcaTelaDados.place(relx=0.795, rely=0.021)
         self.comboBoxMarcaTelaDados.bind('<<ComboboxSelected>>', self.filtrarPorMarca)
+
+    def widgetsAtualizardadosOnu(self):
+        #Criação dos texto.
+        Label(self.atualizarDadosOnu, text="Atualizar dados da ONU", font="Ivy 14 bold", background="#9099A2").place(relx=0.3, rely=0.03)
+        Label(self.atualizarDadosOnu, text="Informe o login", font="Ivy 12 bold", background="#9099A2").place(relx=0.415, rely=0.14)
+        #Criação das entradas dos dados.
+        self.entradaLoginAtualizarDados = Entry(self.atualizarDadosOnu, bd=3, justify=CENTER, font="Ivy 10")
+        self.entradaLoginAtualizarDados.place(relx=0.42, rely=0.19, relwidth=0.152, relheight=0.038)
+        self.entradaLoginAtualizarDados.focus()
+        #Criação dos botões.
+        botaoAtualizarDados = atk.Button3d(self.atualizarDadosOnu, text="Carregar Dados")#, command=self.carregarDadosOnu)
+        botaoAtualizarDados.place(relx=0.437, rely=0.295, relwidth=0.22, relheight=0.071)
+        #Criação das saídas dos dados.
+        #Balão de mensagem.
+        atk.tooltip(botaoAtualizarDados, "Atualizar dados da ONU")
 
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados, BdFiltroOnu, Func):
     def __init__(self):
