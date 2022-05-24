@@ -1,3 +1,4 @@
+from operator import index
 import telnetlib
 from tkinter import *
 from tkinter import ttk, messagebox, scrolledtext
@@ -209,29 +210,53 @@ class Comandos():
             vlan = self.vlan
             if int(vlan) >= 131 and int(vlan) <= 138:
                 self.ramal = "13"
-                self.saidaRamal["text"] = "13"
+                if self.verificarTela == 1 and self.verificarTela2 == 2: #Utilizada essas duas variaveis para saber se a requisição vem da tela de provisionar ou de dados.
+                    self.saidaRamal["text"] = "13"
+                elif self.verificarTela == 2 and self.verificarTela2 == 1:
+                    self.labelRamalDadosAtt["text"] = "13"
             elif int(vlan) >= 141 and int(vlan) <= 148:
                 self.ramal = "14"
-                self.saidaRamal["text"] = "14"
+                if self.verificarTela == 1 and self.verificarTela2 == 2:
+                    self.saidaRamal["text"] = "14"
+                elif self.verificarTela == 2 and self.verificarTela2 == 1:
+                    self.labelRamalDadosAtt["text"] = "14"
             elif int(vlan) >= 151 and int(vlan) <= 158:
                 self.ramal = "15"
-                self.saidaRamal["text"] = "15"
+                if self.verificarTela == 1 and self.verificarTela2 == 2:
+                    self.saidaRamal["text"] = "15"
+                elif self.verificarTela == 2 and self.verificarTela2 == 1:
+                    self.labelRamalDadosAtt["text"] = "15"
             elif int(vlan) >= 161 and int(vlan) <= 168:
                 self.ramal = "16"
-                self.saidaRamal["text"] = "16"
+                if self.verificarTela == 1 and self.verificarTela2 == 2:
+                    self.saidaRamal["text"] = "16"
+                elif self.verificarTela == 2 and self.verificarTela2 == 1:
+                    self.labelRamalDadosAtt["text"] = "16"
             elif int(vlan) >= 341 and int(vlan) <= 348:
                 self.ramal = "34"
-                self.saidaRamal["text"] = "34"
+                if self.verificarTela == 1 and self.verificarTela2 == 2:
+                    self.saidaRamal["text"] = "34"
+                elif self.verificarTela == 2 and self.verificarTela2 == 1:
+                    self.labelRamalDadosAtt["text"] = "34"
             elif int(vlan) >= 351 and int(vlan) <= 358:
                 self.ramal = "35"
-                self.saidaRamal["text"] = "35"
+                if self.verificarTela == 1 and self.verificarTela2 == 2:
+                    self.saidaRamal["text"] = "35"
+                elif self.verificarTela == 2 and self.verificarTela2 == 1:
+                    self.labelRamalDadosAtt["text"] = "35"
             elif int(vlan) >= 361 and int(vlan) <= 368:
                 self.ramal = "36"
-                self.saidaRamal["text"] = "36"
+                if self.verificarTela == 1 and self.verificarTela2 == 2:
+                    self.saidaRamal["text"] = "36"
+                elif self.verificarTela == 2 and self.verificarTela2 == 1:
+                    self.labelRamalDadosAtt["text"] = "36"
             elif int(vlan) >= 521 and int(vlan) <= 528:
                 self.ramal = "52"
-                self.saidaRamal["text"] = "52"
-  
+                if self.verificarTela == 1 and self.verificarTela2 == 2:
+                    self.saidaRamal["text"] = "52"
+                elif self.verificarTela == 2 and self.verificarTela2 == 1:
+                    self.labelRamalDadosAtt["text"] = "52"
+
     def verificarPath(self):
         dicionarioPath = {"131":"0-1-P8-D24-T3-R13-C1", "132":"0-1-P8-D24-T3-R13-C2", "133":"0-1-P8-D24-T3-R13-C3",
         "134":"0-1-P8-D24-T3-R13-C4", "135":"0-1-P8-D24-T3-R13-C5", "136":"0-1-P8-D24-T3-R13-C6", "137":"0-1-P8-D24-T3-R13-C7", 
@@ -239,7 +264,10 @@ class Comandos():
         "144":"0-1-P7-D17-T3-R14-C4", "145":"0-1-P7-D17-T3-R14-C5", "146":"0-1-P7-D17-T3-R14-C6", "147":"0-1-P7-D17-T3-R14-C7", 
         "148":"0-1-P7-D17-T3-R14-C8", "":"", "":"", "":"", "":"", "":"", "":"", "":"", "":"", "":""}
         self.path = dicionarioPath[self.vlan]
-        self.saidaPath["text"] = self.path
+        if self.verificarTela == 1 and self.verificarTela2 == 2:
+            self.saidaPath["text"] = self.path
+        elif self.verificarTela == 2 and self.verificarTela2 == 1:
+            self.labelPathDadosAtt["text"] = self.path
 
     def verificarPortaCto(self):
         cont = 0
@@ -250,7 +278,10 @@ class Comandos():
                 del listaPortasDisponiveis[cont]
             cont += 1
         self.listaPortaCto = listaPortasDisponiveis
-        self.widgetsTelaProvisionarComboBox()
+        if self.verificarTela == 1 and self.verificarTela2 == 2:
+            self.widgetsTelaProvisionarComboBox()
+        elif self.verificarTela == 2 and self.verificarTela2 == 1:
+            self.widgetsAtualizarDadosComboBox()
 
     def infoDataHora(self):
         dataEHora = datetime.now()
@@ -509,7 +540,7 @@ class Relatorios():
         self.addLog()
         webbrowser.open(self.nomeDiretorio+"\\Vlan's OLT Digistar.pdf")
 
-class Func():
+class FiltrarOnu():
     def listarTodasOnuTelaDados(self):
         cont = 0
         quantOnuProv = self.bdVerificarQuantOnuProv()
@@ -690,6 +721,10 @@ class Func():
                 self.comboBoxVlanTelaDados.set("VLAN")
                 self.comboBoxRamalTelaDados.set("Ramal")
                 self.widgetsEntradaTelaDados()
+
+class Func():
+    def atualizarDadosOnuAba(self):
+        self.listBoxVlanOnuAtualizar.get(ACTIVE)
 
 class Interface():
     def telaPrincipal(self):
@@ -872,9 +907,11 @@ class Interface():
         self.quartaTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
         self.quartaTela.focus_force() #Força o foco nessa janela.
         self.quartaTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
+        self.listaPortaCto = []
+        self.verificarTela = 1 #Para dividir a mesma função na tela de provisionar ONU e na tela de dados.
+        self.verificarTela2 = 2
         self.vlan = ""
         self.radioButtonSelecionado = IntVar() #Variavel para receber a opção do modo da onu, bridge ou pppoe.
-        self.listaListBoxVlan()
         self.framesTelaProvisionar()
         self.widgetsTelaProvisionarOnu()
         self.widgetsTelaProvisionarFrameDentro() #Função criada para poder limpar campos específicos.
@@ -929,23 +966,23 @@ class Interface():
         #Criação dos texto.
         Label(self.quartaTela, text="Provisionar ONU", font="Ivy 14 bold", background="#9099A2").place(relx=0.39, rely=0.325)
         Label(self.dentroFrameProvisionarOnu, text="Modo da ONU", font="arial 11 bold", background="#9099A2").place(relx=0.391, rely=0.032)
-        Label(self.dentroFrameProvisionarOnu, text="Login", font="arial 12 bold", background="#9099A2").place(relx=0.133, rely=0.09)
+        Label(self.dentroFrameProvisionarOnu, text="Login", font="arial 12 bold", background="#9099A2").place(relx=0.13, rely=0.09) 
         Label(self.dentroFrameProvisionarOnu, text="Vlan", font="arial 12 bold", background="#9099A2").place(relx=0.46, rely=0.09)
         Label(self.dentroFrameProvisionarOnu, text="Marca", font="arial 12 bold", background="#9099A2").place(relx=0.76, rely=0.09)
-        Label(self.dentroFrameProvisionarOnu, text="Ramal", font="arial 12 bold", background="#9099A2").place(relx=0.117, rely=0.19)
+        Label(self.dentroFrameProvisionarOnu, text="Ramal", font="arial 12 bold", background="#9099A2").place(relx=0.12, rely=0.19)
         Label(self.dentroFrameProvisionarOnu, text="Path", font="arial 12 bold", background="#9099A2").place(relx=0.47, rely=0.19)
         Label(self.dentroFrameProvisionarOnu, text="Porta da CTO", font="arial 12 bold", background="#9099A2").place(relx=0.73, rely=0.19)
         labelAstModoOnu = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
         labelAstModoOnu.place(relx=0.59, rely=0.031)
         labelAstLogin = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
-        labelAstLogin.place(relx=0.223, rely=0.09)
+        labelAstLogin.place(relx=0.22, rely=0.09)
         labelAstVlan = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
         labelAstVlan.place(relx=0.532, rely=0.09)
         labelAstPortaCto = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
         labelAstPortaCto.place(relx=0.9344, rely=0.189)
         #Criação das entradas dos dados.
         self.entradaLoginOnu = Entry(self.dentroFrameProvisionarOnu, bd=3, justify=CENTER, font="Ivy 10")
-        self.entradaLoginOnu.place(relx=0.043, rely=0.11, relheight=0.02)
+        self.entradaLoginOnu.place(relx=0.07, rely=0.11, relwidth=0.218, relheight=0.02) 
         #Criação de listbox.
         self.nintVar = tkinter.IntVar(value=self.listaVlan)
         self.listBoxVlan = tkinter.Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=6, height=4, listvariable=self.nintVar)
@@ -963,9 +1000,9 @@ class Interface():
         barraRolagemMarcaOnu.place(relx=0.883, rely=0.11, relwidth=0.025,relheight=0.057)
         #Criação das saídas dos dados.
         self.saidaRamal = Label(self.dentroFrameProvisionarOnu, text="", background="#fff", anchor=CENTER)
-        self.saidaRamal.place(relx=0.135, rely=0.211, relwidth=0.07)
+        self.saidaRamal.place(relx=0.138, rely=0.211, relwidth=0.07, relheight=0.0165)
         self.saidaPath = Label(self.dentroFrameProvisionarOnu, text="", background="#fff", anchor=CENTER)
-        self.saidaPath.place(relx=0.398, rely=0.211, relwidth=0.239)
+        self.saidaPath.place(relx=0.387, rely=0.211, relwidth=0.26, relheight=0.0165)
         self.saidaAguardandoBotao = Label(self.dentroFrameProvisionarOnu, text="", font="Ivy 10 bold", background="#9099A2", fg="red")
         self.saidaAguardandoBotao.place(relx=0.78, rely=0.27)
         #Criação de radio button.
@@ -1076,18 +1113,21 @@ class Interface():
         self.dadosOnuCliente.transient(self.primeiraTela)
         self.dadosOnuCliente.focus_force()
         self.dadosOnuCliente.grab_set()
+        self.listaPortaCto = []
+        self.verificarTela = 2
+        self.verificarTela2 = 1
         self.abasTelaDadosOnu()
         self.farmesTelaDadosOnu()
         self.widgetsEntradaTelaDados()
         self.widgetsTelaDadosOnu()
         self.comboBoxRamalTelaDados["values"] =  ["Ramal", "13", "14", "15", "16", "34", "35", "36", "52"]
-        self.listaListBoxVlan()
         listaStringVlan = ["VLAN"]
         listaStringMarca = ["Marca"]
         self.comboBoxVlanTelaDados["values"] = listaStringVlan + self.listaVlan
         self.comboBoxMarcaTelaDados["values"] = listaStringMarca + self.listaListBoxMarcaOnu()
         self.listarTodasOnuTelaDados()
         self.widgetsAtualizardadosOnu()
+        self.widgetsAtualizarDadosComboBox()
 
     def abasTelaDadosOnu(self):
         #Criação de abas.
@@ -1098,16 +1138,18 @@ class Interface():
         self.abas.add(self.abaProvisionadas, text="Provisionadas") #Dando um nome da primeira aba.
         #2º aba
         self.atualizarDadosOnu = Frame(self.abas, borderwidth=0, relief="solid", bg='#9099A2')
-        self.abas.add(self.atualizarDadosOnu, text="Atualizar dados")
+        self.abas.add(self.atualizarDadosOnu, text="Atualizar informações")
 
     def farmesTelaDadosOnu(self):
+        linhaFrameAtualizarDados = Frame(self.atualizarDadosOnu, borderwidth=1, relief="solid", background="#9099A2")
+        linhaFrameAtualizarDados.place(relx=0, rely=0.056, relwidth=1.1, relheight=1.1)
         esquerdaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#233237')
-        esquerdaFrameDadosOnu.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
+        esquerdaFrameDadosOnu.place(relx=0, rely=0, relwidth=0.1515, relheight=1.005)
         direitaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#233237')
-        direitaFrameDadosOnu.place(relx=0.8489, rely=0, relwidth=0.151, relheight=1.005)
+        direitaFrameDadosOnu.place(relx=0.8474, rely=0, relwidth=0.1525, relheight=1.005)
         linhaSeparaFiltrosFrameDadosOnu = Frame(self.abaProvisionadas, borderwidth=1, relief="solid", background="#9099A2")
         linhaSeparaFiltrosFrameDadosOnu.place(relx=0.372, rely=0, relwidth=0.002, relheight=0.0791)
-    
+
     def widgetsEntradaTelaDados(self):
         self.entradaProcuraOnu = EntPlaceHold(self.abaProvisionadas, "           LOGIN")
         self.entradaProcuraOnu.place(relx=0.01, rely=0.024, relwidth=0.2)
@@ -1143,26 +1185,56 @@ class Interface():
 
     def widgetsAtualizardadosOnu(self):
         #Criação dos texto.
-        Label(self.atualizarDadosOnu, text="Atualizar dados da ONU", font="Ivy 14 bold", background="#9099A2").place(relx=0.3, rely=0.03)
-        Label(self.atualizarDadosOnu, text="Informe o login", font="Ivy 12 bold", background="#9099A2").place(relx=0.415, rely=0.14)
+        Label(self.atualizarDadosOnu, text="Atualizar informações da ONU", font="Ivy 14 bold", background="#9099A2").place(relx=0.22, rely=0.03)
+        Label(self.atualizarDadosOnu, text="Selecione a ONU", font="Ivy 12 bold", background="#9099A2").place(relx=0.365, rely=0.14)
+        Label(self.atualizarDadosOnu, text="Login", font="arial 12 bold", background="#9099A2").place(relx=0.1, rely=0.3)
+        Label(self.atualizarDadosOnu, text="VLAN", font="arial 12 bold", background="#9099A2").place(relx=0.45, rely=0.3)
+        Label(self.atualizarDadosOnu, text="Marca", font="arial 12 bold", background="#9099A2").place(relx=0.785, rely=0.3)
+        Label(self.atualizarDadosOnu, text="Ramal", font="arial 12 bold", background="#9099A2").place(relx=0.09, rely=0.52)
+        Label(self.atualizarDadosOnu, text="Path", font="arial 12 bold", background="#9099A2").place(relx=0.455, rely=0.52)
+        Label(self.atualizarDadosOnu, text="Porta da CTO", font="arial 12 bold", background="#9099A2").place(relx=0.735, rely=0.52)
         #Criação das entradas dos dados.
         self.entradaLoginAtualizarDados = Entry(self.atualizarDadosOnu, bd=3, justify=CENTER, font="Ivy 10")
-        self.entradaLoginAtualizarDados.place(relx=0.42, rely=0.19, relwidth=0.152, relheight=0.038)
+        self.entradaLoginAtualizarDados.place(relx=0.3875, rely=0.19, relwidth=0.215, relheight=0.038)
         self.entradaLoginAtualizarDados.focus()
+        self.entradaLoginDadosAtt = Entry(self.atualizarDadosOnu, bd=3, justify=CENTER, font="Ivy 10")
+        self.entradaLoginDadosAtt.place(relx=0.043, rely=0.35, relwidth=0.215, relheight=0.038)
+        self.entradaMarcaDadosAtt =  Entry(self.atualizarDadosOnu, bd=3, justify=CENTER, font="Ivy 10")
+        self.entradaMarcaDadosAtt.place(relx=0.731, rely=0.35, relwidth=0.215, relheight=0.038)
+        #Criação de listbox.
+        self.nAttintVar = tkinter.IntVar(value=self.listaVlan)
+        self.listBoxVlan = tkinter.Listbox(self.atualizarDadosOnu, justify=CENTER, width=6, height=4, listvariable=self.nAttintVar)
+        self.listBoxVlan.place(relx=0.458, rely=0.35)
+        self.listBoxVlan.bind('<<ListboxSelect>>', self.verificarOpcaoVlan)
+        #Criação de barra de rolagem.
+        barraRolagemVlan = Scrollbar(self.atualizarDadosOnu, orient="vertical")
+        self.listBoxVlan.configure(yscroll=barraRolagemVlan.set)
+        barraRolagemVlan.place(relx=0.535, rely=0.35, relwidth=0.026,relheight=0.119)
         #Criação dos botões.
-        botaoAtualizarDados = atk.Button3d(self.atualizarDadosOnu, text="Carregar Dados")#, command=self.carregarDadosOnu)
-        botaoAtualizarDados.place(relx=0.437, rely=0.295, relwidth=0.22, relheight=0.071)
+        botaoCarregarDados = atk.Button3d(self.atualizarDadosOnu, text="Carregar Dados")#, command=self.carregarDadosOnu)
+        botaoCarregarDados.place(relx=0.395, rely=0.235, relwidth=0.203, relheight=0.071)
+        botaoAtualizarDados = atk.Button3d(self.atualizarDadosOnu, text="Atualizar")#, command=self.carregarDadosOnu)
+        botaoAtualizarDados.place(relx=0.395, rely=0.68, relwidth=0.203, relheight=0.071)
         #Criação das saídas dos dados.
+        self.labelRamalDadosAtt =  Label(self.atualizarDadosOnu, text="", background="#fff", bd=3, justify=CENTER)
+        self.labelRamalDadosAtt.place(relx=0.1, rely=0.57, relwidth=0.075, relheight=0.035)
+        self.labelPathDadosAtt = Label(self.atualizarDadosOnu, text="", background="#fff", bd=3, justify=CENTER)
+        self.labelPathDadosAtt.place(relx=0.365, rely=0.57, relwidth=0.26, relheight=0.035)
         #Balão de mensagem.
-        atk.tooltip(botaoAtualizarDados, "Atualizar dados da ONU")
+        atk.tooltip(botaoCarregarDados, "Carregar dados da ONU")
+    
+    def widgetsAtualizarDadosComboBox(self):
+        self.comboBoxPortaCtoAtt = ttk.Combobox(self.atualizarDadosOnu, state="readonly", values=self.listaPortaCto, justify=CENTER)
+        self.comboBoxPortaCtoAtt.set("0")
+        self.comboBoxPortaCtoAtt.place(relx=0.8, rely=0.57, relwidth=0.085)
 
-class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados, BdFiltroOnu, Func):
+class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados, BdFiltroOnu, FiltrarOnu, Func):
     def __init__(self):
-        self.listaPortaCto = []
         self.conectarOlt()
         self.loginOlt()
         self.conectarBd()
         self.returnBdListaLog()
+        self.listaListBoxVlan()
         self.telaPrincipal()
         self.bdSair()
 

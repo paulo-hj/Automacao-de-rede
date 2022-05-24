@@ -100,6 +100,10 @@ class BancoDeDados(BdFiltroOnu):
         self.cursor.execute("SELECT listalog FROM log WHERE id_log=%s ;",(1,))
         return self.cursor.fetchall()
 
+    def bdDadosOnuAtt(self, login):
+        self.cursor.execute("SELECT ")
+        return self.cursor.fetchall()
+
     def bdSair(self):
         self.conn.commit()
         self.cursor.close()
