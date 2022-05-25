@@ -112,6 +112,7 @@ class Comandos():
         msgTratamentoErro = "É necessário preencher ou corrigir os campos baixo:"
         contTratamentoErro = 0
         login = self.entradaLoginOnu.get()
+        dataHora = str(self.infoDataHora())
         try:
             quantMac = self.listaMacOnu[0] #Usado para fazer a validação com o try se a ONU foi achada ou não.
             if self.radioButtonSelecionado.get() != 1 and self.radioButtonSelecionado.get() != 2:
@@ -138,18 +139,24 @@ class Comandos():
                     self.tn.read_until(b'#').decode()
                     gpon = "gpon-"+self.listaPortaOlt[0]
                     gem = self.verificarGem(self.listaPortaOlt[1])
-                    comandoAddBridge = "bridge add {} onu 1 gem {} gtp 1 vlan {}\n".format(gpon, gem, self.vlan).encode()
+                    comandoAddBridge = "bridge add {} onu {} gem {} gtp 1 vlan {}\n".format(gpon, self.listaPortaOlt[1], gem, self.vlan).encode()
                     self.tn.write(b""+comandoAddBridge)
                     self.tn.read_until(b'#').decode()
-                    dataHora = str(self.infoDataHora())
                     modo = "Bridge"
                     self.listaLog.append("Provisionada ONU do login "+ login +" em modo bridge - Data/Hora: " + dataHora + " - Usuário: ")
                     self.addLog()
                 elif self.radioButtonSelecionado.get() == 2:
-                    self.listaLog.append("Provisionada ONU do login "+ login +" em modo PPPoE - Data/Hora: " + dataHora + " - Usuário: ")
+                    comandoAddOnu = "onu set {} {}\n".format(self.listaPorta[10], self.listaMacOnu[0]).encode()
+                    self.tn.write(b""+comandoAddOnu)
+                    self.tn.read_until(b'#').decode()
+                    gpon = "gpon-"+self.listaPortaOlt[0]
+                    gem = self.verificarGem(self.listaPortaOlt[1])
+                    comandoAddBridge = "bridge add {} onu {} gem {} gtp 1 vlan {} pppoe-ia\n".format(gpon, self.listaPortaOlt[1], gem, self.vlan).encode()
+                    self.tn.write(b""+comandoAddBridge)
+                    self.tn.read_until(b'#').decode()
                     modo = "PPPoE"
+                    self.listaLog.append("Provisionada ONU do login "+ login +" em modo PPPoE - Data/Hora: " + dataHora + " - Usuário: ")
                     self.addLog()
-                    print("PPPOE")
                 textoAguarde = "Aguarde"
                 ponto = ""
                 cont = 0
