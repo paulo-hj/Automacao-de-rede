@@ -839,9 +839,9 @@ class Interface():
         self.widgetsTelaSinal()
     
     def framesTelaSinal(self):
-        esquerdaFrameSinal = Frame(self.sinalTela, borderwidth=0, relief="solid", bg='#38576b')
+        esquerdaFrameSinal = Frame(self.sinalTela, borderwidth=0, relief="solid", bg='#062F4F')
         esquerdaFrameSinal.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        direitaFrameSinal = Frame(self.sinalTela, borderwidth=0, relief="solid", bg='#38576b')
+        direitaFrameSinal = Frame(self.sinalTela, borderwidth=0, relief="solid", bg='#062F4F')
         direitaFrameSinal.place(relx=0.8489, rely=0, relwidth=0.151, relheight=1.005)
         linhaFrameSinal = Frame(self.sinalTela, borderwidth=1, relief="solid", background="#d9d9d9")
         linhaFrameSinal.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
@@ -869,7 +869,7 @@ class Interface():
         self.relatoriosTela.geometry("730x599+430+60")
         #self.terceiraTela.iconbitmap(default="icone\\logo.ico")
         self.relatoriosTela.title("Relatórios")
-        self.relatoriosTela.configure(background="#9099A2") #"gray20" and "#2F4F4F"
+        self.relatoriosTela.configure(background="#d9d9d9") #"gray20" and "#2F4F4F"
         self.relatoriosTela.resizable(width=False, height=False)
         self.relatoriosTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
         self.relatoriosTela.focus_force() #Força o foco nessa janela.
@@ -880,20 +880,20 @@ class Interface():
         self.listaListBoxRelatorios()
 
     def framesTelaRelatorios(self):
-        esquerdaFrameRelatorios = Frame(self.relatoriosTela, borderwidth=0, relief="solid", bg='#233237')
+        esquerdaFrameRelatorios = Frame(self.relatoriosTela, borderwidth=0, relief="solid", bg='#062F4F')
         esquerdaFrameRelatorios.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        direitaFrameRelatorios = Frame(self.relatoriosTela, borderwidth=0, relief="solid", bg='#233237')
+        direitaFrameRelatorios = Frame(self.relatoriosTela, borderwidth=0, relief="solid", bg='#062F4F')
         direitaFrameRelatorios.place(relx=0.8489, rely=0, relwidth=0.151, relheight=1.005)
-        linhaFrameRelatorios = Frame(self.relatoriosTela, borderwidth=1, relief="solid", background="#9099A2")
+        linhaFrameRelatorios = Frame(self.relatoriosTela, borderwidth=1, relief="solid", background="#d9d9d9")
         linhaFrameRelatorios.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
 
     def widgetsTelaRelatorios(self):
         #Criação de texto.
-        Label(self.relatoriosTela, text="Gerar relatório", font="Ivy 14 bold", background="#9099A2").place(relx=0.405, rely=0.03)
-        Label(self.relatoriosTela, text="Defina a pasta que deseja salvar o arquivo", font="Ivy 9 bold", background="#9099A2").place(relx=0.281, rely=0.135)
-        Label(self.relatoriosTela, text="Escolha um modelo de relatório", font="Ivy 9 bold", background="#9099A2").place(relx=0.371, rely=0.31)
-        Label(self.relatoriosTela, text="0%", font="Ivy 6", background="#9099A2").place(relx=0.235, rely=0.942)
-        Label(self.relatoriosTela, text="100%", font="Ivy 6", background="#9099A2", foreground="green").place(relx=0.73, rely=0.942)
+        Label(self.relatoriosTela, text="Gerar relatório", font="Ivy 14 bold", background="#d9d9d9").place(relx=0.405, rely=0.03)
+        Label(self.relatoriosTela, text="Defina a pasta que deseja salvar o arquivo", font="Ivy 9 bold", background="#d9d9d9").place(relx=0.281, rely=0.135)
+        Label(self.relatoriosTela, text="Escolha um modelo de relatório", font="Ivy 9 bold", background="#d9d9d9").place(relx=0.371, rely=0.31)
+        Label(self.relatoriosTela, text="0%", font="Ivy 6", background="#d9d9d9").place(relx=0.235, rely=0.942)
+        Label(self.relatoriosTela, text="100%", font="Ivy 6", background="#d9d9d9", foreground="green").place(relx=0.73, rely=0.942)
         #Criação das entrada dos dados.
         self.saidaDiretorio = Label(self.relatoriosTela, text="C:\\Users\\Public\\Desktop", font="Ivy 8", background="#E9C893")
         self.saidaDiretorio.place(relx=0.285, rely=0.167, relwidth=0.37)
@@ -917,7 +917,7 @@ class Interface():
         self.quartaTela.geometry("730x599+430+60")
         #self.quartaTela.iconbitmap(default="icone\\logo.ico")
         self.quartaTela.title("Provisionar ONU")
-        self.quartaTela.configure(background="#9099A2") #"gray20" and "#2F4F4F"
+        self.quartaTela.configure(background="#d9d9d9") #"gray20" and "#2F4F4F"
         self.quartaTela.resizable(width=False, height=False)
         self.quartaTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
         self.quartaTela.focus_force() #Força o foco nessa janela.
@@ -934,23 +934,23 @@ class Interface():
         self.preencherListaMarca(self.listaListBoxMarcaOnu())
 
     def framesTelaProvisionar(self):
-        esquerdaFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=0, relief="solid", bg='#233237')
+        esquerdaFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=0, relief="solid", bg='#062F4F')
         esquerdaFrameProvisionarOnu.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        direitaFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=0, relief="solid", bg='#233237')
+        direitaFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=0, relief="solid", bg='#062F4F')
         direitaFrameProvisionarOnu.place(relx=0.8489, rely=0, relwidth=0.151, relheight=1.005)
-        linhaFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=1, relief="solid", background="#9099A2")
+        linhaFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=1, relief="solid", background="#d9d9d9")
         linhaFrameProvisionarOnu.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
-        self.dentroFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=1, relief="solid", background="#9099A2")
+        self.dentroFrameProvisionarOnu = Frame(self.quartaTela, borderwidth=1, relief="solid", background="#d9d9d9")
         self.dentroFrameProvisionarOnu.place(relx=0.149, rely=0.35, relwidth=0.701, relheight=2)
 
     def widgetsTelaProvisionarOnu(self):
         #Criação dos texto.
-        Label(self.quartaTela, text="Provisionamento em espera", font="Ivy 14 bold", background="#9099A2").place(relx=0.318, rely=0.03)
-        labelQuantOnu = Label(self.quartaTela, text="Quant.", font="arial 10 bold", background="#9099A2")
+        Label(self.quartaTela, text="Provisionamento em espera", font="Ivy 14 bold", background="#d9d9d9").place(relx=0.318, rely=0.03)
+        labelQuantOnu = Label(self.quartaTela, text="Quant.", font="arial 10 bold", background="#d9d9d9")
         labelQuantOnu.place(relx=0.415, rely=0.132)
-        labelPortaOlt = Label(self.quartaTela, text="Porta na OLT", font="arial 9 bold", background="#9099A2")
+        labelPortaOlt = Label(self.quartaTela, text="Porta na OLT", font="arial 9 bold", background="#d9d9d9")
         labelPortaOlt.place(relx=0.529, rely=0.134)
-        labelMac = Label(self.quartaTela, text="MAC", font="arial 9 bold", background="#9099A2")
+        labelMac = Label(self.quartaTela, text="MAC", font="arial 9 bold", background="#d9d9d9")
         labelMac.place(relx=0.429, rely=0.173)
         #Criação das saídas dos dados.
         self.saidaQuantOnu = Label(self.quartaTela, text="", background="#fff", anchor=N)
@@ -979,21 +979,21 @@ class Interface():
 
     def widgetsTelaProvisionarFrameDentro(self):
         #Criação dos texto.
-        Label(self.quartaTela, text="Provisionar ONU", font="Ivy 14 bold", background="#9099A2").place(relx=0.39, rely=0.325)
-        Label(self.dentroFrameProvisionarOnu, text="Modo da ONU", font="arial 11 bold", background="#9099A2").place(relx=0.391, rely=0.032)
-        Label(self.dentroFrameProvisionarOnu, text="Login", font="arial 12 bold", background="#9099A2").place(relx=0.13, rely=0.09) 
-        Label(self.dentroFrameProvisionarOnu, text="Vlan", font="arial 12 bold", background="#9099A2").place(relx=0.46, rely=0.09)
-        Label(self.dentroFrameProvisionarOnu, text="Marca", font="arial 12 bold", background="#9099A2").place(relx=0.76, rely=0.09)
-        Label(self.dentroFrameProvisionarOnu, text="Ramal", font="arial 12 bold", background="#9099A2").place(relx=0.12, rely=0.19)
-        Label(self.dentroFrameProvisionarOnu, text="Path", font="arial 12 bold", background="#9099A2").place(relx=0.47, rely=0.19)
-        Label(self.dentroFrameProvisionarOnu, text="Porta da CTO", font="arial 12 bold", background="#9099A2").place(relx=0.73, rely=0.19)
-        labelAstModoOnu = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
+        Label(self.quartaTela, text="Provisionar ONU", font="Ivy 14 bold", background="#d9d9d9").place(relx=0.39, rely=0.325)
+        Label(self.dentroFrameProvisionarOnu, text="Modo da ONU", font="arial 11 bold", background="#d9d9d9").place(relx=0.391, rely=0.032)
+        Label(self.dentroFrameProvisionarOnu, text="Login", font="arial 12 bold", background="#d9d9d9").place(relx=0.13, rely=0.09) 
+        Label(self.dentroFrameProvisionarOnu, text="Vlan", font="arial 12 bold", background="#d9d9d9").place(relx=0.46, rely=0.09)
+        Label(self.dentroFrameProvisionarOnu, text="Marca", font="arial 12 bold", background="#d9d9d9").place(relx=0.76, rely=0.09)
+        Label(self.dentroFrameProvisionarOnu, text="Ramal", font="arial 12 bold", background="#d9d9d9").place(relx=0.12, rely=0.19)
+        Label(self.dentroFrameProvisionarOnu, text="Path", font="arial 12 bold", background="#d9d9d9").place(relx=0.47, rely=0.19)
+        Label(self.dentroFrameProvisionarOnu, text="Porta da CTO", font="arial 12 bold", background="#d9d9d9").place(relx=0.73, rely=0.19)
+        labelAstModoOnu = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#d9d9d9", foreground="red")
         labelAstModoOnu.place(relx=0.59, rely=0.031)
-        labelAstLogin = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
+        labelAstLogin = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#d9d9d9", foreground="red")
         labelAstLogin.place(relx=0.22, rely=0.09)
-        labelAstVlan = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
+        labelAstVlan = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#d9d9d9", foreground="red")
         labelAstVlan.place(relx=0.532, rely=0.09)
-        labelAstPortaCto = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#9099A2", foreground="red")
+        labelAstPortaCto = Label(self.dentroFrameProvisionarOnu, text="*", font="arial 12 bold", background="#d9d9d9", foreground="red")
         labelAstPortaCto.place(relx=0.9344, rely=0.189)
         #Criação das entradas dos dados.
         self.entradaLoginOnu = Entry(self.dentroFrameProvisionarOnu, bd=3, justify=CENTER, font="Ivy 10")
@@ -1018,12 +1018,12 @@ class Interface():
         self.saidaRamal.place(relx=0.138, rely=0.211, relwidth=0.07, relheight=0.0165)
         self.saidaPath = Label(self.dentroFrameProvisionarOnu, text="", background="#fff", anchor=CENTER)
         self.saidaPath.place(relx=0.387, rely=0.211, relwidth=0.26, relheight=0.0165)
-        self.saidaAguardandoBotao = Label(self.dentroFrameProvisionarOnu, text="", font="Ivy 10 bold", background="#9099A2", fg="red")
+        self.saidaAguardandoBotao = Label(self.dentroFrameProvisionarOnu, text="", font="Ivy 10 bold", background="#d9d9d9", fg="red")
         self.saidaAguardandoBotao.place(relx=0.78, rely=0.27)
         #Criação de radio button.
-        radioBridge = Radiobutton(self.dentroFrameProvisionarOnu, text="Bridge  |", value=1, variable=self.radioButtonSelecionado, background="#9099A2")
+        radioBridge = Radiobutton(self.dentroFrameProvisionarOnu, text="Bridge  |", value=1, variable=self.radioButtonSelecionado, background="#d9d9d9")
         radioBridge.place(relx=0.37, rely=0.05)
-        radioPppoe = Radiobutton(self.dentroFrameProvisionarOnu, text="PPPOE", value=2, variable=self.radioButtonSelecionado, background="#9099A2")
+        radioPppoe = Radiobutton(self.dentroFrameProvisionarOnu, text="PPPOE", value=2, variable=self.radioButtonSelecionado, background="#d9d9d9")
         radioPppoe.place(relx=0.5, rely=0.05)
         #Criação dos botões.
         #Balão de mensagem.
@@ -1048,7 +1048,7 @@ class Interface():
         self.ultimaOnuSinalTela.geometry("400x250+595+230")
         #self.ultimaOnuSinalTela.iconbitmap(default="icone\\logo.ico")
         self.ultimaOnuSinalTela.title("Sinal do cliente: {}".format(loginOnu))
-        self.ultimaOnuSinalTela.configure(background="#9099A2")
+        self.ultimaOnuSinalTela.configure(background="#d9d9d9")
         self.ultimaOnuSinalTela.resizable(width=False, height=False)
         self.ultimaOnuSinalTela.transient(self.primeiraTela)
         self.ultimaOnuSinalTela.focus_force()
@@ -1057,7 +1057,7 @@ class Interface():
         self.verificarSinalUltimaOnuProv()
 
     def widgetstelaVerificarSinalUltimaOnu(self):
-        self.saidaSinalUltimaOnu = Label(self.ultimaOnuSinalTela, text="", font="Ivy 9 bold", anchor=N, background="#9099A2")
+        self.saidaSinalUltimaOnu = Label(self.ultimaOnuSinalTela, text="", font="Ivy 9 bold", anchor=N, background="#d9d9d9")
         self.saidaSinalUltimaOnu.place(relx=0.05, rely=0.06, relwidth=0.9, relheight=0.7)
         atualizarUltimoSinal = atk.Button3d(self.ultimaOnuSinalTela, text="Atualizar", command=self.verificarSinalUltimaOnuProv)
         atualizarUltimoSinal.place(relx=0.41, rely=0.8, relwidth=0.175, relheight=0.147)
@@ -1085,7 +1085,7 @@ class Interface():
         self.deletarOnuTela.geometry("730x599+430+60")
         #self.logTela.iconbitmap(default="icone\\logo.ico")
         self.deletarOnuTela.title("Deletar ONU")
-        self.deletarOnuTela.configure(background="#9099A2")
+        self.deletarOnuTela.configure(background="#d9d9d9")
         self.deletarOnuTela.resizable(width=False, height=False)
         self.deletarOnuTela.transient(self.primeiraTela)
         self.deletarOnuTela.focus_force()
@@ -1094,17 +1094,17 @@ class Interface():
         self.widgetsTelaDeletarOnu()
 
     def farmesTelaDeletarOnu(self):
-        esquerdaFrameDeletarOnu = Frame(self.deletarOnuTela, borderwidth=0, relief="solid", bg='#233237')
+        esquerdaFrameDeletarOnu = Frame(self.deletarOnuTela, borderwidth=0, relief="solid", bg='#062F4F')
         esquerdaFrameDeletarOnu.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
-        direitaFrameDeletarOnu = Frame(self.deletarOnuTela, borderwidth=0, relief="solid", bg='#233237')
+        direitaFrameDeletarOnu = Frame(self.deletarOnuTela, borderwidth=0, relief="solid", bg='#062F4F')
         direitaFrameDeletarOnu.place(relx=0.8489, rely=0, relwidth=0.151, relheight=1.005)
-        linhaFrameDeletarOnu = Frame(self.deletarOnuTela, borderwidth=1, relief="solid", background="#9099A2")
+        linhaFrameDeletarOnu = Frame(self.deletarOnuTela, borderwidth=1, relief="solid", background="#d9d9d9")
         linhaFrameDeletarOnu.place(relx=0.149, rely=0.056, relwidth=0.701, relheight=1)
     
     def widgetsTelaDeletarOnu(self):
         #Criação dos texto.
-        Label(self.deletarOnuTela, text="Deletar ONU", font="Ivy 15 bold", background="#9099A2").place(relx=0.418, rely=0.03)
-        Label(self.deletarOnuTela, text="Informe o login", font="Ivy 12 bold", background="#9099A2").place(relx=0.42, rely=0.14)
+        Label(self.deletarOnuTela, text="Deletar ONU", font="Ivy 15 bold", background="#d9d9d9").place(relx=0.418, rely=0.03)
+        Label(self.deletarOnuTela, text="Informe o login", font="Ivy 12 bold", background="#d9d9d9").place(relx=0.42, rely=0.14)
         #Criação de entrada de dados.
         self.entradaLoginDeletarOnu = Entry(self.deletarOnuTela, bd=3, justify=CENTER, font="Ivy 10")
         self.entradaLoginDeletarOnu.place(relx=0.426, rely=0.19, relwidth=0.152, relheight=0.038)
@@ -1115,7 +1115,7 @@ class Interface():
         #Balão de mensagem.
         atk.tooltip(botaoDeletarOnu, "Deletar ONU do login informado acima")
         #Saída de dados.
-        self.saidaOnuDeletada = Label(self.deletarOnuTela, text="", font="Ivy 10 bold", anchor=N, background="#9099A2")
+        self.saidaOnuDeletada = Label(self.deletarOnuTela, text="", font="Ivy 10 bold", anchor=N, background="#d9d9d9")
         self.saidaOnuDeletada.place(relx=0.174, rely=0.41, relwidth=0.65, relheight=0.55)
 
     def telaDadosClientes(self):
@@ -1158,9 +1158,9 @@ class Interface():
     def farmesTelaDadosOnu(self):
         linhaFrameAtualizarDados = Frame(self.atualizarDadosOnu, borderwidth=1, relief="solid", background="#d9d9d9")
         linhaFrameAtualizarDados.place(relx=0, rely=0.056, relwidth=1.1, relheight=1.1)
-        esquerdaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#38576b')#062F4F')38576b
+        esquerdaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#062F4F')#062F4F')38576b
         esquerdaFrameDadosOnu.place(relx=0, rely=0, relwidth=0.1515, relheight=1.005)
-        direitaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#38576b')
+        direitaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#062F4F')
         direitaFrameDadosOnu.place(relx=0.8474, rely=0, relwidth=0.1525, relheight=1.005)
         linhaSeparaFiltrosFrameDadosOnu = Frame(self.abaProvisionadas, borderwidth=1, relief="solid", background="#9099A2")
         linhaSeparaFiltrosFrameDadosOnu.place(relx=0.372, rely=0, relwidth=0.002, relheight=0.0791)
