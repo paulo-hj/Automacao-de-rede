@@ -209,7 +209,7 @@ class Comandos():
             self.vlan = ",".join([self.listBoxVlan.get(i) for i in indices])
             self.verificaOpcaoRamal()
             self.verificarPath()
-            self.verificarPortaCto()
+            self.verificarPortaCto(self.vlan)
         else:
             pass
         
@@ -276,9 +276,9 @@ class Comandos():
         elif self.verificarTela == 2 and self.verificarTela2 == 1:
             self.labelPathDadosAtt["text"] = self.path
 
-    def verificarPortaCto(self):
+    def verificarPortaCto(self, vlan):
         cont = 0
-        tuplaPortasDisponiveis = self.bdListarPortaCto(self.vlan)
+        tuplaPortasDisponiveis = self.bdListarPortaCto(vlan)
         listaPortasDisponiveis = list(tuplaPortasDisponiveis[0])
         for x in listaPortasDisponiveis:
             if x == "0":
@@ -730,8 +730,32 @@ class FiltrarOnu():
                 self.widgetsEntradaTelaDados()
 
 class Func():
+    def carregarDadosOnu(self):
+        try:
+            login = self.entradaLoginAtualizarDados.get()
+            lista = self.dbAttDadosOnu(login)
+            self.vlan = lista[0][0]
+            path = lista[0][1]
+            portaCto = str(lista[0][2])
+            ramal = lista[0][3]
+            marca = lista[0][4]
+            self.entradaLoginDadosAtt.delete(0, END)
+            self.entradaLoginDadosAtt.insert(END, login)
+            self.labelPathDadosAtt["text"] = path
+            self.labelRamalDadosAtt["text"] = ramal
+            self.entradaMarcaDadosAtt.delete(0, END)
+            self.entradaMarcaDadosAtt.insert(END, marca)
+            self.verificarPortaCto(self.vlan)
+            self.comboBoxPortaCtoAtt.set(portaCto)
+            self.verificarDadosCarregados = 1
+        except:
+            messagebox.showerror(title="Erro", message="Informe um login válido")
+
     def atualizarDadosOnuAba(self):
-        self.listBoxVlanOnuAtualizar.get(ACTIVE)
+        if self.verificarDadosCarregados == 1:
+            print(self.vlan)
+        else:
+            messagebox.showerror(title="Erro", message="Primeiro informe a ONU")
 
 class Interface():
     def telaPrincipal(self):
@@ -1131,6 +1155,7 @@ class Interface():
         self.listaPortaCto = []
         self.verificarTela = 2
         self.verificarTela2 = 1
+        self.verificarDadosCarregados = 0 #Verificar se dados da onu foram carregados para serem atualizados.
         self.abasTelaDadosOnu()
         self.farmesTelaDadosOnu()
         self.widgetsEntradaTelaDados()
@@ -1226,9 +1251,9 @@ class Interface():
         self.listBoxVlan.configure(yscroll=barraRolagemVlan.set)
         barraRolagemVlan.place(relx=0.535, rely=0.35, relwidth=0.026,relheight=0.119)
         #Criação dos botões.
-        botaoCarregarDados = atk.Button3d(self.atualizarDadosOnu, text="Carregar Dados")#, command=self.carregarDadosOnu)
+        botaoCarregarDados = atk.Button3d(self.atualizarDadosOnu, text="Carregar Dados", command=self.carregarDadosOnu)
         botaoCarregarDados.place(relx=0.395, rely=0.235, relwidth=0.203, relheight=0.071)
-        botaoAtualizarDados = atk.Button3d(self.atualizarDadosOnu, text="Atualizar")#, command=self.carregarDadosOnu)
+        botaoAtualizarDados = atk.Button3d(self.atualizarDadosOnu, text="Atualizar", command=self.atualizarDadosOnuAba)
         botaoAtualizarDados.place(relx=0.395, rely=0.68, relwidth=0.203, relheight=0.071)
         #Criação das saídas dos dados.
         self.labelRamalDadosAtt =  Label(self.atualizarDadosOnu, text="", background="#fff", bd=3, justify=CENTER)

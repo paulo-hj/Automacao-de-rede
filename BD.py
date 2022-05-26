@@ -104,6 +104,10 @@ class BancoDeDados(BdFiltroOnu):
         self.cursor.execute("SELECT ")
         return self.cursor.fetchall()
 
+    def dbAttDadosOnu(self, login):
+        self.cursor.execute("SELECT vlan, path, porta_cto, ramal, marca FROM onu WHERE login=%s ;",(login,))
+        return self.cursor.fetchall()
+
     def bdSair(self):
         self.conn.commit()
         self.cursor.close()
