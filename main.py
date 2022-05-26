@@ -732,28 +732,29 @@ class FiltrarOnu():
 class Func():
     def carregarDadosOnu(self):
         try:
-            login = self.entradaLoginAtualizarDados.get()
-            lista = self.dbAttDadosOnu(login)
+            self.loginAttDados = self.entradaLoginAtualizarDados.get()
+            lista = self.bdCarregarDadosOnuAtt(self.loginAttDados)
             self.vlan = lista[0][0]
-            path = lista[0][1]
-            portaCto = str(lista[0][2])
-            ramal = lista[0][3]
-            marca = lista[0][4]
+            self.pathAttDados = lista[0][1]
+            self.portaCtoAttDados = str(lista[0][2])
+            self.ramalAttDados = lista[0][3]
+            self.marcaAttDados = lista[0][4]
             self.entradaLoginDadosAtt.delete(0, END)
-            self.entradaLoginDadosAtt.insert(END, login)
-            self.labelPathDadosAtt["text"] = path
-            self.labelRamalDadosAtt["text"] = ramal
+            self.entradaLoginDadosAtt.insert(END, self.loginAttDados)
+            self.labelPathDadosAtt["text"] = self.pathAttDados
+            self.labelRamalDadosAtt["text"] = self.ramalAttDados
             self.entradaMarcaDadosAtt.delete(0, END)
-            self.entradaMarcaDadosAtt.insert(END, marca)
+            self.entradaMarcaDadosAtt.insert(END, self.marcaAttDados)
             self.verificarPortaCto(self.vlan)
-            self.comboBoxPortaCtoAtt.set(portaCto)
+            self.comboBoxPortaCtoAtt.set(self.portaCtoAttDados)
             self.verificarDadosCarregados = 1
         except:
             messagebox.showerror(title="Erro", message="Informe um login válido")
 
     def atualizarDadosOnuAba(self):
         if self.verificarDadosCarregados == 1:
-            print(self.vlan)
+            self.dbCAttDadosOnu(self, self.loginAttDados, self.vlan, self.labelPathDadosAtt, self.portaCtoAttDados, self.ramalAttDados, self.marcaAttDados)
+            
         else:
             messagebox.showerror(title="Erro", message="Primeiro informe a ONU")
 

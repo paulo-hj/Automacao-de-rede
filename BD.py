@@ -100,12 +100,12 @@ class BancoDeDados(BdFiltroOnu):
         self.cursor.execute("SELECT listalog FROM log WHERE id_log=%s ;",(1,))
         return self.cursor.fetchall()
 
-    def bdDadosOnuAtt(self, login):
-        self.cursor.execute("SELECT ")
+    def bdCarregarDadosOnuAtt(self, login):
+        self.cursor.execute("SELECT vlan, path, porta_cto, ramal, marca FROM onu WHERE login=%s ;",(login,))
         return self.cursor.fetchall()
 
-    def dbAttDadosOnu(self, login):
-        self.cursor.execute("SELECT vlan, path, porta_cto, ramal, marca FROM onu WHERE login=%s ;",(login,))
+    def dbCAttDadosOnu(self, login, vlan, path, portaCto, ramal, marca):
+        self.cursor.execute("UPDATE onu SET login={}, vlan={}, path={}, porta_cto={}, ramal={}, marca={} WHERE login={};".format(login, vlan, path, portaCto, ramal, marca, login))
         return self.cursor.fetchall()
 
     def bdSair(self):
