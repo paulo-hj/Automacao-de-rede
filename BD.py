@@ -52,7 +52,8 @@ class BancoDeDados(BdFiltroOnu):
             self.cursor = self.conn.cursor()
             print("Conectado ao BD")
         except:
-            messagebox.showerror(title="Erro", message="É necessário primeiro procurar a ONU.")
+            print("teste")
+            #messagebox.showerror(title="Erro", message="É necessário primeiro procurar a ONU.")
 
     def adicionarOnuDb(self, login, porta_posicao_onu, vlan, porta_cto, ramal, path, 
         modo_onu, mac, marca, porta_olt, usuario, data_hora):

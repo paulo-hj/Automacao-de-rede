@@ -747,12 +747,16 @@ class Func():
             #self.entradaMarcaDadosAtt.delete(0, END)
             #self.entradaMarcaDadosAtt.insert(END, self.marcaAttDados)
             self.verificarPortaCto(self.vlan)
-            self.comboBoxMarcaAtt.set("Huawei")
+            self.comboBoxMarcaAtt.set(marcaAttDados)
             self.comboBoxPortaCtoAtt.set(self.portaCtoAttDados)
             self.verificarDadosCarregados = 1
 
         except:
             self.entradaLoginAtualizarDados.delete(0, END)
+            self.entradaLoginDadosAtt.delete(0, END)
+            self.widgetsAtualizarDadosLabelEntrada()
+            self.comboBoxPortaCtoAtt.set("0")
+            self.comboBoxMarcaAtt.set("")
             self.verificarDadosCarregados = 0
             messagebox.showerror(title="Erro", message="Informe um login válido")
 
@@ -765,11 +769,11 @@ class Func():
             marcaAtt = str(self.comboBoxMarcaAtt.get())
             self.dbCAttDadosOnu(loginAtt, int(self.vlan), self.labelPathDadosAtt["text"], portaCto, self.labelRamalDadosAtt["text"], marcaAtt, self.loginAttDados)
             self.bdExclPortaCto(portaCto, int(self.vlan))
-            self.verificarDadosCarregados = 0
             self.entradaLoginDadosAtt.delete(0, END)
-            #self.entradaMarcaDadosAtt.delete(0, END)
             self.widgetsAtualizarDadosLabelEntrada()
             self.comboBoxPortaCtoAtt.set("0")
+            self.comboBoxMarcaAtt.set("")
+            self.verificarDadosCarregados = 0
 
             messagebox.showinfo("Informações atualizadas", "As informações foram atualizadas com sucesso!\nLogin: "+self.loginAttDados+ "=> Login: "+loginAtt)
             self.listaLog.append("Alterado dados do login "+self.loginAttDados+" para login: "+loginAtt+" - Data/Hora: " +self.infoDataHora()+ " - Usuário: ")
@@ -781,12 +785,12 @@ class Interface():
     def telaPrincipal(self):
         primeiraTela = Tk()
         primeiraTela.geometry("950x600+210+60")
-        #primeiraTela.iconbitmap(default="icone\\logo.ico")
+        primeiraTela.iconbitmap(default="icone\\logo.ico")
         primeiraTela.title("BROLT") #CleverOLT ERP    OU     ControlOLT ERP
         primeiraTela.configure(background="#062F4F")
         #primeiraTela.resizable(width=False, height=False)
         self.primeiraTela = primeiraTela
-        #self.imgOlt = PhotoImage(file="imagens/imgOlt.png")
+        self.imgOlt = PhotoImage(file="imagens/imgOlt.png")
         #self.barraDeMenuTelaPrincipal()
         self.framesTelaPrincipal()
         self.widgetsTelaPrincipal()
@@ -872,7 +876,7 @@ class Interface():
     def telaSinal(self):
         self.sinalTela = Toplevel() #Deixa essa janela como prioridade.
         self.sinalTela.geometry("730x599+430+60")
-        #self.sinalTela.iconbitmap(default="icone\\logo.ico")
+        self.sinalTela.iconbitmap(default="icone\\logo.ico")
         self.sinalTela.title("Sinais das ONU's")
         self.sinalTela.configure(background="#d9d9d9") #"gray20" and "#2F4F4F"
         self.sinalTela.resizable(width=False, height=False)
@@ -911,7 +915,7 @@ class Interface():
     def telaRelatorios(self):
         self.relatoriosTela = Toplevel() #Deixa essa janela como prioridade.
         self.relatoriosTela.geometry("730x599+430+60")
-        #self.terceiraTela.iconbitmap(default="icone\\logo.ico")
+        self.relatoriosTela.iconbitmap(default="icone\\logo.ico")
         self.relatoriosTela.title("Relatórios")
         self.relatoriosTela.configure(background="#d9d9d9") #"gray20" and "#2F4F4F"
         self.relatoriosTela.resizable(width=False, height=False)
@@ -959,7 +963,7 @@ class Interface():
     def telaProvisionar(self):
         self.quartaTela = Toplevel() #Deixa essa janela como prioridade.
         self.quartaTela.geometry("730x599+430+60")
-        #self.quartaTela.iconbitmap(default="icone\\logo.ico")
+        self.quartaTela.iconbitmap(default="icone\\logo.ico")
         self.quartaTela.title("Provisionar ONU")
         self.quartaTela.configure(background="#d9d9d9") #"gray20" and "#2F4F4F"
         self.quartaTela.resizable(width=False, height=False)
@@ -1090,7 +1094,7 @@ class Interface():
         loginOnu = self.entradaLoginOnu.get()
         self.ultimaOnuSinalTela = Toplevel()
         self.ultimaOnuSinalTela.geometry("400x250+595+230")
-        #self.ultimaOnuSinalTela.iconbitmap(default="icone\\logo.ico")
+        self.ultimaOnuSinalTela.iconbitmap(default="icone\\logo.ico")
         self.ultimaOnuSinalTela.title("Sinal do cliente: {}".format(loginOnu))
         self.ultimaOnuSinalTela.configure(background="#d9d9d9")
         self.ultimaOnuSinalTela.resizable(width=False, height=False)
@@ -1109,7 +1113,7 @@ class Interface():
     def telaLog(self):
         self.logTela = Toplevel()
         self.logTela.geometry("730x599+430+60")
-        #self.logTela.iconbitmap(default="icone\\logo.ico")
+        self.logTela.iconbitmap(default="icone\\logo.ico")
         self.logTela.title("Log da OLT")
         self.logTela.configure(background="#9099A2")
         self.logTela.resizable(width=False, height=False)
@@ -1127,7 +1131,7 @@ class Interface():
     def telaDeletarOnu(self):
         self.deletarOnuTela = Toplevel()
         self.deletarOnuTela.geometry("730x599+430+60")
-        #self.logTela.iconbitmap(default="icone\\logo.ico")
+        self.deletarOnuTela.iconbitmap(default="icone\\logo.ico")
         self.deletarOnuTela.title("Deletar ONU")
         self.deletarOnuTela.configure(background="#d9d9d9")
         self.deletarOnuTela.resizable(width=False, height=False)
@@ -1165,7 +1169,7 @@ class Interface():
     def telaDadosClientes(self):
         self.dadosOnuCliente = Toplevel()
         self.dadosOnuCliente.geometry("730x599+430+60")
-        #self.logTela.iconbitmap(default="icone\\logo.ico")
+        self.dadosOnuCliente.iconbitmap(default="icone\\logo.ico")
         self.dadosOnuCliente.title("Provisionadas")
         self.dadosOnuCliente.configure(background="#062F4F")
         self.dadosOnuCliente.resizable(width=False, height=False)
@@ -1181,16 +1185,15 @@ class Interface():
         self.widgetsEntradaTelaDados()
         self.widgetsTelaDadosOnu()
         self.comboBoxRamalTelaDados["values"] =  ["Ramal", "13", "14", "15", "16", "34", "35", "36", "52"]
+        self.listaMarcaTelaDados = self.listaListBoxMarcaOnu()
         listaStringVlan = ["VLAN"]
         listaStringMarca = ["Marca"]
         self.comboBoxVlanTelaDados["values"] = listaStringVlan + self.listaVlan
-        self.comboBoxMarcaTelaDados["values"] = listaStringMarca + self.listaListBoxMarcaOnu()
-        self.comboBoxMarcaAtt["values"] = listaStringMarca + self.listaListBoxMarcaOnu()
+        self.comboBoxMarcaTelaDados["values"] = listaStringMarca + self.listaMarcaTelaDados
         self.listarTodasOnuTelaDados()
         self.widgetsAtualizardadosOnu()
         self.widgetsAtualizarDadosLabelEntrada()
         self.widgetsAtualizarDadosComboBox()
-        self.preencherListaMarca(self.listaListBoxMarcaOnu())
 
     def abasTelaDadosOnu(self):
         #Criação de abas.
@@ -1294,13 +1297,12 @@ class Interface():
         self.comboBoxPortaCtoAtt.set("0")
         self.comboBoxPortaCtoAtt.place(relx=0.8, rely=0.57, relwidth=0.085)
         #Criação de marca combo box.
-        self.marcaSelecionadaAtt = tkinter.StringVar()
-        self.comboBoxMarcaAtt = ttk.Combobox(self.atualizarDadosOnu, state="readonly", textvariable=self.marcaSelecionadaAtt, justify=CENTER)
-        self.comboBoxMarcaAtt.set("Marca")
+        self.comboBoxMarcaAtt = ttk.Combobox(self.atualizarDadosOnu, state="readonly", values=self.listaMarcaTelaDados, justify=CENTER)
         self.comboBoxMarcaAtt.place(relx=0.75, rely=0.35, relwidth=0.185)
 
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados, BdFiltroOnu, FiltrarOnu, Func):
     def __init__(self):
+        #Realizar função que ping para o dns da google, assim saberemos se o computador está ou não com conexão a internet.
         self.conectarOlt()
         self.loginOlt()
         self.conectarBd()
