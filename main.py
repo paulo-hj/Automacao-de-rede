@@ -735,6 +735,7 @@ class Func():
             self.loginAttDados = self.entradaLoginAtualizarDados.get()
             lista = self.bdCarregarDadosOnuAtt(self.loginAttDados)
             self.vlan = lista[0][0]
+            self.vlan1 = self.vlan #Criado para recuperar a porta da vlan na função atualizarDadosOnuAba.
             self.pathAttDados = lista[0][1]
             self.portaCtoAttDados = str(lista[0][2])
             self.ramalAttDados = lista[0][3]
@@ -748,13 +749,30 @@ class Func():
             self.verificarPortaCto(self.vlan)
             self.comboBoxPortaCtoAtt.set(self.portaCtoAttDados)
             self.verificarDadosCarregados = 1
+
         except:
+            self.entradaLoginAtualizarDados.delete(0, END)
+            self.verificarDadosCarregados = 0
             messagebox.showerror(title="Erro", message="Informe um login válido")
 
     def atualizarDadosOnuAba(self):
+        self.entradaLoginAtualizarDados.delete(0, END)
         if self.verificarDadosCarregados == 1:
-            self.dbCAttDadosOnu(self, self.loginAttDados, self.vlan, self.labelPathDadosAtt, self.portaCtoAttDados, self.ramalAttDados, self.marcaAttDados)
-            
+            self.bdAddPortaCto(self.portaCtoAttDados, int(self.vlan1))
+            portaCto = self.comboBoxPortaCtoAtt.get()
+            loginAtt = self.entradaLoginDadosAtt.get()
+            marcaAtt = str(self.entradaMarcaDadosAtt.get())
+            self.dbCAttDadosOnu(loginAtt, int(self.vlan), self.labelPathDadosAtt["text"], portaCto, self.labelRamalDadosAtt["text"], marcaAtt, self.loginAttDados)
+            self.bdExclPortaCto(portaCto, int(self.vlan))
+            self.verificarDadosCarregados = 0
+            self.entradaLoginDadosAtt.delete(0, END)
+            self.entradaMarcaDadosAtt.delete(0, END)
+            self.widgetsAtualizarDadosLabelEntrada()
+            self.comboBoxPortaCtoAtt.set("0")
+
+            messagebox.showinfo("Informações atualizadas", "As informações foram atualizadas com sucesso!login: "+loginAtt)
+            self.listaLog.append("Alterado dados do login "+self.loginAttDados+" para login: "+loginAtt+" - Data/Hora: " +self.infoDataHora()+ " - Usuário: ")
+
         else:
             messagebox.showerror(title="Erro", message="Primeiro informe a ONU")
 
@@ -1135,7 +1153,7 @@ class Interface():
         self.entradaLoginDeletarOnu.place(relx=0.426, rely=0.19, relwidth=0.152, relheight=0.038)
         self.entradaLoginDeletarOnu.focus()
         #Criação de botões.
-        botaoDeletarOnu = atk.Button3d(self.deletarOnuTela, text="Deletar", bg="red", command=self.deletarOnu)
+        botaoDeletarOnu = atk.Button3d(self.deletarOnuTela, text="Deletar", bg="#B82601", command=self.deletarOnu)
         botaoDeletarOnu.place(relx=0.437, rely=0.295, relwidth=0.13, relheight=0.071)
         #Balão de mensagem.
         atk.tooltip(botaoDeletarOnu, "Deletar ONU do login informado acima")
@@ -1168,6 +1186,7 @@ class Interface():
         self.comboBoxMarcaTelaDados["values"] = listaStringMarca + self.listaListBoxMarcaOnu()
         self.listarTodasOnuTelaDados()
         self.widgetsAtualizardadosOnu()
+        self.widgetsAtualizarDadosLabelEntrada()
         self.widgetsAtualizarDadosComboBox()
 
     def abasTelaDadosOnu(self):
@@ -1256,13 +1275,15 @@ class Interface():
         botaoCarregarDados.place(relx=0.395, rely=0.235, relwidth=0.203, relheight=0.071)
         botaoAtualizarDados = atk.Button3d(self.atualizarDadosOnu, text="Atualizar", command=self.atualizarDadosOnuAba)
         botaoAtualizarDados.place(relx=0.395, rely=0.68, relwidth=0.203, relheight=0.071)
+        #Balão de mensagem.
+        atk.tooltip(botaoCarregarDados, "Carregar dados da ONU")
+
+    def widgetsAtualizarDadosLabelEntrada(self):
         #Criação das saídas dos dados.
         self.labelRamalDadosAtt =  Label(self.atualizarDadosOnu, text="", background="#fff", bd=3, justify=CENTER)
         self.labelRamalDadosAtt.place(relx=0.1, rely=0.57, relwidth=0.075, relheight=0.035)
         self.labelPathDadosAtt = Label(self.atualizarDadosOnu, text="", background="#fff", bd=3, justify=CENTER)
         self.labelPathDadosAtt.place(relx=0.365, rely=0.57, relwidth=0.26, relheight=0.035)
-        #Balão de mensagem.
-        atk.tooltip(botaoCarregarDados, "Carregar dados da ONU")
     
     def widgetsAtualizarDadosComboBox(self):
         self.comboBoxPortaCtoAtt = ttk.Combobox(self.atualizarDadosOnu, state="readonly", values=self.listaPortaCto, justify=CENTER)

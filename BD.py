@@ -104,9 +104,9 @@ class BancoDeDados(BdFiltroOnu):
         self.cursor.execute("SELECT vlan, path, porta_cto, ramal, marca FROM onu WHERE login=%s ;",(login,))
         return self.cursor.fetchall()
 
-    def dbCAttDadosOnu(self, login, vlan, path, portaCto, ramal, marca):
-        self.cursor.execute("UPDATE onu SET login={}, vlan={}, path={}, porta_cto={}, ramal={}, marca={} WHERE login={};".format(login, vlan, path, portaCto, ramal, marca, login))
-        return self.cursor.fetchall()
+    def dbCAttDadosOnu(self, loginAtt, vlan, path, portaCto, ramal, marca, login):
+        self.cursor.execute("UPDATE onu SET login=%s, vlan=%s, path=%s, porta_cto=%s, ramal=%s, marca=%s WHERE login=%s;",(loginAtt, vlan, path, portaCto, ramal, marca, login))
+        self.conn.commit()
 
     def bdSair(self):
         self.conn.commit()
