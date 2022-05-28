@@ -196,7 +196,7 @@ class Comandos():
           "361", "362", "363", "364", "365", "366", "367", "368", "521", "522", "523", "524", "525", "526", "527", "528"] 
         
     def listaListBoxMarcaOnu(self):
-        listaMarcaOnu = ["Digistar" ,"Huawei", "ZTE" ,"Unne", "IntelBras", "Tp-link", "Cianet", "Shoreline", "Stavix", "MaxPrint"]
+        listaMarcaOnu = ["Digistar" ,"Huawei", "ZTE" ,"Unne", "IntelBras", "Tp-link", "Cianet", "Shoreline", "Stavix", "China Mobile", "MaxPrint"]
         return listaMarcaOnu
     
     def preencherListaMarca(self, listaMarcaOnu):
@@ -736,17 +736,18 @@ class Func():
             lista = self.bdCarregarDadosOnuAtt(self.loginAttDados)
             self.vlan = lista[0][0]
             self.vlan1 = self.vlan #Criado para recuperar a porta da vlan na função atualizarDadosOnuAba.
-            self.pathAttDados = lista[0][1]
+            pathAttDados = lista[0][1]
             self.portaCtoAttDados = str(lista[0][2])
-            self.ramalAttDados = lista[0][3]
-            self.marcaAttDados = lista[0][4]
+            ramalAttDados = lista[0][3]
+            marcaAttDados = lista[0][4]
             self.entradaLoginDadosAtt.delete(0, END)
             self.entradaLoginDadosAtt.insert(END, self.loginAttDados)
-            self.labelPathDadosAtt["text"] = self.pathAttDados
-            self.labelRamalDadosAtt["text"] = self.ramalAttDados
-            self.entradaMarcaDadosAtt.delete(0, END)
-            self.entradaMarcaDadosAtt.insert(END, self.marcaAttDados)
+            self.labelPathDadosAtt["text"] = pathAttDados
+            self.labelRamalDadosAtt["text"] = ramalAttDados
+            #self.entradaMarcaDadosAtt.delete(0, END)
+            #self.entradaMarcaDadosAtt.insert(END, self.marcaAttDados)
             self.verificarPortaCto(self.vlan)
+            self.comboBoxMarcaAtt.set("Huawei")
             self.comboBoxPortaCtoAtt.set(self.portaCtoAttDados)
             self.verificarDadosCarregados = 1
 
@@ -761,16 +762,16 @@ class Func():
             self.bdAddPortaCto(self.portaCtoAttDados, int(self.vlan1))
             portaCto = self.comboBoxPortaCtoAtt.get()
             loginAtt = self.entradaLoginDadosAtt.get()
-            marcaAtt = str(self.entradaMarcaDadosAtt.get())
+            marcaAtt = str(self.comboBoxMarcaAtt.get())
             self.dbCAttDadosOnu(loginAtt, int(self.vlan), self.labelPathDadosAtt["text"], portaCto, self.labelRamalDadosAtt["text"], marcaAtt, self.loginAttDados)
             self.bdExclPortaCto(portaCto, int(self.vlan))
             self.verificarDadosCarregados = 0
             self.entradaLoginDadosAtt.delete(0, END)
-            self.entradaMarcaDadosAtt.delete(0, END)
+            #self.entradaMarcaDadosAtt.delete(0, END)
             self.widgetsAtualizarDadosLabelEntrada()
             self.comboBoxPortaCtoAtt.set("0")
 
-            messagebox.showinfo("Informações atualizadas", "As informações foram atualizadas com sucesso!login: "+loginAtt)
+            messagebox.showinfo("Informações atualizadas", "As informações foram atualizadas com sucesso!\nLogin: "+self.loginAttDados+ "=> Login: "+loginAtt)
             self.listaLog.append("Alterado dados do login "+self.loginAttDados+" para login: "+loginAtt+" - Data/Hora: " +self.infoDataHora()+ " - Usuário: ")
 
         else:
@@ -1047,7 +1048,7 @@ class Interface():
         self.listBoxVlan.place(relx=0.461, rely=0.11)
         self.listBoxVlan.bind('<<ListboxSelect>>', self.verificarOpcaoVlan)
         self.listBoxMarcaOnu = Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=11, height=4)
-        self.listBoxMarcaOnu.place(relx=0.746, rely=0.11)
+        self.listBoxMarcaOnu.place(relx=0.72, rely=0.11, relwidth=0.18)
         #Criação de barra de rolagem.
         barraRolagemVlan = Scrollbar(self.dentroFrameProvisionarOnu, orient="vertical")
         self.listBoxVlan.configure(yscroll=barraRolagemVlan.set)
@@ -1055,7 +1056,7 @@ class Interface():
 
         barraRolagemMarcaOnu = Scrollbar(self.dentroFrameProvisionarOnu, orient="vertical")
         self.listBoxMarcaOnu.configure(yscroll=barraRolagemMarcaOnu.set)
-        barraRolagemMarcaOnu.place(relx=0.883, rely=0.11, relwidth=0.025,relheight=0.057)
+        barraRolagemMarcaOnu.place(relx=0.9, rely=0.11, relwidth=0.03,relheight=0.057)
         #Criação das saídas dos dados.
         self.saidaRamal = Label(self.dentroFrameProvisionarOnu, text="", background="#fff", anchor=CENTER)
         self.saidaRamal.place(relx=0.138, rely=0.211, relwidth=0.07, relheight=0.0165)
@@ -1184,10 +1185,12 @@ class Interface():
         listaStringMarca = ["Marca"]
         self.comboBoxVlanTelaDados["values"] = listaStringVlan + self.listaVlan
         self.comboBoxMarcaTelaDados["values"] = listaStringMarca + self.listaListBoxMarcaOnu()
+        self.comboBoxMarcaAtt["values"] = listaStringMarca + self.listaListBoxMarcaOnu()
         self.listarTodasOnuTelaDados()
         self.widgetsAtualizardadosOnu()
         self.widgetsAtualizarDadosLabelEntrada()
         self.widgetsAtualizarDadosComboBox()
+        self.preencherListaMarca(self.listaListBoxMarcaOnu())
 
     def abasTelaDadosOnu(self):
         #Criação de abas.
@@ -1240,7 +1243,7 @@ class Interface():
         self.comboBoxMarcaTelaDados = ttk.Combobox(self.abaProvisionadas, justify=CENTER, width=10, height=3, textvariable=self.marcaSelecionada)
         self.comboBoxMarcaTelaDados.set("Marca")
         self.comboBoxMarcaTelaDados['state'] = 'readonly' #Proibi a mudança de valor escrevendo.
-        self.comboBoxMarcaTelaDados.place(relx=0.795, rely=0.021)
+        self.comboBoxMarcaTelaDados.place(relx=0.78, rely=0.021, relwidth=0.185)
         self.comboBoxMarcaTelaDados.bind('<<ComboboxSelected>>', self.filtrarPorMarca)
 
     def widgetsAtualizardadosOnu(self):
@@ -1259,8 +1262,8 @@ class Interface():
         self.entradaLoginAtualizarDados.focus()
         self.entradaLoginDadosAtt = Entry(self.atualizarDadosOnu, bd=3, justify=CENTER, font="Ivy 10")
         self.entradaLoginDadosAtt.place(relx=0.043, rely=0.35, relwidth=0.215, relheight=0.038)
-        self.entradaMarcaDadosAtt =  Entry(self.atualizarDadosOnu, bd=3, justify=CENTER, font="Ivy 10")
-        self.entradaMarcaDadosAtt.place(relx=0.731, rely=0.35, relwidth=0.215, relheight=0.038)
+        #self.entradaMarcaDadosAtt =  Entry(self.atualizarDadosOnu, bd=3, justify=CENTER, font="Ivy 10")
+        #self.entradaMarcaDadosAtt.place(relx=0.731, rely=0.35, relwidth=0.215, relheight=0.038)
         #Criação de listbox.
         self.nAttintVar = tkinter.IntVar(value=self.listaVlan)
         self.listBoxVlan = tkinter.Listbox(self.atualizarDadosOnu, justify=CENTER, width=6, height=4, listvariable=self.nAttintVar)
@@ -1286,9 +1289,15 @@ class Interface():
         self.labelPathDadosAtt.place(relx=0.365, rely=0.57, relwidth=0.26, relheight=0.035)
     
     def widgetsAtualizarDadosComboBox(self):
+        #Criação de porta da cto combo box.
         self.comboBoxPortaCtoAtt = ttk.Combobox(self.atualizarDadosOnu, state="readonly", values=self.listaPortaCto, justify=CENTER)
         self.comboBoxPortaCtoAtt.set("0")
         self.comboBoxPortaCtoAtt.place(relx=0.8, rely=0.57, relwidth=0.085)
+        #Criação de marca combo box.
+        self.marcaSelecionadaAtt = tkinter.StringVar()
+        self.comboBoxMarcaAtt = ttk.Combobox(self.atualizarDadosOnu, state="readonly", textvariable=self.marcaSelecionadaAtt, justify=CENTER)
+        self.comboBoxMarcaAtt.set("Marca")
+        self.comboBoxMarcaAtt.place(relx=0.75, rely=0.35, relwidth=0.185)
 
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados, BdFiltroOnu, FiltrarOnu, Func):
     def __init__(self):
