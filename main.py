@@ -23,6 +23,8 @@ from BD import *
 
 from datetime import datetime
 
+from verificarPeriferico import *
+
 class Conexao():
     def conectarOlt(self):
         HOST = "10.50.50.50"
@@ -801,9 +803,6 @@ class Func():
         display.bind('<Return>', self.verificarSinal)
         #display.bind('<KP_Enter>', self.verificarSinal)
     '''
-    def callback(self, event):
-        #self.entradaPosicaoOnu.insert(INSERT, "You pressed Enter")
-        self.verificarSinal()
 
 class Interface():
     def telaPrincipal(self):
@@ -912,7 +911,7 @@ class Interface():
         self.sinalTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
         self.sinalTela.focus_force() #Força o foco nessa janela.
         self.sinalTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
-        self.sinalTela.bind('<Return>', self.callback)
+        self.sinalTela.bind('<Return>', self.teclaEnterVerificarSinal)
         self.framesTelaSinal()
         self.widgetsTelaSinal()
     
@@ -1164,7 +1163,7 @@ class Interface():
 
     def widgetsTelaLog(self):
         #Saida de texto.
-        self.listBoxLog = Listbox(self.logTela, justify=CENTER, font="Ivy 10",width=104, height=50, background="#d9d9d9")
+        self.listBoxLog = Listbox(self.logTela, justify=CENTER, font="Ivy 10",width=104, height=35, background="#d9d9d9")
         self.listBoxLog.place(relx=0, rely=0)
 
     def telaDeletarOnu(self):
@@ -1177,6 +1176,7 @@ class Interface():
         self.deletarOnuTela.transient(self.primeiraTela)
         self.deletarOnuTela.focus_force()
         self.deletarOnuTela.grab_set()
+        self.deletarOnuTela.bind('<Return>', self.teclaEnterDeletarOnu)
         self.farmesTelaDeletarOnu()
         self.widgetsTelaDeletarOnu()
 
@@ -1234,6 +1234,7 @@ class Interface():
         self.widgetsAtualizardadosOnu()
         self.widgetsAtualizarDadosLabelEntrada()
         self.widgetsAtualizarDadosComboBox()
+        self.botaoProcurarOnu.bind('<Return>', self.teclaEnterFiltrarTodasOnu)
 
     def abasTelaDadosOnu(self):
         #Criação de abas.
@@ -1264,9 +1265,9 @@ class Interface():
         #Criação de label.
         #Criação de entrada de dados.
         #Criação de botões.
-        botaoProcurarOnu = atk.Button3d(self.abaProvisionadas, text="Procurar", bg="#38576b", command=self.filtrarOnu)
-        botaoProcurarOnu.bind('<Enter>', lambda e: botaoProcurarOnu.configure(cursor = "hand2"))
-        botaoProcurarOnu.place(relx=0.22, rely=0.009, relwidth=0.136, relheight=0.0645)
+        self.botaoProcurarOnu = atk.Button3d(self.abaProvisionadas, text="Procurar", bg="#38576b", command=self.filtrarOnu)
+        self.botaoProcurarOnu.bind('<Enter>', lambda e: self.botaoProcurarOnu.configure(cursor = "hand2"))
+        self.botaoProcurarOnu.place(relx=0.22, rely=0.009, relwidth=0.136, relheight=0.0645)
         #Criação de saída de textos.
         self.txtDadosOnu = Text(self.abaProvisionadas, state="disabled", width=64, height=33, bg="#d9d9d9", cursor = "arrow")
         self.txtDadosOnu.place(relx=0, rely=0.08)
@@ -1343,7 +1344,7 @@ class Interface():
         self.comboBoxMarcaAtt = ttk.Combobox(self.atualizarDadosOnu, state="readonly", values=self.listaMarcaTelaDados, justify=CENTER, cursor = "hand2")
         self.comboBoxMarcaAtt.place(relx=0.75, rely=0.35, relwidth=0.185)
 
-class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados, BdFiltroOnu, FiltrarOnu, Func):
+class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados, BdFiltroOnu, FiltrarOnu, Func, VerificarTecla):
     def __init__(self):
         #Realizar função que ping para o dns da google, assim saberemos se o computador está ou não com conexão a internet.
         self.conectarOlt()
