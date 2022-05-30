@@ -52,8 +52,8 @@ class BancoDeDados(BdFiltroOnu):
             self.cursor = self.conn.cursor()
             print("Conectado ao BD")
         except:
-            print("teste")
-            #messagebox.showerror(title="Erro", message="É necessário primeiro procurar a ONU.")
+            #print("teste")
+            messagebox.showerror(title="Erro", message="É necessário primeiro procurar a ONU.")
 
     def adicionarOnuDb(self, login, porta_posicao_onu, vlan, porta_cto, ramal, path, 
         modo_onu, mac, marca, porta_olt, usuario, data_hora):
@@ -108,6 +108,10 @@ class BancoDeDados(BdFiltroOnu):
     def dbCAttDadosOnu(self, loginAtt, vlan, path, portaCto, ramal, marca, login):
         self.cursor.execute("UPDATE onu SET login=%s, vlan=%s, path=%s, porta_cto=%s, ramal=%s, marca=%s WHERE login=%s;",(loginAtt, vlan, path, portaCto, ramal, marca, login))
         self.conn.commit()
+
+    def bdListarLogin(self): #Excluir caso não for utilizar o auto complete.
+        self.cursor.execute("SELECT login FROM onu;")
+        return self.cursor.fetchall()
 
     def bdSair(self):
         self.conn.commit()

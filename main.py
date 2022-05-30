@@ -780,6 +780,30 @@ class Func():
 
         else:
             messagebox.showerror(title="Erro", message="Primeiro informe a ONU")
+    '''
+    def listaAutoComplete(self): Excluir caso não for utilizar o auto complete.
+        listaLogin = []
+        cont = 0
+        listaTuplaLogin = self.bdListarLogin()
+        quantOnuProv = self.bdVerificarQuantOnuProv()
+        for i in quantOnuProv:
+            loginsStr = listaTuplaLogin[cont][0]
+            listaLogin.append(loginsStr)
+            cont += 1
+        return listaLogin
+    '''
+
+    #def displayControlA(self, event):
+    '''
+    def configDisplay(self):
+        """Display configs"""
+        display = self.sinalTela
+        display.bind('<Return>', self.verificarSinal)
+        #display.bind('<KP_Enter>', self.verificarSinal)
+    '''
+    def callback(self, event):
+        #self.entradaPosicaoOnu.insert(INSERT, "You pressed Enter")
+        self.verificarSinal()
 
 class Interface():
     def telaPrincipal(self):
@@ -832,18 +856,23 @@ class Interface():
         self.saidaMemoria.place(relx=0.602, rely=0.226, relwidth=0.235, relheight=0.1)
         #Criação dos botões.
         botaoTelaDadosOnu = atk.Button3d(self.frameVertical, text="PROVISIONADAS", bg="#38576b", command=self.telaDadosClientes)
+        botaoTelaDadosOnu.bind('<Enter>', lambda e: botaoTelaDadosOnu.configure(cursor = "hand2"))
         botaoTelaDadosOnu.place(relx=0.13, rely=0.055, relwidth=0.73, relheight=0.1)
         botaoTelaProvisionarOnu = atk.Button3d(self.frameVertical, text="PROVISIONAR ONU", bg="#38576b", command=self.telaProvisionar)
+        botaoTelaProvisionarOnu.bind('<Enter>', lambda e: botaoTelaProvisionarOnu.configure(cursor = "hand2"))
         botaoTelaProvisionarOnu.place(relx=0.13, rely=0.175, relwidth=0.73, relheight=0.1)
         botaoTelaSinal = atk.Button3d(self.frameVertical, text="VERIFICAR SINAL", bg="#38576b", command=self.telaSinal)
+        botaoTelaSinal.bind('<Enter>', lambda e: botaoTelaSinal.configure(cursor = "hand2"))
         botaoTelaSinal.place(relx=0.13, rely=0.294, relwidth=0.73, relheight=0.1)
         botaoTelaDeletarOnu = atk.Button3d(self.frameVertical, text="Deletar ONU", bg="#38576b", command=self.telaDeletarOnu)
+        botaoTelaDeletarOnu.bind('<Enter>', lambda e: botaoTelaDeletarOnu.configure(cursor = "hand2"))
         botaoTelaDeletarOnu.place(relx=0.13, rely=0.413, relwidth=0.73, relheight=0.1)
-        botaoLog = Button(self.frameTela, text="Log", font="Ivy 8 bold", background="#38576b", foreground="#d9d9d9", command=self.telaLog)
+        botaoLog = Button(self.frameTela, text="Log", font="Ivy 8 bold", background="#38576b", foreground="#d9d9d9", command=self.telaLog, cursor = "hand2")
         botaoLog.place(relx=0.155, rely=0.37, relwidth=0.051, relheight=0.058)
-        botaoWeb = Button(self.frameTela, text="Web", font="Ivy 8 bold", background="#38576b", foreground="#d9d9d9", command=self.acessarGerWeb)
+        botaoWeb = Button(self.frameTela, text="Web", font="Ivy 8 bold", background="#38576b", foreground="#d9d9d9", command=self.acessarGerWeb, cursor = "hand2")
         botaoWeb.place(relx=0.218, rely=0.37, relwidth=0.051, relheight=0.058)
         botaoTelaRelatorios = atk.Button3d(self.frameVertical, text="RELATÓRIOS", bg="#38576b", command=self.telaRelatorios)
+        botaoTelaRelatorios.bind('<Enter>', lambda e: botaoTelaRelatorios.configure(cursor = "hand2"))
         botaoTelaRelatorios.place(relx=0.13, rely=0.535, relwidth=0.73, relheight=0.1)
         #Criação das entradas dos dados.
         #Balão de mensagem.
@@ -883,6 +912,7 @@ class Interface():
         self.sinalTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
         self.sinalTela.focus_force() #Força o foco nessa janela.
         self.sinalTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
+        self.sinalTela.bind('<Return>', self.callback)
         self.framesTelaSinal()
         self.widgetsTelaSinal()
     
@@ -903,8 +933,10 @@ class Interface():
         self.entradaPosicaoOnu = Entry(self.sinalTela, bd=3, justify=CENTER, font="Ivy 10")
         self.entradaPosicaoOnu.place(relx=0.426, rely=0.19, relwidth=0.152, relheight=0.038)
         self.entradaPosicaoOnu.focus()
+        #self.entradaPosicaoOnu.bind('<Control-a>', self.displayControlA)
         #Criação dos botões.
         botaoVerificar = atk.Button3d(self.sinalTela, text="Verificar", command=self.verificarSinal)
+        botaoVerificar.bind('<Enter>', lambda e: botaoVerificar.configure(cursor = "hand2"))
         botaoVerificar.place(relx=0.437, rely=0.295, relwidth=0.13, relheight=0.071)
         #Criação das saídas dos dados.
         self.saidaSinalOnu = Label(self.sinalTela, text="", font="Ivy 11 bold", anchor=N, background="#d9d9d9")
@@ -947,14 +979,16 @@ class Interface():
         self.saidaDiretorio.place(relx=0.285, rely=0.167, relwidth=0.37)
         #Criação dos botões.
         botaoDefinirDiretorio = atk.Button3d(self.relatoriosTela, text="Definir", command=self.selecionarDiretorio)
+        botaoDefinirDiretorio.bind('<Enter>', lambda e: botaoDefinirDiretorio.configure(cursor = "hand2"))
         botaoDefinirDiretorio.place(relx=0.657, rely=0.151, relwidth=0.09, relheight=0.063)
         botaoGerarPdf = atk.Button3d(self.relatoriosTela, text="Gerar PDF", command=self.verificarOpcaoRelatorio)
+        botaoGerarPdf.bind('<Enter>', lambda e: botaoGerarPdf.configure(cursor = "hand2"))
         botaoGerarPdf.place(relx=0.44, rely=0.7, relwidth=0.12, relheight=0.075)
         #Balão de mensagem.
         atk.tooltip(botaoDefinirDiretorio, "Selecione o diretório que deseja salvar o arquivo")
         atk.tooltip(botaoGerarPdf, 'Gera um arquivo com nome padrão de "ONU Digistar.pdf"')
         #Criação de list box.
-        self.listBoxRelatorio = Listbox(self.relatoriosTela, justify=CENTER, width=25, height=10, bg="#9099A2", font="Ivy 10 bold", bd=2)
+        self.listBoxRelatorio = Listbox(self.relatoriosTela, justify=CENTER, width=25, height=10, bg="#9099A2", font="Ivy 10 bold", bd=2, cursor = "hand2")
         self.listBoxRelatorio.place(relx=0.375, rely=0.35)
         #Barra de progresso.
         self.barraProgresso = ttk.Progressbar(self.relatoriosTela, orient=HORIZONTAL, length=380, mode='determinate')
@@ -1009,12 +1043,16 @@ class Interface():
         self.saidaMacOnu.place(relx=0.4801, rely=0.17, relwidth=0.136, relheight=0.031)
         #Criação dos botões.
         botaoProcurarOnu = atk.Button3d(self.quartaTela, text="Procurar", command=self.procurarOnu)
+        botaoProcurarOnu.bind('<Enter>', lambda e: botaoProcurarOnu.configure(cursor = "hand2"))
         botaoProcurarOnu.place(relx=0.315, rely=0.135, relwidth=0.1, relheight=0.065)
         botaoCopiarMac = Button(self.quartaTela, text="Copiar", font="arial 7 bold", command=self.copiarMac)
+        botaoCopiarMac.bind('<Enter>', lambda e: botaoCopiarMac.configure(cursor = "hand2"))
         botaoCopiarMac.place(relx=0.621, rely=0.168, relwidth=0.0528, relheight=0.0341)
         botaoLimparMac = Button(self.quartaTela, text="Limpar", font="arial 7 bold", command=self.limparTelaProcurarOnu)
+        botaoLimparMac.bind('<Enter>', lambda e: botaoLimparMac.configure(cursor = "hand2"))
         botaoLimparMac.place(relx=0.677, rely=0.168, relwidth=0.0528, relheight=0.034)
         botaoProvisionar = atk.Button3d(self.quartaTela, text="Provisionar", bg="#2F4F4F", command=self.provisionarOnu)
+        botaoProvisionar.bind('<Enter>', lambda e: botaoProvisionar.configure(cursor = "hand2"))
         botaoProvisionar.place(relx=0.45, rely=0.88, relwidth=0.13, relheight=0.071)
         #Balão de mensagem.
         atk.tooltip(labelQuantOnu, "Quantidade de ONU que não foram provisionadas")
@@ -1048,16 +1086,15 @@ class Interface():
         self.entradaLoginOnu.place(relx=0.07, rely=0.11, relwidth=0.218, relheight=0.02) 
         #Criação de listbox.
         self.nintVar = tkinter.IntVar(value=self.listaVlan)
-        self.listBoxVlan = tkinter.Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=6, height=4, listvariable=self.nintVar)
+        self.listBoxVlan = tkinter.Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=6, height=4, listvariable=self.nintVar, cursor = "hand2")
         self.listBoxVlan.place(relx=0.461, rely=0.11)
         self.listBoxVlan.bind('<<ListboxSelect>>', self.verificarOpcaoVlan)
-        self.listBoxMarcaOnu = Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=11, height=4)
+        self.listBoxMarcaOnu = Listbox(self.dentroFrameProvisionarOnu, justify=CENTER, width=11, height=4, cursor = "hand2")
         self.listBoxMarcaOnu.place(relx=0.72, rely=0.11, relwidth=0.18)
         #Criação de barra de rolagem.
         barraRolagemVlan = Scrollbar(self.dentroFrameProvisionarOnu, orient="vertical")
         self.listBoxVlan.configure(yscroll=barraRolagemVlan.set)
         barraRolagemVlan.place(relx=0.54, rely=0.11, relwidth=0.025,relheight=0.057)
-
         barraRolagemMarcaOnu = Scrollbar(self.dentroFrameProvisionarOnu, orient="vertical")
         self.listBoxMarcaOnu.configure(yscroll=barraRolagemMarcaOnu.set)
         barraRolagemMarcaOnu.place(relx=0.9, rely=0.11, relwidth=0.03,relheight=0.057)
@@ -1069,9 +1106,9 @@ class Interface():
         self.saidaAguardandoBotao = Label(self.dentroFrameProvisionarOnu, text="", font="Ivy 10 bold", background="#d9d9d9", fg="red")
         self.saidaAguardandoBotao.place(relx=0.78, rely=0.27)
         #Criação de radio button.
-        radioBridge = Radiobutton(self.dentroFrameProvisionarOnu, text="Bridge  |", value=1, variable=self.radioButtonSelecionado, background="#d9d9d9")
+        radioBridge = Radiobutton(self.dentroFrameProvisionarOnu, text="Bridge  |", value=1, variable=self.radioButtonSelecionado, background="#d9d9d9", cursor = "hand2")
         radioBridge.place(relx=0.37, rely=0.05)
-        radioPppoe = Radiobutton(self.dentroFrameProvisionarOnu, text="PPPOE", value=2, variable=self.radioButtonSelecionado, background="#d9d9d9")
+        radioPppoe = Radiobutton(self.dentroFrameProvisionarOnu, text="PPPOE", value=2, variable=self.radioButtonSelecionado, background="#d9d9d9", cursor = "hand2")
         radioPppoe.place(relx=0.5, rely=0.05)
         #Criação dos botões.
         #Balão de mensagem.
@@ -1081,12 +1118,13 @@ class Interface():
         atk.tooltip(labelAstPortaCto, "Campo obrigatório")
 
     def widgetsTelaProvisionarComboBox(self):
-        self.comboBoxPortaCto = ttk.Combobox(self.dentroFrameProvisionarOnu, state="readonly", values=self.listaPortaCto, justify=CENTER)
+        self.comboBoxPortaCto = ttk.Combobox(self.dentroFrameProvisionarOnu, state="readonly", values=self.listaPortaCto, justify=CENTER, cursor = "hand2")
         self.comboBoxPortaCto.set("0")
         self.comboBoxPortaCto.place(relx=0.793, rely=0.211, relwidth=0.085)
 
     def widgetsButtonVerificarSinal(self):
         botaoVerificarSinalOnuProvisionada = Button(self.quartaTela, text="VERIFICAR\nSINAL", font="Ivy 7", command=self.telaVerificarSinalUltimaOnu)
+        botaoVerificarSinalOnuProvisionada.bind('<Enter>', lambda e: botaoVerificarSinalOnuProvisionada.configure(cursor = "hand2"))
         botaoVerificarSinalOnuProvisionada.place(relx=0.7, rely=0.895, relwidth=0.078, relheight=0.045)
         atk.tooltip(botaoVerificarSinalOnuProvisionada, "Verificar sinal da ONU que acabou de ser provisionada")
     
@@ -1108,6 +1146,7 @@ class Interface():
         self.saidaSinalUltimaOnu = Label(self.ultimaOnuSinalTela, text="", font="Ivy 9 bold", anchor=N, background="#d9d9d9")
         self.saidaSinalUltimaOnu.place(relx=0.05, rely=0.06, relwidth=0.9, relheight=0.7)
         atualizarUltimoSinal = atk.Button3d(self.ultimaOnuSinalTela, text="Atualizar", command=self.verificarSinalUltimaOnuProv)
+        atualizarUltimoSinal.bind('<Enter>', lambda e: atualizarUltimoSinal.configure(cursor = "hand2"))
         atualizarUltimoSinal.place(relx=0.41, rely=0.8, relwidth=0.175, relheight=0.147)
         
     def telaLog(self):
@@ -1159,6 +1198,7 @@ class Interface():
         self.entradaLoginDeletarOnu.focus()
         #Criação de botões.
         botaoDeletarOnu = atk.Button3d(self.deletarOnuTela, text="Deletar", bg="#B82601", command=self.deletarOnu)
+        botaoDeletarOnu.bind('<Enter>', lambda e: botaoDeletarOnu.configure(cursor = "hand2"))
         botaoDeletarOnu.place(relx=0.437, rely=0.295, relwidth=0.13, relheight=0.071)
         #Balão de mensagem.
         atk.tooltip(botaoDeletarOnu, "Deletar ONU do login informado acima")
@@ -1225,25 +1265,26 @@ class Interface():
         #Criação de entrada de dados.
         #Criação de botões.
         botaoProcurarOnu = atk.Button3d(self.abaProvisionadas, text="Procurar", bg="#38576b", command=self.filtrarOnu)
+        botaoProcurarOnu.bind('<Enter>', lambda e: botaoProcurarOnu.configure(cursor = "hand2"))
         botaoProcurarOnu.place(relx=0.22, rely=0.009, relwidth=0.136, relheight=0.0645)
         #Criação de saída de textos.
-        self.txtDadosOnu = Text(self.abaProvisionadas, state="disabled", width=64, height=33, bg="#d9d9d9")
+        self.txtDadosOnu = Text(self.abaProvisionadas, state="disabled", width=64, height=33, bg="#d9d9d9", cursor = "arrow")
         self.txtDadosOnu.place(relx=0, rely=0.08)
         #Criação de combo box VLAN.
         self.vlanSelecionada = tkinter.StringVar()
-        self.comboBoxVlanTelaDados = ttk.Combobox(self.abaProvisionadas, justify=CENTER, width=5, height=3, textvariable=self.vlanSelecionada)
+        self.comboBoxVlanTelaDados = ttk.Combobox(self.abaProvisionadas, justify=CENTER, width=5, height=3, textvariable=self.vlanSelecionada, cursor = "hand2")
         self.comboBoxVlanTelaDados.set("VLAN")
         self.comboBoxVlanTelaDados.place(relx=0.6, rely=0.021)
         self.comboBoxVlanTelaDados.bind('<<ComboboxSelected>>', self.filtrarPorVlan)
         #Criação de combo box ramal.
         self.ramalSelecionado = tkinter.StringVar()
-        self.comboBoxRamalTelaDados = ttk.Combobox(self.abaProvisionadas, justify=CENTER, width=6, height=3, textvariable=self.ramalSelecionado)
+        self.comboBoxRamalTelaDados = ttk.Combobox(self.abaProvisionadas, justify=CENTER, width=6, height=3, textvariable=self.ramalSelecionado, cursor = "hand2")
         self.comboBoxRamalTelaDados.set("Ramal")
         self.comboBoxRamalTelaDados.place(relx=0.395, rely=0.021)
         self.comboBoxRamalTelaDados.bind('<<ComboboxSelected>>', self.filtrarPorRamal)
         #Criação de combo box marca.
         self.marcaSelecionada = tkinter.StringVar()
-        self.comboBoxMarcaTelaDados = ttk.Combobox(self.abaProvisionadas, justify=CENTER, width=10, height=3, textvariable=self.marcaSelecionada)
+        self.comboBoxMarcaTelaDados = ttk.Combobox(self.abaProvisionadas, justify=CENTER, width=10, height=3, textvariable=self.marcaSelecionada, cursor = "hand2")
         self.comboBoxMarcaTelaDados.set("Marca")
         self.comboBoxMarcaTelaDados['state'] = 'readonly' #Proibi a mudança de valor escrevendo.
         self.comboBoxMarcaTelaDados.place(relx=0.78, rely=0.021, relwidth=0.185)
@@ -1269,7 +1310,7 @@ class Interface():
         #self.entradaMarcaDadosAtt.place(relx=0.731, rely=0.35, relwidth=0.215, relheight=0.038)
         #Criação de listbox.
         self.nAttintVar = tkinter.IntVar(value=self.listaVlan)
-        self.listBoxVlan = tkinter.Listbox(self.atualizarDadosOnu, justify=CENTER, width=6, height=4, listvariable=self.nAttintVar)
+        self.listBoxVlan = tkinter.Listbox(self.atualizarDadosOnu, justify=CENTER, width=6, height=4, listvariable=self.nAttintVar, cursor = "hand2")
         self.listBoxVlan.place(relx=0.458, rely=0.35)
         self.listBoxVlan.bind('<<ListboxSelect>>', self.verificarOpcaoVlan)
         #Criação de barra de rolagem.
@@ -1278,8 +1319,10 @@ class Interface():
         barraRolagemVlan.place(relx=0.535, rely=0.35, relwidth=0.026,relheight=0.119)
         #Criação dos botões.
         botaoCarregarDados = atk.Button3d(self.atualizarDadosOnu, text="Carregar Dados", command=self.carregarDadosOnu)
+        botaoCarregarDados.bind('<Enter>', lambda e: botaoCarregarDados.configure(cursor = "hand2"))
         botaoCarregarDados.place(relx=0.395, rely=0.235, relwidth=0.203, relheight=0.071)
         botaoAtualizarDados = atk.Button3d(self.atualizarDadosOnu, text="Atualizar", command=self.atualizarDadosOnuAba)
+        botaoAtualizarDados.bind('<Enter>', lambda e: botaoAtualizarDados.configure(cursor = "hand2"))
         botaoAtualizarDados.place(relx=0.395, rely=0.68, relwidth=0.203, relheight=0.071)
         #Balão de mensagem.
         atk.tooltip(botaoCarregarDados, "Carregar dados da ONU")
@@ -1293,11 +1336,11 @@ class Interface():
     
     def widgetsAtualizarDadosComboBox(self):
         #Criação de porta da cto combo box.
-        self.comboBoxPortaCtoAtt = ttk.Combobox(self.atualizarDadosOnu, state="readonly", values=self.listaPortaCto, justify=CENTER)
+        self.comboBoxPortaCtoAtt = ttk.Combobox(self.atualizarDadosOnu, state="readonly", values=self.listaPortaCto, justify=CENTER, cursor = "hand2")
         self.comboBoxPortaCtoAtt.set("0")
         self.comboBoxPortaCtoAtt.place(relx=0.8, rely=0.57, relwidth=0.085)
         #Criação de marca combo box.
-        self.comboBoxMarcaAtt = ttk.Combobox(self.atualizarDadosOnu, state="readonly", values=self.listaMarcaTelaDados, justify=CENTER)
+        self.comboBoxMarcaAtt = ttk.Combobox(self.atualizarDadosOnu, state="readonly", values=self.listaMarcaTelaDados, justify=CENTER, cursor = "hand2")
         self.comboBoxMarcaAtt.place(relx=0.75, rely=0.35, relwidth=0.185)
 
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados, BdFiltroOnu, FiltrarOnu, Func):
