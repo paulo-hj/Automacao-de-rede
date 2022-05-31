@@ -198,7 +198,7 @@ class Comandos():
           "361", "362", "363", "364", "365", "366", "367", "368", "521", "522", "523", "524", "525", "526", "527", "528"] 
         
     def listaListBoxMarcaOnu(self):
-        listaMarcaOnu = ["Digistar" ,"Huawei", "ZTE" ,"Unne", "IntelBras", "Tp-link", "Cianet", "Shoreline", "Stavix", "China Mobile", "MaxPrint"]
+        listaMarcaOnu = ["Digistar" ,"Huawei", "ZTE" ,"Unne", "IntelBras", "Tp-link", "Cianet GW24AC", "Cianet GB01", "Shoreline", "Stavix", "China Mobile", "MaxPrint"]
         return listaMarcaOnu
     
     def preencherListaMarca(self, listaMarcaOnu):
@@ -271,7 +271,19 @@ class Comandos():
         "134":"0-1-P8-D24-T3-R13-C4", "135":"0-1-P8-D24-T3-R13-C5", "136":"0-1-P8-D24-T3-R13-C6", "137":"0-1-P8-D24-T3-R13-C7", 
         "138":"0-1-P8-D24-T3-R13-C8", "141":"0-1-P7-D17-T3-R14-C1", "142":"0-1-P7-D17-T3-R14-C2", "143":"0-1-P7-D17-T3-R14-C3", 
         "144":"0-1-P7-D17-T3-R14-C4", "145":"0-1-P7-D17-T3-R14-C5", "146":"0-1-P7-D17-T3-R14-C6", "147":"0-1-P7-D17-T3-R14-C7", 
-        "148":"0-1-P7-D17-T3-R14-C8", "":"", "":"", "":"", "":"", "":"", "":"", "":"", "":"", "":""}
+        "148":"0-1-P7-D17-T3-R14-C8", "151":"0-1-P3-D28-T3-R15-C1", "152":"0-1-P3-D28-T3-R15-C2", "153":"0-1-P3-D28-T3-R15-C3",
+        "154":"0-1-P3-D28-T3-R15-C4", "155":"0-1-P3-D28-T3-R15-C5", "156":"0-1-P3-D28-T3-R15-C6", "157":"0-1-P3-D28-T3-R15-C7",
+        "158":"0-1-P3-D28-T3-R15-C8", "161":"0-1-P6-D27-T3-R16-C1", "162":"0-1-P6-D27-T3-R16-C2", "163":"0-1-P6-D27-T3-R16-C3",
+        "164":"0-1-P6-D27-T3-R16-C4", "165":"0-1-P6-D27-T3-R16-C5", "166":"0-1-P6-D27-T3-R16-C6", "167":"0-1-P6-D27-T3-R16-C7",
+        "168":"0-1-P6-D27-T3-R16-C8", "341":"0-1-P4-D29-T3-R34-C1", "342":"0-1-P4-D29-T3-R34-C2", "343":"0-1-P4-D29-T3-R34-C3",
+        "344":"0-1-P4-D29-T3-R34-C4", "345":"0-1-P4-D29-T3-R34-C5", "346":"0-1-P4-D29-T3-R34-C6", "347":"0-1-P4-D29-T3-R34-C7",
+        "348":"0-1-P4-D29-T3-R34-C8", "351":"0-1-P1-D30-T3-R35-C1", "352":"0-1-P1-D30-T3-R35-C2", "353":"0-1-P1-D30-T3-R35-C3",
+        "354":"0-1-P1-D30-T3-R35-C4", "355":"0-1-P1-D30-T3-R35-C5", "356":"0-1-P1-D30-T3-R35-C6", "357":"0-1-P1-D30-T3-R35-C7", 
+        "358":"0-1-P1-D30-T3-R35-C8", "361":"0-1-P5-D32-T3-R36-C1", "362":"0-1-P5-D32-T3-R36-C2", "363":"0-1-P5-D32-T3-R36-C3",
+        "364":"0-1-P5-D32-T3-R36-C4", "365":"0-1-P5-D32-T3-R36-C5", "366":"0-1-P5-D32-T3-R36-C6", "367":"0-1-P5-D32-T3-R36-C7",
+        "368":"0-1-P5-D32-T3-R36-C8", "521":"0-1-P8-D31-T3-R52-C1", "522":"0-1-P8-D31-T3-R52-C2", "523":"0-1-P8-D31-T3-R52-C3",
+        "524":"0-1-P8-D31-T3-R52-C4", "525":"0-1-P8-D31-T3-R52-C5", "526":"0-1-P8-D31-T3-R52-C6", "527":"0-1-P8-D31-T3-R52-C7",
+        "528":"0-1-P8-D31-T3-R52-C8"}
         self.path = dicionarioPath[self.vlan]
         if self.verificarTela == 1 and self.verificarTela2 == 2:
             self.saidaPath["text"] = self.path
@@ -570,7 +582,7 @@ class FiltrarOnu():
             portaOlt = str(infoOnu[cont][10])
             usuario = infoOnu[cont][11]
             dataHora = infoOnu[cont][12]
-            textoInfoOnu = "\n\n                       Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"            Path: "+path+"\n  Porta da CTO: "+portaCto+"      MAC: "+mac+"     Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
+            textoInfoOnu = "\n\n                      Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"               Path: "+path+"\n  Porta da CTO: "+portaCto+"    MAC: "+mac+"    Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
             self.txtDadosOnu.insert(INSERT, textoInfoOnu)
             self.txtDadosOnu.insert(INSERT, "\n\n________________________________________________________________\n")
             cont += 1
@@ -598,7 +610,7 @@ class FiltrarOnu():
                 marca = listaInfoOnu[0][7]
                 usuario = listaInfoOnu[0][8]
                 dataHora = listaInfoOnu[0][9]
-                textoInfoOnu = "\n\n                       Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"            Path: "+path+"\n  Porta da CTO: "+portaCto+"      MAC: "+mac+"     Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
+                textoInfoOnu = "\n\n                      Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"               Path: "+path+"\n  Porta da CTO: "+portaCto+"    MAC: "+mac+"    Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
                 self.txtDadosOnu.insert(INSERT, textoInfoOnu)
                 self.txtDadosOnu.insert(INSERT, "\n\n________________________________________________________________\n")
                 self.txtDadosOnu.configure(state="disabled")
@@ -637,7 +649,7 @@ class FiltrarOnu():
                     marca = listaInfoOnu[cont][7]
                     usuario = listaInfoOnu[cont][8]
                     dataHora = listaInfoOnu[cont][9]
-                    textoInfoOnu = "\n\n                       Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"            Path: "+path+"\n  Porta da CTO: "+portaCto+"      MAC: "+mac+"     Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
+                    textoInfoOnu = "\n\n                      Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"               Path: "+path+"\n  Porta da CTO: "+portaCto+"    MAC: "+mac+"    Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
                     self.txtDadosOnu.insert(INSERT, textoInfoOnu)
                     self.txtDadosOnu.insert(INSERT, "\n\n________________________________________________________________\n")
                     cont += 1
@@ -676,7 +688,7 @@ class FiltrarOnu():
                     marca = infoOnu[cont][7]
                     usuario = infoOnu[cont][8]
                     dataHora = infoOnu[cont][9]
-                    textoInfoOnu = "\n\n                       Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"            Path: "+path+"\n  Porta da CTO: "+portaCto+"      MAC: "+mac+"     Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
+                    textoInfoOnu = "\n\n                      Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"               Path: "+path+"\n  Porta da CTO: "+portaCto+"    MAC: "+mac+"    Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
                     self.txtDadosOnu.insert(INSERT, textoInfoOnu)
                     self.txtDadosOnu.insert(INSERT, "\n\n________________________________________________________________\n")
                     cont += 1
@@ -715,7 +727,7 @@ class FiltrarOnu():
                     mac = infoOnuMarca[cont][7]
                     usuario = infoOnuMarca[cont][8]
                     dataHora = infoOnuMarca[cont][9]
-                    textoInfoOnu = "\n\n                       Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"            Path: "+path+"\n  Porta da CTO: "+portaCto+"      MAC: "+mac+"     Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
+                    textoInfoOnu = "\n\n                      Login: "+login+"\n\n  Modo da Onu: "+modoOnu+"      Vlan: "+vlan+"       Porta/Posição: "+portaPosicao+"\n  Ramal: "+ramal+"               Path: "+path+"\n  Porta da CTO: "+portaCto+"    MAC: "+mac+"    Marca: "+marca+"\n\n  Usuário: "+usuario+"       Data/Hora: "+dataHora
                     self.txtDadosOnu.insert(INSERT, textoInfoOnu)
                     self.txtDadosOnu.insert(INSERT, "\n\n________________________________________________________________\n")
                     cont += 1
@@ -1216,6 +1228,7 @@ class Interface():
         self.dadosOnuCliente.transient(self.primeiraTela)
         self.dadosOnuCliente.focus_force()
         self.dadosOnuCliente.grab_set()
+        self.dadosOnuCliente.bind('<Return>', self.teclaEnterFiltrarTodasOnu)
         self.listaPortaCto = []
         self.verificarTela = 2
         self.verificarTela2 = 1
@@ -1234,7 +1247,6 @@ class Interface():
         self.widgetsAtualizardadosOnu()
         self.widgetsAtualizarDadosLabelEntrada()
         self.widgetsAtualizarDadosComboBox()
-        self.botaoProcurarOnu.bind('<Return>', self.teclaEnterFiltrarTodasOnu)
 
     def abasTelaDadosOnu(self):
         #Criação de abas.
@@ -1246,6 +1258,7 @@ class Interface():
         #2º aba
         self.atualizarDadosOnu = Frame(self.abas, borderwidth=0, relief="solid", bg='#d9d9d9')
         self.abas.add(self.atualizarDadosOnu, text="Atualizar informações")
+        self.atualizarDadosOnu.bind('<1>', lambda e: print("teste"))#self.dadosOnuCliente.bind('<Return>', self.teclaEnterCarregarDados))
 
     def farmesTelaDadosOnu(self):
         linhaFrameAtualizarDados = Frame(self.atualizarDadosOnu, borderwidth=1, relief="solid", background="#d9d9d9")

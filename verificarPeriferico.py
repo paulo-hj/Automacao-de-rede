@@ -7,3 +7,7 @@ class VerificarTecla():
 
     def teclaEnterFiltrarTodasOnu(self, event):
         self.filtrarOnu()
+
+    def teclaEnterCarregarDados(self, event):
+        self.carregarDadosOnu()
+        
