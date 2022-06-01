@@ -11,3 +11,5 @@ class VerificarTecla():
     def teclaEnterCarregarDados(self, event):
         self.carregarDadosOnu()
         
+    def teclaEnterRelatorios(self, event):
+        self.verificarOpcaoRelatorio()

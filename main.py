@@ -965,6 +965,7 @@ class Interface():
         self.relatoriosTela.transient(self.primeiraTela) #Diz que essa janela vem da tela principal.
         self.relatoriosTela.focus_force() #Força o foco nessa janela.
         self.relatoriosTela.grab_set() #Impede que alguma coisa seja digitada fora dessa janela.
+        self.relatoriosTela.bind('<Return>', self.teclaEnterRelatorios)
         self.nomeDiretorio = "C:\\Users\\Public\\Desktop"
         self.framesTelaRelatorios()
         self.widgetsTelaRelatorios()
