@@ -113,6 +113,10 @@ class BancoDeDados(BdFiltroOnu):
         self.cursor.execute("SELECT login FROM onu;")
         return self.cursor.fetchall()
 
+    def bdGerarRelatSinais(self):
+        self.cursor.execute("SELECT login, porta_posicao_onu FROM onu;")
+        return self.cursor.fetchall()
+
     def bdSair(self):
         self.conn.commit()
         self.cursor.close()

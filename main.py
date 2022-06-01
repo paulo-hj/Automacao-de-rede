@@ -458,11 +458,11 @@ class Relatorios():
         else:
             self.carregarBarraProgresso(14)
             if tipoDeRelatorio == "Sinais das ONU's":
-                self.geraRelatSinais()
+                self.gerarRelatSinais()
             elif tipoDeRelatorio == "Todas as Vlan's":
-                self.geraRelatVlan()
+                self.gerarRelatVlan()
 
-    def geraRelatSinais(self):
+    def gerarRelatSinais(self):
         self.c = canvas.Canvas(self.nomeDiretorio+"\\Sinais das ONU - OLT Digistar.pdf")
         self.c.setFont("Helvetica-Bold", 24)
         self.c.drawString(200, 790, "Sinais das ONU's")
@@ -473,7 +473,7 @@ class Relatorios():
         pularLinhaTexto = 733
         pularLinhaTraço = 720
         self.c.setFont("Helvetica", 10)
-        while onu < 17: #onu < 17:
+        while onu < 17:
             lista2= ['d']
             comando = "onu status {}/{}\n".format(porta,onu).encode()
             self.tn.write(b""+comando)
@@ -505,7 +505,7 @@ class Relatorios():
         self.addLog()
         webbrowser.open(self.nomeDiretorio+"\\Sinais das ONU - OLT Digistar.pdf")
     
-    def geraRelatVlan(self):
+    def gerarRelatVlan(self):
         linha = 863
         cont = 0
         self.c = canvas.Canvas(self.nomeDiretorio+"\\VLANs - OLT Digistar.pdf")
