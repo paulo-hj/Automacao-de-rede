@@ -508,9 +508,9 @@ class Relatorios():
     def geraRelatVlan(self):
         linha = 863
         cont = 0
-        self.c = canvas.Canvas(self.nomeDiretorio+"\\Vlan's OLT Digistar.pdf")
+        self.c = canvas.Canvas(self.nomeDiretorio+"\\VLANs - OLT Digistar.pdf")
         self.c.setFont("Helvetica-Bold", 24)
-        self.c.drawString(190, 790, "Vlan's OLT Digistar")
+        self.c.drawString(190, 790, "VLANs - OLT Digistar")
         self.c.setFont("Helvetica-Bold", 10)
         self.c.drawString(25, 820, self.infoDataHora())
         comando = "bridge show ?\n".encode()
@@ -545,21 +545,46 @@ class Relatorios():
             cont = cont + 1
             if cont == 76:
                 break
-        self.c.showPage()
+        self.c.showPage() #Segunda página.
         linha = 795
         self.c.setFont("Helvetica-Bold", 10)
         for i in listaSaida:
             self.c.drawString(25, linha, listaSaida[cont])
             linha = linha - 30
             cont = cont + 1
+            if cont == 102:
+                break
+        linha = 795
+        for i in listaSaida:
+            self.c.drawString(270, linha, listaSaida[cont])
+            linha = linha - 30
+            cont = cont + 1
+            if cont == 128:
+                break
+        linha = 795
+        for i in listaSaida:
+            self.c.drawString(510, linha, listaSaida[cont])
+            linha = linha - 30
+            cont = cont + 1
             if cont == contLinhasVlan:
                 break
+        if cont >= 154: #Criação de uma terceira página, na espera de mais VLANs.
+            cont = 154
+            self.c.showPage() #Terceira página.
+            linha = 795
+            self.c.setFont("Helvetica-Bold", 10)
+            for i in listaSaida:
+                self.c.drawString(25, linha, listaSaida[cont])
+                linha = linha - 30
+                cont = cont + 1
+                if cont == contLinhasVlan:
+                    break
         self.carregarBarraProgresso(6)
         self.c.showPage()
         self.c.save()
-        self.listaLog.append("Gerado relatório de vlan's  - Data/Hora: " + self.infoDataHora() + " - Usuário: ")
+        self.listaLog.append("Gerado relatório de VLANs  - Data/Hora: " + self.infoDataHora() + " - Usuário: ")
         self.addLog()
-        webbrowser.open(self.nomeDiretorio+"\\Vlan's OLT Digistar.pdf")
+        webbrowser.open(self.nomeDiretorio+"\\VLANs - OLT Digistar.pdf")
 
 class FiltrarOnu():
     def listarTodasOnuTelaDados(self):
@@ -841,6 +866,8 @@ class Interface():
         self.frameHorizontal.place(relx=0, rely=0, relwidth=1.002, relheight=0.23)
         self.frameTela = atk.Frame3d(self.primeiraTela, bg='#d9d9d9')
         self.frameTela.place(relx=0.23, rely=0.2299, relwidth=0.771, relheight=0.776)
+        self.frameLinhaTelaPrincipal = atk.Frame3d(self.frameVertical, bg='#38576b')
+        self.frameLinhaTelaPrincipal.place(relx=0.04, rely=0.68, relwidth=0.92, relheight=0.055)
 
         #Imagens
         #imagemOltDigistar = Label(self.frameTela, image=self.imgOlt)
