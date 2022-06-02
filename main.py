@@ -463,39 +463,40 @@ class Relatorios():
                 self.gerarRelatVlan()
 
     def gerarRelatSinais(self):
+        listaRelatSinais = []
+        teste = ["1"]
+        cont = 0
         self.c = canvas.Canvas(self.nomeDiretorio+"\\Sinais das ONU - OLT Digistar.pdf")
         self.c.setFont("Helvetica-Bold", 24)
         self.c.drawString(200, 790, "Sinais das ONU's")
         self.c.setFont("Helvetica-Bold", 10)
         self.c.drawString(25, 820, self.infoDataHora())
-        porta = 1
-        onu = 1
         pularLinhaTexto = 733
         pularLinhaTraço = 720
         self.c.setFont("Helvetica", 10)
-        while onu < 17:
-            lista2= ['d']
-            comando = "onu status {}/{}\n".format(porta,onu).encode()
+        listaRelatSinais = self.bdGerarRelatSinais()
+        print(listaRelatSinais)
+        for i in listaRelatSinais:
+            login = "Login: "+listaRelatSinais[cont][0]
+            comando = "onu status {}\n".format(listaRelatSinais[cont][1]).encode()
             self.tn.write(b""+comando)
             saida = str(self.tn.read_until(b'#').decode())
-            if len(saida) == 186 or len(saida) == 191:
-                lista = saida.split("N", 3)
-                texto = str(lista[0] + lista[1] + lista[2])
-                lista2 = texto.split("\r", 1)
-                lista.append(texto.split("d", 2))
-                texto2 = str(lista[2])
-                lista = texto2.split("I", 1)
-                self.c.drawString(25, pularLinhaTexto, lista2[0])
-                self.c.rect(25, pularLinhaTraço, 545, 1, fill= True, stroke=True)
-                self.c.drawString(115, pularLinhaTexto, lista[0])
-                pularLinhaTexto = pularLinhaTexto - 30
-                pularLinhaTraço = pularLinhaTraço - 30
-                onu = onu + 1
-            else:
-                onu = onu + 1
-            if onu == 17 and porta < 8: #onu == 17 and porta < 8:
-                porta = porta + 1
-                onu = 1
+            print(saida)
+            retirarTexto = "onu status "+listaRelatSinais[cont][1]+"\r\n"
+            saida = saida.replace(retirarTexto, "")
+            saida = saida.replace("\r\n", "")
+            saida = saida.replace("ONU  Link  FEC       OLT Rx Power  ONU Rx Power  Firmware upgrade  Progress", "")
+            saida = saida.replace(listaRelatSinais[cont][1]+"  ", "")
+            saida = saida.replace(" Disabled  ", "")
+            saida = saida.replace("Inactive", "")
+            saida = saida.replace("\rdigistar#", "")
+            self.c.drawString(25, pularLinhaTexto, login)
+            self.c.drawString(200, pularLinhaTexto, saida)
+            self.c.rect(25, pularLinhaTraço, 545, 1, fill= True, stroke=True)
+            #self.c.drawString(115, pularLinhaTexto, saida)
+            pularLinhaTexto = pularLinhaTexto - 30
+            pularLinhaTraço = pularLinhaTraço - 30
+            cont += 1
         #self.c.rect(20, 720, 550, 200, fill= False, stroke=True)
         self.c.showPage()
         self.c.showPage()
