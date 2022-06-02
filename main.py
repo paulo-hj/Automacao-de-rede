@@ -464,36 +464,34 @@ class Relatorios():
 
     def gerarRelatSinais(self):
         listaRelatSinais = []
-        teste = ["1"]
         cont = 0
         self.c = canvas.Canvas(self.nomeDiretorio+"\\Sinais das ONU - OLT Digistar.pdf")
         self.c.setFont("Helvetica-Bold", 24)
         self.c.drawString(200, 790, "Sinais das ONU's")
         self.c.setFont("Helvetica-Bold", 10)
         self.c.drawString(25, 820, self.infoDataHora())
-        pularLinhaTexto = 733
-        pularLinhaTraço = 720
+        pularLinhaTexto = 700
+        pularLinhaTraço = 690
         self.c.setFont("Helvetica", 10)
+        self.c.drawString(40, 733, "LOGIN")
+        self.c.drawString(275, 733, "STATUS")
+        self.c.drawString(455, 733, "OLT Rx         ONU Rx")
+        self.c.rect(25, 720, 545, 1, fill= True, stroke=True)
         listaRelatSinais = self.bdGerarRelatSinais()
-        print(listaRelatSinais)
         for i in listaRelatSinais:
-            login = "Login: "+listaRelatSinais[cont][0]
             comando = "onu status {}\n".format(listaRelatSinais[cont][1]).encode()
             self.tn.write(b""+comando)
             saida = str(self.tn.read_until(b'#').decode())
-            print(saida)
-            retirarTexto = "onu status "+listaRelatSinais[cont][1]+"\r\n"
-            saida = saida.replace(retirarTexto, "")
+            saida = saida.replace("onu status "+listaRelatSinais[cont][1]+"\r\n", "")
             saida = saida.replace("\r\n", "")
             saida = saida.replace("ONU  Link  FEC       OLT Rx Power  ONU Rx Power  Firmware upgrade  Progress", "")
             saida = saida.replace(listaRelatSinais[cont][1]+"  ", "")
-            saida = saida.replace(" Disabled  ", "")
+            saida = saida.replace(" Disabled  ", "                                                   ")
             saida = saida.replace("Inactive", "")
             saida = saida.replace("\rdigistar#", "")
-            self.c.drawString(25, pularLinhaTexto, login)
-            self.c.drawString(200, pularLinhaTexto, saida)
+            self.c.drawString(30, pularLinhaTexto, listaRelatSinais[cont][0])
+            self.c.drawString(270, pularLinhaTexto, saida)
             self.c.rect(25, pularLinhaTraço, 545, 1, fill= True, stroke=True)
-            #self.c.drawString(115, pularLinhaTexto, saida)
             pularLinhaTexto = pularLinhaTexto - 30
             pularLinhaTraço = pularLinhaTraço - 30
             cont += 1
