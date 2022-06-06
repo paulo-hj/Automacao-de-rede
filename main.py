@@ -311,7 +311,7 @@ class Comandos():
 
     def listaListBoxRelatorios(self):
         listaTiposRelatorios = ["-------------------------------------------", "Sinais das ONU's", "-------------------------------------------",
-        "Todos as ONU", "-------------------------------------------","Log", "-------------------------------------------", "Todas as Vlan's",
+        "Todas as ONU's", "-------------------------------------------","Log", "-------------------------------------------", "Todas as Vlan's",
          "-------------------------------------------"]
         for i in listaTiposRelatorios:
             self.listBoxRelatorio.insert(END, i)
@@ -451,16 +451,17 @@ class Relatorios():
         tipoDeRelatorio = ""
         self.barraProgresso.stop()
         tipoDeRelatorio = self.listBoxRelatorio.get(ACTIVE)
-        if len(self.nomeDiretorio) == 0:
+        if tipoDeRelatorio == "Todas as ONU's" or tipoDeRelatorio == "Log":
+                messagebox.showinfo(title="Em desenvolvimento", message="Contate o suporte pelo email: paulo.junior.ph@gmail.com"
+                "\npara verificar em qual versão dos sistema está função estará disponível.")
+        elif len(self.nomeDiretorio) == 0:
             messagebox.showerror(title="Erro", message="Por favor, informe o caminho do arquivo.")
-        elif tipoDeRelatorio != "Sinais das ONU's" and tipoDeRelatorio != "Todas as Vlan's" and tipoDeRelatorio != "Log":
+        elif tipoDeRelatorio != "Sinais das ONU's" and tipoDeRelatorio != "Todas as Vlan's":
             messagebox.showerror(title="Erro", message="Escolha o modelo de relatório.")
         else:
             self.carregarBarraProgresso(14)
             if tipoDeRelatorio == "Sinais das ONU's":
                 self.gerarRelatSinais()
-            elif tipoDeRelatorio == "Log":
-                self.gerarRelatLog()
             elif tipoDeRelatorio == "Todas as Vlan's":
                 self.gerarRelatVlan()
 
@@ -504,25 +505,6 @@ class Relatorios():
         self.listaLog.append("Gerado relatório de sinais  - Data/Hora: " + self.infoDataHora() + " - Usuário: ")
         self.addLog()
         webbrowser.open(self.nomeDiretorio+"\\Sinais das ONU - OLT Digistar.pdf")
-
-    def gerarRelatLog(self):
-        self.c = canvas.Canvas(self.nomeDiretorio+"\\Log - OLT Digistar.pdf")
-        self.c.setFont("Helvetica-Bold", 24)
-        self.c.drawString(200, 790, "Log do sistema")
-        self.c.setFont("Helvetica-Bold", 10)
-        self.c.drawString(25, 820, self.infoDataHora())
-        pularLinhaTexto = 700
-        pularLinhaTraço = 690
-        self.c.rect(25, 720, 545, 1, fill= True, stroke=True)
-        print(self.listaLog[5])
-        self.c.drawString(20, pularLinhaTexto, self.listaLog)
-
-        self.c.showPage()
-        self.c.save()
-        self.carregarBarraProgresso(6)
-        self.listaLog.append("Gerado relatório de log  - Data/Hora: " + self.infoDataHora() + " - Usuário: ")
-        self.addLog()
-        webbrowser.open(self.nomeDiretorio+"\\Log - OLT Digistar.pdf")
     
     def gerarRelatVlan(self):
         linha = 863
