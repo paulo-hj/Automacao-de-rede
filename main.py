@@ -453,12 +453,14 @@ class Relatorios():
         tipoDeRelatorio = self.listBoxRelatorio.get(ACTIVE)
         if len(self.nomeDiretorio) == 0:
             messagebox.showerror(title="Erro", message="Por favor, informe o caminho do arquivo.")
-        elif tipoDeRelatorio != "Sinais das ONU's" and tipoDeRelatorio != "Todas as Vlan's":
+        elif tipoDeRelatorio != "Sinais das ONU's" and tipoDeRelatorio != "Todas as Vlan's" and tipoDeRelatorio != "Log":
             messagebox.showerror(title="Erro", message="Escolha o modelo de relatório.")
         else:
             self.carregarBarraProgresso(14)
             if tipoDeRelatorio == "Sinais das ONU's":
                 self.gerarRelatSinais()
+            elif tipoDeRelatorio == "Log":
+                self.gerarRelatLog()
             elif tipoDeRelatorio == "Todas as Vlan's":
                 self.gerarRelatVlan()
 
@@ -495,7 +497,6 @@ class Relatorios():
             pularLinhaTexto = pularLinhaTexto - 30
             pularLinhaTraço = pularLinhaTraço - 30
             cont += 1
-        #self.c.rect(20, 720, 550, 200, fill= False, stroke=True)
         self.c.showPage()
         self.c.showPage()
         self.c.save()
@@ -503,6 +504,25 @@ class Relatorios():
         self.listaLog.append("Gerado relatório de sinais  - Data/Hora: " + self.infoDataHora() + " - Usuário: ")
         self.addLog()
         webbrowser.open(self.nomeDiretorio+"\\Sinais das ONU - OLT Digistar.pdf")
+
+    def gerarRelatLog(self):
+        self.c = canvas.Canvas(self.nomeDiretorio+"\\Log - OLT Digistar.pdf")
+        self.c.setFont("Helvetica-Bold", 24)
+        self.c.drawString(200, 790, "Log do sistema")
+        self.c.setFont("Helvetica-Bold", 10)
+        self.c.drawString(25, 820, self.infoDataHora())
+        pularLinhaTexto = 700
+        pularLinhaTraço = 690
+        self.c.rect(25, 720, 545, 1, fill= True, stroke=True)
+        print(self.listaLog[5])
+        self.c.drawString(20, pularLinhaTexto, self.listaLog)
+
+        self.c.showPage()
+        self.c.save()
+        self.carregarBarraProgresso(6)
+        self.listaLog.append("Gerado relatório de log  - Data/Hora: " + self.infoDataHora() + " - Usuário: ")
+        self.addLog()
+        webbrowser.open(self.nomeDiretorio+"\\Log - OLT Digistar.pdf")
     
     def gerarRelatVlan(self):
         linha = 863
