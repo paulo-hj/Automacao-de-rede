@@ -886,6 +886,7 @@ class Interface():
         Label(self.frameTela, text="Uptime:", font="Ivy 10 bold", background="#d9d9d9").place(relx=0.154, rely=0.223)
         Label(self.frameTela, text="Temperatura:", font="Ivy 10 bold", background="#d9d9d9").place(relx=0.154, rely=0.2848)
         Label(self.frameTela, text="Memória:", font="Ivy 10 bold", background="#d9d9d9").place(relx=0.518, rely=0.224)
+        Label(self.frameVertical, text="BROLT  v2.1.2", font="Ivy 9 bold", background="#062F4F").place(relx=0.3, rely=0.945)
         #Criação das saídas dos dados.
         self.saidaUptime = Label(self.frameTela, text="", background="#d9d9d9", font="Ivy 10")
         self.saidaUptime.place(relx=0.228, rely=0.224)
@@ -913,6 +914,9 @@ class Interface():
         botaoTelaRelatorios = atk.Button3d(self.frameVertical, text="RELATÓRIOS", bg="#38576b", command=self.telaRelatorios)
         botaoTelaRelatorios.bind('<Enter>', lambda e: botaoTelaRelatorios.configure(cursor = "hand2"))
         botaoTelaRelatorios.place(relx=0.13, rely=0.535, relwidth=0.73, relheight=0.1)
+        botaoTelaSobre = atk.Button3d(self.frameVertical, text="SOBRE O SISTEMA", bg="#38576b", command=self.telaSobre)
+        botaoTelaSobre.bind('<Enter>', lambda e: botaoTelaSobre.configure(cursor = "hand2"))
+        botaoTelaSobre.place(relx=0.13, rely=0.775, relwidth=0.73, relheight=0.1)
         #Criação das entradas dos dados.
         #Balão de mensagem.
         atk.tooltip(botaoTelaDadosOnu, "Verificar todas as onu's provisionadas")
@@ -1218,10 +1222,10 @@ class Interface():
         self.deletarOnuTela.focus_force()
         self.deletarOnuTela.grab_set()
         self.deletarOnuTela.bind('<Return>', self.teclaEnterDeletarOnu)
-        self.farmesTelaDeletarOnu()
+        self.framesTelaDeletarOnu()
         self.widgetsTelaDeletarOnu()
 
-    def farmesTelaDeletarOnu(self):
+    def framesTelaDeletarOnu(self):
         esquerdaFrameDeletarOnu = Frame(self.deletarOnuTela, borderwidth=0, relief="solid", bg='#062F4F')
         esquerdaFrameDeletarOnu.place(relx=0, rely=0, relwidth=0.15, relheight=1.005)
         direitaFrameDeletarOnu = Frame(self.deletarOnuTela, borderwidth=0, relief="solid", bg='#062F4F')
@@ -1263,7 +1267,7 @@ class Interface():
         self.verificarTela2 = 1
         self.verificarDadosCarregados = 0 #Verificar se dados da onu foram carregados para serem atualizados.
         self.abasTelaDadosOnu()
-        self.farmesTelaDadosOnu()
+        self.framesTelaDadosOnu()
         self.widgetsEntradaTelaDados()
         self.widgetsTelaDadosOnu()
         self.comboBoxRamalTelaDados["values"] =  ["Ramal", "13", "14", "15", "16", "34", "35", "36", "52"]
@@ -1289,7 +1293,7 @@ class Interface():
         self.abas.add(self.atualizarDadosOnu, text="Atualizar informações")
         self.atualizarDadosOnu.bind('<1>', lambda e: print("teste"))#self.dadosOnuCliente.bind('<Return>', self.teclaEnterCarregarDados))
 
-    def farmesTelaDadosOnu(self):
+    def framesTelaDadosOnu(self):
         linhaFrameAtualizarDados = Frame(self.atualizarDadosOnu, borderwidth=1, relief="solid", background="#d9d9d9")
         linhaFrameAtualizarDados.place(relx=0, rely=0.056, relwidth=1.1, relheight=1.1)
         esquerdaFrameDadosOnu = Frame(self.dadosOnuCliente, borderwidth=0, relief="solid", bg='#062F4F')#062F4F')38576b
@@ -1385,6 +1389,26 @@ class Interface():
         #Criação de marca combo box.
         self.comboBoxMarcaAtt = ttk.Combobox(self.atualizarDadosOnu, state="readonly", values=self.listaMarcaTelaDados, justify=CENTER, cursor = "hand2")
         self.comboBoxMarcaAtt.place(relx=0.75, rely=0.35, relwidth=0.185)
+
+    def telaSobre(self):
+        self.sobreTela = Toplevel()
+        self.sobreTela.geometry("330x299+430+60")
+        self.sobreTela.iconbitmap(default="icone\\logo.ico")
+        self.sobreTela.title("Sobre")
+        self.sobreTela.configure(background="#d9d9d9")
+        self.sobreTela.resizable(width=False, height=False)
+        #self.sobreTela.transient(self.primeiraTela)
+        #self.sobreTela.focus_force()
+        #self.sobreTela.grab_set()
+        #self.sobreTela.bind('<Return>', self.teclaEnterDeletarOnu)
+        self.framesTelaSobre()
+        self.widgetsTelaSobre()
+    
+    def framesTelaSobre(self):
+        pass
+
+    def widgetsTelaSobre(self):
+        pass
 
 class Main(Conexao, Comandos, Interface, Relatorios, InformacoesOlt, BancoDeDados, BdFiltroOnu, FiltrarOnu, Func, VerificarTecla):
     def __init__(self):
