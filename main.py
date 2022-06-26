@@ -198,7 +198,7 @@ class Comandos():
           "361", "362", "363", "364", "365", "366", "367", "368", "521", "522", "523", "524", "525", "526", "527", "528"] 
         
     def listaListBoxMarcaOnu(self):
-        listaMarcaOnu = ["Digistar" ,"Huawei", "ZTE" ,"Unne", "IntelBras", "Tp-link", "Cianet GW24AC", "Cianet GB01", "Shoreline", "Stavix", "China Mobile", "MaxPrint"]
+        listaMarcaOnu = ["Digistar" ,"Huawei", "ZTE" ,"Unne", "IntelBras", "Tp-link", "Cianet GW24AC", "Cianet GB01", "Shoreline", "Stavix", "China Mobile", "MaxPrint", "SUMEC", "Nano Fiber"]
         return listaMarcaOnu
     
     def preencherListaMarca(self, listaMarcaOnu):
